@@ -30,10 +30,4 @@ public class Payment {
         @JoinColumn(name="userID", nullable = false)
         private UserInfo userID;
 
-        @ManyToMany
-        @JoinTable(
-                name = "paymentCourse",
-                joinColumns = @JoinColumn(name = "paymentID"),
-                inverseJoinColumns = @JoinColumn(name = "courseID"))
-        private Set<Course> courseID;
 }
