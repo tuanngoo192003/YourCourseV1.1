@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{assets/css/profileStyle.css}">
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/owl.css">
+    <link rel="stylesheet" href="assets/css/lightbox.css">
+    <title>User profile</title>
+</head>
+<body>
+<script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a th:href="@{/home}" class="logo">
+                        <p style="margin-top: 40px; color: white">YourCourse</p>
+                        <!--<img src="assets/images/templatemo-eduwell.png" alt="EduWell Template">-->
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <form
+                                role="form"
+                                method="post"
+                                th:action="@{/search}"
+                                th:object="${courseDTO}"
+                        >
+                            <input type="text" th:field="*{courseName}" placeholder="Search.." style="opacity: 0.5; border-radius: 7px">
+                        </form>
+                        <li class="has-sub">
+                            <a>Category</a>
+                            <ul class="sub-menu">
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=1)}">Language Learning</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=2)}">Web development</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
+                            </ul>
+                        </li>
+                        <li class="scroll-to-section"><a href="#services">Services</a></li>
+                        <li><a th:href="@{/course}">Courses</a></li>
+                        <li class="has-sub">
+                            <a href="javascript:void(0)">Pages</a>
+                            <ul class="sub-menu">
+                                <li><a href="about-us.html">About Us</a></li>
+                                <li><a href="our-services.html">Our Services</a></li>
+                                <li><a href="contact-us.html">Contact Us</a></li>
+                            </ul>
+                        </li>
+                        <li class="scroll-to-section"><a href="#contact-section">Contact Us</a></li>
+                        <li class="has-sub">
+                            <i class="fa-solid fa-user" style="color: white">
+                                <ul class="sub-menu">
+                                    <p th:if="${session.CSys}!=null">
+                                    <li><a th:href="@{/profile}">My Account</a></li>
+                                    <li><a th:href="@{/logout}">Log out</a></li>
+                                    </p>
+                                    <p th:if="${session.CSys}==null">
+                                    <li><a th:href="@{/login}">Log in</a></li>
+                                    </p>
+                                </ul>
+                            </i>
+                        </li>
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ***** Header Area End ***** -->
+<!-- ***** Welcome Area Start ***** -->
+<section class="py-5 my-5">
+    <div class="container">
+        <div class="bg-white shadow rounded-lg d-block d-sm-flex">
+            <div class="profile-tab-nav border-right">
+                <div class="p-4">
+                    <div class="img-circle text-center mb-3">
+                        <img th:src="${userInfo.avatar}" alt="Image" class="shadow">
+                    </div>
+                    <form
+                            method="post"
+                            enctype="multipart/form-data"
+                            th:action="@{updateAvatar}"
+                    >
+                        <input type="file" name="file"/>
+                        <input type="submit" value="Upload"/>
+                    </form>
+                    <h4 class="text-center">YourName</h4>
+                </div>
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="account-tab" data-toggle="pill" href="#account" role="tab" aria-controls="account" aria-selected="true">
+                        <i class="fa fa-home text-center mr-1"></i>
+                        Account
+                    </a>
+                    <a class="nav-link" id="security-tab" data-toggle="pill" href="#gmail" role="tab" aria-controls="security" aria-selected="false">
+                        <i class="fa fa-user text-center mr-1"></i>
+                        Gmail
+                    </a>
+                    <a class="nav-link" id="password-tab" data-toggle="pill" href="#password" role="tab" aria-controls="password" aria-selected="false">
+                        <i class="fa fa-key text-center mr-1"></i>
+                        Password
+                    </a>
+                    <a class="nav-link" id="notification-tab" data-toggle="pill" href="#notification" role="tab" aria-controls="notification" aria-selected="false">
+                        <i class="fa fa-bell text-center mr-1"></i>
+                        Notification
+                    </a>
+                </div>
+            </div>
+            <div class="tab-content p-4 p-md-5" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="account" role="tabpanel" aria-labelledby="account-tab">
+                    <h3 class="mb-4">Account Settings</h3>
+                    <form class="row"
+                          method="post"
+                          th:action="@{saveUser}"
+                          th:object="${userInfo}"
+                    >
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" class="form-control" th:value="${userInfo.userName}"
+                                       th:field="*{userName}"
+                                       name="userName"
+                                       id="userName"
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Phone number</label>
+                                <input type="text" class="form-control" th:value="${userInfo.phoneNums}"
+                                       th:field="*{phoneNums}"
+                                       name="phoneNums"
+                                       id="phoneNums"
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Location</label>
+                                <input type="text" class="form-control" th:value="${userInfo.location}"
+                                       th:field="*{location}"
+                                       name="location"
+                                       id="location"
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Date of birth</label>
+                                <input type="text" class="form-control"
+                                       placeholder="yyyy-mm-dd"
+                                       th:value="${userInfo.dob}"
+                                       min="1997-01-01" max="2030-12-31"
+                                       th:field="*{dob}"
+                                       name="dob"
+                                       id="dob"
+                                >
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>Bio</label>
+                                <textarea class="form-control" rows="4" th:value="${userInfo.aboutMe}"
+                                          th:field="*{aboutMe}"
+                                          name="aboutMe"
+                                          id="aboutMe"
+                                ></textarea>
+                            </div>
+                        </div>
+                        <input type="text" hidden th:field="*{accountID}" th:value="${id}">
+                        <input type="submit" value="update">
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="gmail" role="tabpanel" aria-labelledby="gmail-tab">
+                    <h3 class="mb-4">Gmail Settings</h3>
+                    <div th:if="${param.errorGmail}!=null">
+                        <p>Gmail existed!</p>
+                    </div>
+                    <form class="row"
+                          method="post"
+                          th:action="@{/verifyCodeSendForChangeGmail}"
+                          th:object="${system_account}"
+                    >
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="text" class="form-control" th:value="${currentGmail}"
+                                       th:field="*{gmail}"
+                                       name="gmailChange"
+                                       id="gmailChange"
+                                >
+                            </div>
+                        </div>
+                        <input type="submit" value="update">
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
+                    <h3 class="mb-4">Password Settings</h3>
+                    <div th:if="${param.error}!=null">
+                        <p th:text="${param.error}"></p>
+                    </div>
+                    <form   class="row"
+                            method="post"
+                            role="form"
+                            th:action="@{/changePasswordWithOldPasswordConfirm}"
+                            th:object="${system_account}"
+                    >
+                        <div  class="col-md-6">
+                            <div class="form-group">
+                                <label>Old password</label>
+                                <input
+                                        type="password"
+                                        class="form-control"
+                                        id="oldPassword"
+                                        name="oldPassword"
+                                >
+                            </div>
+                        </div>
+                        <div  class="col-md-6">
+                            <div class="form-group" >
+                                <label>Enter Password</label>
+                                <input
+                                        class="form-control"
+                                        type="password"
+                                        id="newPassword"
+                                        name="password"
+                                        th:field="*{accountPassword}"
+                                        required
+                                >
+                            </div>
+                        </div>
+                        <div  class="col-md-6">
+                            <div class="form-group">
+                                <label>Confirm Password</label>
+                                <input type="password" id="confirm"
+                                       class="form-control"
+                                       required>
+
+                            </div>
+                        </div>
+                        <input type="submit" value="Change">
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="notification" role="tabpanel" aria-labelledby="notification-tab">
+                    <h3 class="mb-4">Notification Settings</h3>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="notification1">
+                            <label class="form-check-label" for="notification1">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum accusantium accusamus, neque cupiditate quis
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="notification2" >
+                            <label class="form-check-label" for="notification2">
+                                hic nesciunt repellat perferendis voluptatum totam porro eligendi.
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="notification3" >
+                            <label class="form-check-label" for="notification3">
+                                commodi fugiat molestiae tempora corporis. Sed dignissimos suscipit
+                            </label>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary">Update</button>
+                        <button class="btn btn-light">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="container-fluid" style="background: #d69fd5;">
+    <div class="row">
+        <div class="col-lg-12">
+            <ul class="social-icons">
+                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                <li><a href="#"><i class="fa fa-rss"></i></a></li>
+                <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+            </ul>
+        </div>
+        <div class="col-lg-12">
+            <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
+                <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+    var password = document.getElementById("newPassword")
+        , confirm_password = document.getElementById("confirm");
+
+    function validatePassword(){
+        if(password.value == null) {
+            password.setCustomValidity("This field should not be empty");
+        }
+        if(password.value != confirm_password.value ){
+            confirm_password.setCustomValidity("Passwords Don't Match");
+        }
+        else {
+            confirm_password.setCustomValidity('');
+        }
+    }
+    password.onchange = validatePassword;
+    confirm_password.onkeyup = validatePassword;
+</script>
+</body>
+</html>

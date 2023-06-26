@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Verification</title>
+</head>
+<body>
+<div class = container style="width: 500px;
+                margin: 0 auto;
+                text-align: center;">
+    <div th:if="${param.error}!=null">
+        <p>Wrong verification code!</p>
+    </div>
+    <form
+            th:action="@{/verification/confirm}"
+            role="form"
+            method="post"
+            th:object="${system_account}"
+    >
+        <h1>Input verification code</h1>
+        <div>
+            <label for="verificationCode">Verification Code</label>
+            <input
+                    type="text"
+                    id="verificationCode"
+                    name="verificationCode"
+                    th:field="*{verificationCode}"
+                    required
+            />
+        </div>
+        <div>
+            <input type="submit" value="Confirm">
+        </div>
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{assets/css/courseListStyle.css}">
+    <!-- Bootstrap core CSS-->
+    <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Additional Boostrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" th:href="@{assets/css/fontawesome.css}">
+    <link rel="stylesheet" th:href="@{assets/css/courseListStyle.css}">
+    <link rel="stylesheet" th:href="@{assets/css/owl.css}">
+    <link rel="stylesheet" th:href="@{assets/css/lightbox.css}">
+    <title>Course List</title>
+    <style>
+        .header-area {
+            background: rgb(219, 138, 222) !important;
+            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+        }
+
+        .displayContent{
+            width: 100%;
+            height: 100%;
+        }
+
+        .displayContent h4{
+            text-align: center;
+            font-weight: bold;
+            color: black;
+        }
+
+        .displayContent p{
+            margin-left: 15px;
+            color: dimgray;
+        }
+        .display img{
+            overflow: hidden;
+            width: 100px;
+            height: 100px;
+            margin: 5px 5px;
+            border-radius: 10px;
+        }
+
+        .display {
+            display: flex;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            border-radius: 10px;
+            border: 2px solid black;
+            margin-bottom: 30px;
+        }
+
+        #add-to-cart{
+            margin-right: 20px;
+            float: right;
+            background: linear-gradient(to right, #ffb963, #ff88f9);
+            border: none;
+            color: white;
+            transition: 2s;
+            border-radius: 10px;
+        }
+
+        #add-to-cart:hover{
+            background: white;
+            border: none;
+            color: #ffb963;
+        }
+        .listTitle{
+            font-weight: bold;
+            color: black;
+            margin-top: 20px;
+            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
+            margin-bottom: 40px;
+        }
+
+        .listTitle h1{
+            margin-top: 20px;
+            padding-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .filterTitle{
+            font-weight: bold;
+            color: black;
+            margin-top: 5px;
+            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
+            margin-bottom: 10px;
+            padding-bottom: 25px;
+        }
+
+        .listTitle h2{
+            margin-top: 20px;
+
+            font-weight: 600;
+        }
+
+        .accordion{
+            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
+        }
+    </style>
+</head>
+
+<body>
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a th:href="@{/home}" class="logo">
+                        <p style="margin-top: 40px; color: white">YourCourse</p>
+                        <!--<img src="assets/images/templatemo-eduwell.png" alt="EduWell Template">-->
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <form
+                                role="form"
+                                method="post"
+                                th:action="@{/search}"
+                                th:object="${courseDTO}"
+                        >
+                            <input type="text" th:field="*{courseName}" placeholder="Search.." style="opacity: 0.5; border-radius: 7px">
+                        </form>
+                        <li class="has-sub">
+                            <a>Category</a>
+                            <ul class="sub-menu">
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=1)}">Language Learning</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=2)}">Web development</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
+                            </ul>
+                        </li>
+                        <li class="scroll-to-section"><a href="#services">Services</a></li>
+                        <li><a th:href="@{/course}">Courses</a></li>
+                        <li class="has-sub">
+                            <a href="javascript:void(0)">Pages</a>
+                            <ul class="sub-menu">
+                                <li><a href="about-us.html">About Us</a></li>
+                                <li><a href="our-services.html">Our Services</a></li>
+                                <li><a href="contact-us.html">Contact Us</a></li>
+                            </ul>
+                        </li>
+                        <li class="scroll-to-section"><a href="#contact-section">Contact Us</a></li>
+                        <li class="has-sub">
+                            <i class="fa-solid fa-user" style="color: white">
+                                <ul class="sub-menu">
+                                    <p th:if="${session.CSys}!=null">
+                                    <li><a th:href="@{/profile}">My Account</a></li>
+                                    <li><a th:href="@{/logout}">Log out</a></li>
+                                    </p>
+                                    <p th:if="${session.CSys}==null">
+                                    <li><a th:href="@{/login}">Log in</a></li>
+                                    </p>
+                                </ul>
+                            </i>
+                        </li>
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ***** Header Area End ***** -->
+    <div class="container-fluid" style="margin-left: 20px;">
+        <div class="listTitle">
+            <h1 style="margin-left: 20px">Course List</h1>
+        </div>
+        <div class="row">
+            <div class="col-md-3 filter">
+                <div class="filterTitle">
+                    <h2>Filter and refine</h2>
+                </div>
+                <!-- Category -->
+                <div class="accordion accordion-flush" id="accordionFlushCategory">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingCategory">
+                                <button class="accordion-button collapsed lName" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseCategory" aria-expanded="false" aria-controls="'flush-collapseCategory">
+                                    <p th:text="'Category'"></p>
+                                </button>
+                            </h2>
+                            <div th:id="flush-collapseCategory" class="accordion-collapse collapse" aria-labelledby="flush-headingCategory" data-bs-parent="#accordionFlushCategory">
+                                <form method="post" role="form" th:action="@{/filter}" th:object="${categoryDTO}">
+                                    <div th:each="category, state: ${category}">
+                                        <div class="accordion-body">
+                                            <div class="option">
+                                                <input type="checkbox" th:value="${category.categoryName}" th:field="*{categoryName}" onclick="this.form.submit()"><p th:text="${category.categoryName}"></p>
+                                                <br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                </div>
+
+                <!-- Period -->
+                <div class="accordion accordion-flush" id="accordionFlushPeriod">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingPeriod">
+                            <button class="accordion-button collapsed lName" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapsePeriod" aria-expanded="false" aria-controls="'flush-collapsePeriod">
+                                <p th:text="'Period'"></p>
+                            </button>
+                        </h2>
+                        <div th:id="flush-collapsePeriod" class="accordion-collapse collapse" aria-labelledby="flush-headingPeriod" data-bs-parent="#accordionFlushPeriod">
+                            <form
+                                    role="form"
+                                    method="post"
+                                    th:action="@{/sort}"
+                                    th:object="${courseDTO}"
+                                    style="margin-right: 30px;"
+                            >
+                                        <br>
+                                        <input type="radio" th:value="'Newest'" name="option" onclick="this.form.submit()"><p th:text="'Newest'"></p>
+                                        <br>
+
+                                        <input type="radio" th:value="'Oldest'" name="option" onclick="this.form.submit()"><p th:text="'Oldest'"></p>
+                                        <br>
+
+                                        <input type="radio" th:value="'About to end'" name="option" onclick="this.form.submit()"><p th:text="'About to end'"></p>
+                                        <br>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price -->
+                <div class="accordion accordion-flush" id="accordionFlushPrice">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingPrice">
+                            <button class="accordion-button collapsed lName" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapsePrice" aria-expanded="false" aria-controls="'flush-collapsePrice">
+                                <p th:text="'Price'"></p>
+                            </button>
+                        </h2>
+                        <div th:id="flush-collapsePrice" class="accordion-collapse collapse" aria-labelledby="flush-headingPrice" data-bs-parent="#accordionFlushPrice">
+                            <form
+                                    role="form"
+                                    method="post"
+                                    th:action="@{/sort}"
+                                    th:object="${courseDTO}"
+                                    style="margin-right: 30px;"
+                            >
+                                <br>
+                                <input type="radio" th:value="'High to low'" name="option" onclick="this.form.submit()"><p th:text="'High to low'"></p>
+                                <br>
+
+                                <input type="radio" th:value="'Low to high'" name="option" onclick="this.form.submit()"><p th:text="'Low to high'"></p>
+                                <br>
+
+                                <input type="radio" th:value="'Free'" name="option" onclick="this.form.submit()"><p th:text="'Free'"></p>
+                                <br>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 courseList" th:if="${courseList}!=null">
+                <div class="container-fluid">
+                    <div class="display"
+                         th:each="courseList, state: ${courseList}"
+                    >
+                        <a th:href="@{/learn(courseID=${courseList.courseID})}"><img th:src="@{${courseList.courseImage}}"></a>
+                        <div class="displayContent">
+                            <a th:href="@{/learn(courseID=${courseList.courseID})}"><h4 th:text="${courseList.courseName}"></h4></a>
+                            <p th:text="${courseList.courseDes}"></p>
+                            <input type="button" value="Add To Cart" id="add-to-cart">
+                            <p th:text="'Price: '+${courseList.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- codes given below for pagination -->
+                <div th:if="${totalPages > 1}">
+                    <div>
+                        <div>Total Rows: [[${totalItems}]]</div>
+                        <div>
+                            <a th:if="${currentPage < totalPages}"
+                               th:href="@{'/course'+'/page/' + ${currentPage + 1}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
+                            <span th:unless="${currentPage < totalPages}">Next</span> <span
+                                th:each="i: ${#numbers.sequence(1, totalPages)}"> <a
+                                th:if="${currentPage != i}"
+                                th:href="@{'/course'+'/page/' + ${i}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">[[${i}]]</a>
+						<span th:unless="${currentPage != i}">[[${i}]]</span>
+					</span> <a th:if="${currentPage < totalPages}"
+                               th:href="@{'/course'+'/page/' + ${totalPages}+ '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
+                            <span th:unless="${currentPage < totalPages}">Last</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- codes given above for pagination -->
+            </div>
+        </div>
+    </div>
+<div class="container-fluid" style="background: #d69fd5;">
+    <div class="row">
+        <div class="col-lg-12">
+            <ul class="social-icons">
+                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                <li><a href="#"><i class="fa fa-rss"></i></a></li>
+                <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+            </ul>
+        </div>
+        <div class="col-lg-12">
+            <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
+                <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" th:href="@{assets/css/learn.css}">
+    <!-- Bootstrap core CSS-->
+    <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Additional Boostrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" th:href="@{assets/css/fontawesome.css}">
+    <link rel="stylesheet" th:href="@{assets/css/owl.css}">
+    <link rel="stylesheet" th:href="@{assets/css/lightbox.css}">
+    <title>Learn</title>
+    <style>
+        .learn{
+            height: 100%;
+        }
+
+        .course-details{
+            background: rgb(255, 250, 243);
+            padding: 35px 0px 40px 25px;
+        }
+
+        .course-details h2{
+            color: rgb(223, 141, 94);
+            font-weight: 700;
+        }
+
+        .course-details p{
+            color: black;
+        }
+
+        .what-you-can-learn{
+            padding: 30px 0px 40px 0px;
+            margin-top: 50px;
+            margin-left: 70px;
+            width: 70%;
+            border-radius: 10px;
+            border: 1px solid gray;
+            box-shadow: rgb(223, 141, 94);
+        }
+
+        .what-you-can-learn h3{
+            margin-left: 40px;
+            font-weight: 700;
+        }
+
+        .what-you-can-learn ul li{
+            list-style: none;
+            margin-left: 10px;
+            font-weight: 400;
+            color: rgb(58, 58, 58);
+        }
+
+        .what-you-can-learn ul li:before{
+            content: '✓';
+        }
+
+
+        .lessonList{
+            padding: 5px 5px;
+            margin: 40px 0px 50px 70px;
+            width: 70%;
+            border: 1px solid gray;
+        }
+
+        .lName p{
+            font-weight: 700;
+        }
+
+        .course-title{
+            margin: 50px 0px 20px 0px;
+            font-weight: 700;
+        }
+
+        html{
+            scroll-behavior: smooth;
+            background: whitesmoke;
+        }
+
+        .purchase-session{
+            margin-top: 29px;
+            margin-right: 20px;
+            float: right;
+            background-color: white;
+            top: 0px;
+            padding: 10px;
+            box-shadow: 0px 0px 5px 0px #ccc;
+            width: 20%;
+            height: 300px;
+        }
+
+        .purchase-session h2{
+            margin-left: 10px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .purchase-session form{
+            align-content: center;
+            text-align: center;
+        }
+
+        #add-to-cart{
+            padding: 20px 30px;
+            background: linear-gradient(to right, #ffb963, #ff88f9);
+            border: none;
+            color: white;
+            transition: 2s;
+            border-radius: 10px;
+            margin-bottom: 7px;
+        }
+
+        #add-to-cart:hover{
+            background: white;
+            border: none;
+            color: #ffb963;
+        }
+
+        #buy-now{;
+            padding: 20px 30px;
+            background: whitesmoke;
+            border: none;
+            color: rgb(58, 58, 58);
+            transition: 2s;
+            border-radius: 10px;
+        }
+
+        #buy-now:hover{
+            background: gray;
+            border: none;
+            color: rgb(58, 58, 58);
+        }
+
+        .requirement ul li{
+            list-style: disc;
+        }
+
+        .whoFor ul li{
+            list-style: disc;
+        }
+
+
+    </style>
+</head>
+<body>
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky sticky-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a th:href="@{/home}" class="logo">
+                        <p style="margin-top: 40px; color: white">YourCourse</p>
+                        <!--<img src="assets/images/templatemo-eduwell.png" alt="EduWell Template">-->
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <form
+                                role="form"
+                                method="post"
+                                th:action="@{/search}"
+                                th:object="${courseDTO}"
+                        >
+                            <input type="text" th:field="*{courseName}" placeholder="Search.." style="opacity: 0.5; border-radius: 7px">
+                        </form>
+                        <li class="has-sub">
+                            <a>Category</a>
+                            <ul class="sub-menu">
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=1)}">Language Learning</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=2)}">Web development</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
+                            </ul>
+                        </li>
+                        <li class="scroll-to-section"><a href="#services">Services</a></li>
+                        <li><a th:href="@{/course}">Courses</a></li>
+                        <li class="has-sub">
+                            <a href="javascript:void(0)">Pages</a>
+                            <ul class="sub-menu">
+                                <li><a href="about-us.html">About Us</a></li>
+                                <li><a href="our-services.html">Our Services</a></li>
+                                <li><a href="contact-us.html">Contact Us</a></li>
+                            </ul>
+                        </li>
+                        <li class="scroll-to-section"><a href="#contact-section">Contact Us</a></li>
+                        <li class="has-sub">
+                            <i class="fa-solid fa-user" style="color: white">
+                                <ul class="sub-menu sticky-top position-absolute">
+                                    <p th:if="${session.CSys}!=null">
+                                    <li><a th:href="@{/profile}">My Account</a></li>
+                                    <li><a th:href="@{/logout}">Log out</a></li>
+                                    </p>
+                                    <p th:if="${session.CSys}==null">
+                                    <li><a th:href="@{/login}">Log in</a></li>
+                                    </p>
+                                </ul>
+                            </i>
+                        </li>
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+    <!-- if user not purchase the course, this session appear -->
+    <div th:if="${enrolledDTO}==null" class="purchase-session sticky-top">
+        <h2 th:text="'₫'+${course.price}"></h2>
+        <form
+                role="form"
+                method="post"
+
+        >
+            <input type="submit" value="Add to Cart" id="add-to-cart">
+        </form>
+        <form
+                role="form"
+                method="post"
+
+        >
+            <input type="submit" value="Buy now" id="buy-now">
+        </form>
+    </div>
+</header>
+<!-- ***** Header Area End ***** -->
+
+<!-- ***** Learn page start ***** -->
+
+<div class="learn">
+    <div class="course-details" >
+        <h2 th:text="${course.courseName}"></h2>
+        <h4 th:text="${course.courseDes}"></h4>
+        <p th:text="'Create at: '+${course.createdDate}"></p>
+        <p th:text="'Last update at: '+${course.createdDate}"></p>
+    </div>
+</div>
+<div class="container what-you-can-learn">
+    <div class="row">
+        <h3>What you can learn</h3>
+        <div class="col-md-8">
+            <ul>
+                <th:block th:each="state: ${whatYouCanLearn}">
+                    <li th:text="'    '+${state}"></li>
+                </th:block>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <h3 class="course-title">Course content</h3>
+</div>
+<div class="container lessonList">
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        <th:block th:each="lessonList, state: ${lessonList}">
+            <div class="accordion-item">
+                <h2 class="accordion-header" th:id="'flush-heading'+${state.count}">
+                    <button class="accordion-button collapsed lName" type="button" data-bs-toggle="collapse" th:data-bs-target="'#flush-collapse'+${state.count}" aria-expanded="false" th:aria-controls="'flush-collapse'+${state.count}">
+                        <p th:text="${lessonList.lessonName}"></p>
+                    </button>
+                </h2>
+                <div th:id="'flush-collapse'+${state.count}" class="accordion-collapse collapse" th:aria-labelledby="'flush-heading'+${state.count}" data-bs-parent="#accordionFlushExample">
+                    <div class="accordion-body">
+                        <p>
+                            <span th:text="${lessonList.lessonDes}"></span>
+                            <iframe th:src="${lessonList.lessonDes}" th:if="${lessonList.lessonID == 1}"></iframe>
+                            <a th:href="@{quiz(lessonID=${lessonList.lessonID})}" th:if="${lessonList.lessonID == 1}">Quiz Test</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+<div class="container">
+    <h3 class="course-title">Requirement</h3>
+        <div class="row requirement">
+            <div class="col-md-8">
+                <ul>
+                    <th:block th:each="state: ${requirement}">
+                        <li th:text="'    '+${state}"></li>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+</div>
+<div class="container">
+    <h3 class="course-title">Description</h3>
+        <div class="row description">
+            <div class="col-md-8">
+                <ul>
+                    <li th:text="'    '+${courseDes.get(0)}" style="font-weight: 700;"></li>
+                    <th:block th:each="state: ${courseDes}">
+                        <li th:text="'    '+${state}" th:unless="${state == courseDes.get(0)}"></li>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+</div>
+<div class="container" style="margin-bottom: 50px;">
+    <h3 class="course-title">Who this course is for</h3>
+        <div class="row whoFor">
+            <div class="col-md-8">
+                <ul>
+                    <th:block th:each="state: ${whoFor}">
+                        <li th:text="'    '+${state}"></li>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+</div>
+
+<!-- ***** Learn page end ***** -->
+
+<!-- ***** Footer Start ***** -->
+  <div class="container-fluid" style="background: #d69fd5;">
+    <div class="row">
+      <div class="col-lg-12">
+        <ul class="social-icons">
+          <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+          <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+          <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+          <li><a href="#"><i class="fa fa-rss"></i></a></li>
+          <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+        </ul>
+      </div>
+      <div class="col-lg-12">
+        <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
+          <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+      </div>
+    </div>
+  </div>
+<!-- ***** Footer End ***** -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>

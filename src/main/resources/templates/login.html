@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{assets/css/loginStyle.css}">
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+
+    <link rel="stylesheet" href="assets/css/owl.css">
+    <link rel="stylesheet" href="assets/css/lightbox.css">
+
+    <title>Login</title>
+</head>
+
+<body>
+<script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a th:href="@{/home}" class="logo">
+                        <p style="margin-top: 40px; color: white">YourCourse</p>
+                        <!--<img src="assets/images/templatemo-eduwell.png" alt="EduWell Template">-->
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <form
+                                role="form"
+                                method="post"
+                                th:action="@{/search}"
+                                th:object="${courseDTO}"
+                        >
+                            <input type="text" th:field="*{courseName}" placeholder="Search.." style="opacity: 0.5; border-radius: 7px">
+                        </form>
+                        <li class="has-sub">
+                            <a>Category</a>
+                            <ul class="sub-menu">
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=1)}">Language Learning</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=2)}">Web development</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
+                            </ul>
+                        </li>
+                        <li class="scroll-to-section"><a href="#services">Services</a></li>
+                        <li><a th:href="@{/course}">Courses</a></li>
+                        <li class="has-sub">
+                            <a href="javascript:void(0)">Pages</a>
+                            <ul class="sub-menu">
+                                <li><a href="about-us.html">About Us</a></li>
+                                <li><a href="our-services.html">Our Services</a></li>
+                                <li><a href="contact-us.html">Contact Us</a></li>
+                            </ul>
+                        </li>
+                        <li class="scroll-to-section"><a href="#contact-section">Contact Us</a></li>
+                        <li class="has-sub">
+                            <i class="fa-solid fa-user" style="color: white">
+                                <ul class="sub-menu">
+                                    <p th:if="${session.CSys}!=null">
+                                    <li><a th:href="@{/profile}">My Account</a></li>
+                                    <li><a th:href="@{/logout}">Log out</a></li>
+                                    </p>
+                                    <p th:if="${session.CSys}==null">
+                                    <li><a th:href="@{/login}">Log in</a></li>
+                                    </p>
+                                </ul>
+                            </i>
+                        </li>
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ***** Header Area End ***** -->
+<!-- login form-->
+<div class="center" style=" z-index: 4; overflow-y:scroll;">
+    <h1>Login</h1>
+    <div th:if="${error}!=null">
+        <p th:text="${error}" style="color: #adadad; text-align: center"></p>
+    </div>
+    <form
+            method="post"
+            role="form"
+            th:action="@{/welcome}"
+            th:object="${system_account}"
+    >
+        <div class="txt_field">
+            <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    th:field="*{accountName}"
+                    required
+            />
+            <span></span>
+            <label>Username</label>
+        </div>
+        <div class="txt_field">
+            <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    th:field="*{accountPassword}"
+                    required
+            />
+            <span></span>
+            <label>Password</label>
+        </div>
+        <div class="pass">
+            <a th:href="@{/resetPassword}" >Forgot Password?</a>
+        </div>
+        <input type="submit" value="Login">
+        <div class="signup_link">
+            Not a member? <a th:href="@{/registration}">Signup</a>
+        </div>
+    </form>
+
+</div>
+
+<section class="contact-us" id="contact-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div id="map">
+
+                    <!-- You just need to go to Google Maps for your own map point, and copy the embed code from Share -> Embed a map section -->
+                    <iframe width="100%" height="420px"  style="border:0; border-radius: 15px; position: relative; z-index: 2;" allowfullscreen=""></iframe>
+
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <ul class="social-icons">
+                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                    <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+                    <li><a href="#"><i class="fa fa-rss"></i></a></li>
+                    <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+                </ul>
+            </div>
+            <div class="col-lg-12">
+                <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
+
+                    <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Scripts -->
+<!-- Bootstrap core JavaScript -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<script src="assets/js/isotope.min.js"></script>
+<script src="assets/js/owl-carousel.js"></script>
+<script src="assets/js/lightbox.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/video.js"></script>
+<script src="assets/js/slick-slider.js"></script>
+<script src="assets/js/custom.js"></script>
+
+</body>
+
+</html>
