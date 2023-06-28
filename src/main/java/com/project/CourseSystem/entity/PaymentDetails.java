@@ -24,5 +24,5 @@ public class PaymentDetails {
     @JoinColumn(name="courseID", nullable = false)
     private Course courseID;
 
-
+    //this entity will be removed
 }
