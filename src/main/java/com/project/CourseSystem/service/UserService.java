@@ -16,4 +16,6 @@ public interface UserService {
     public void updateAvatar(MultipartFile file) throws IOException;
 
     public void saveAvatar(UserInfo userInfo);
+
+    public int findUserIDByAccountID(int accountID);
 }

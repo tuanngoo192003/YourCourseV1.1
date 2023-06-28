@@ -2,10 +2,7 @@ package com.project.CourseSystem.controller;
 
 import com.project.CourseSystem.converter.EnrolledConverter;
 import com.project.CourseSystem.dto.*;
-import com.project.CourseSystem.entity.Course;
-import com.project.CourseSystem.entity.Enrolled;
-import com.project.CourseSystem.entity.Lesson;
-import com.project.CourseSystem.entity.Quiz;
+import com.project.CourseSystem.entity.*;
 import com.project.CourseSystem.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,9 +33,11 @@ public class LearnController {
 
     private AccountService accountService;
 
+    private LearningMaterialService learningMaterialService;
+
     private LearnController(LessonService lessonService, QuizService quizService, CourseService courseService
     , CategoryService categoryService, EnrolledService enrolledService, EnrolledConverter enrolledConverter,
-                            AccountService accountService) {
+                            AccountService accountService, LearningMaterialService learningMaterialService) {
         this.lessonService = lessonService;
         this.quizService = quizService;
         this.courseService = courseService;
@@ -46,6 +45,7 @@ public class LearnController {
         this.enrolledService = enrolledService;
         this.enrolledConverter = enrolledConverter;
         this.accountService = accountService;
+        this.learningMaterialService = learningMaterialService;
     }
 
     @GetMapping("/learn")
@@ -64,9 +64,19 @@ public class LearnController {
             for (LessonDTO lesson : lessonList) {
                 quizList.add(quizService.getAllByLessonID(lesson.getLessonID()));
             }
-
+            System.out.println(lessonList.size());
             //Get course details
             CourseDetailsDTO courseDetailsDTO =courseService.getCourseDetailsByID(id);
+
+            //Get learning material
+            List<LearningMaterial> learningMaterialList = new ArrayList<>();
+            for(int i = 0; i < lessonList.size(); i++){
+                List<LearningMaterial> temp = learningMaterialService.getLearningMaterialByLessonID(lessonList.get(i).getLessonID());
+                for(int j = 0; j < temp.size(); j++){
+                    learningMaterialList.add(temp.get(j));
+                }
+            }
+            model.addAttribute("learningMaterialList", learningMaterialList);
 
             /* what you can learn */
             List<String> whatYouCanLearn = new ArrayList<>();

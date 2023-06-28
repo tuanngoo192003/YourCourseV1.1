@@ -24,7 +24,7 @@ public class Payment {
         private Date paymentDate;
 
         @Column(name="paymentAmount", nullable = false)
-        private Integer paymentAmount;
+        private Float paymentAmount;
 
         @ManyToOne(optional = false)
         @JoinColumn(name="userID", nullable = false)

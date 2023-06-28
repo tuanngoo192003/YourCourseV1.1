@@ -73,5 +73,10 @@ public class UserServiceImpl implements UserService {
         userInfoRepository.save(userInfo);
     }
 
+    @Override
+    public int findUserIDByAccountID(int accountID) {
+        return userInfoRepository.findUserIDByAccountID(accountID);
+    }
+
 
 }

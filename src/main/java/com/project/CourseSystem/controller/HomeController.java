@@ -4,9 +4,11 @@ import com.project.CourseSystem.dto.CategoryDTO;
 import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.dto.SystemAccountDTO;
 import com.project.CourseSystem.entity.Category;
+import com.project.CourseSystem.entity.Enrolled;
 import com.project.CourseSystem.service.AccountService;
 import com.project.CourseSystem.service.CategoryService;
 import com.project.CourseSystem.service.CourseService;
+import com.project.CourseSystem.service.EnrolledService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
+
 @Controller
 public class HomeController {
 
@@ -26,10 +30,14 @@ public class HomeController {
 
     private CourseService courseService;
 
-    public HomeController(AccountService accountService, CategoryService categoryService, CourseService courseService){
+    private EnrolledService enrolledService;
+
+    public HomeController(AccountService accountService, CategoryService categoryService,
+                          CourseService courseService, EnrolledService enrolledService){
         this.categoryService = categoryService;
         this.accountService = accountService;
         this.courseService = courseService;
+        this.enrolledService = enrolledService;
     }
 
     /* home page */
@@ -67,6 +75,9 @@ public class HomeController {
                 model.addAttribute("category", categoryService.getAllCategories());
                 /* set up session */
                 session.setAttribute("CSys", system_accountDTO1.getAccountName());
+                /* set up enrolled */
+                List<Enrolled> enrolledList = enrolledService.findByAccountId(system_accountDTO1.getAccountID());
+                session.setAttribute("enrolledList", enrolledList);
                 return "/home";
             }
             else{

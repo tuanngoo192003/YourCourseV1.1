@@ -20,4 +20,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     void updateUserInfo(String aboutMe, String avatar, String dob, String location
     , String phoneNums, String userName, String accountID);
 
+    @Query(value = "SELECT userid FROM user WHERE accountid = ?1", nativeQuery = true)
+    int findUserIDByAccountID(int accountID);
+
 }

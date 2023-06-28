@@ -93,6 +93,7 @@ public class AuthController {
     public String logout(HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         session.removeAttribute("CSys");
+        session.removeAttribute("enrolledList");
         return "redirect:/home";
     }
 

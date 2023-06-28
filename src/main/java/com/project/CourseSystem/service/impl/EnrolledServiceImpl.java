@@ -5,6 +5,8 @@ import com.project.CourseSystem.repository.EnrolledRepository;
 import com.project.CourseSystem.service.EnrolledService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EnrolledServiceImpl implements EnrolledService {
 
@@ -17,5 +19,17 @@ public class EnrolledServiceImpl implements EnrolledService {
     @Override
     public Enrolled findByAccountIdAndCourseID(Integer accountID, Integer courseID) {
         return enrolledRepository.findByAccountIdAndCourseID(accountID, courseID);
+    }
+
+    @Override
+    public List<Enrolled> findByAccountId(Integer accountID) {
+        return enrolledRepository.findByAccountId(accountID);
+    }
+
+    @Override
+    public void addEnrolled(List<Enrolled> enrolled) {
+        for(int i = 0; i < enrolled.size(); i++) {
+            enrolledRepository.save(enrolled.get(i));
+        }
     }
 }
