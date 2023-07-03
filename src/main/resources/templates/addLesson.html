@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Lesson</title>
+  <link rel="stylesheet" th:href="@{assets/css/add-lesson.css}">
+</head>
+<body>
+<h1>Add Lesson</h1>
+
+<form id="lesson-form">
+  <div id="lesson-container">
+    <label for="lesson-title">Lesson Title:</label>
+    <input type="text" id="lesson-title" required>
+  </div>
+  <div id="materials-container">
+    <label>Learning Materials:</label>
+    <div class="material-row">
+      <select class="material-type" required>
+        <option value="">Select Type</option>
+        <option value="file">File</option>
+        <option value="url">URL</option>
+      </select>
+      <input type="text" class="material-value" placeholder="File name or URL" required>
+      <button type="button" class="remove-material">Remove</button>
+    </div>
+  </div>
+
+  <button type="button" id="add-material-btn">Add Material</button>
+<!--  <button type="button" id="add-brain-btn">Add Brain</button>-->
+  <div id="buttons-container">
+    <button type="submit" id="submit-btn">Submit</button>
+    <button type="button" id="cancel-btn">Cancel</button>
+  </div>
+</form>
+
+<script th:src="@{/assets/js/add-lesson.js}"></script>
+</body>
+</html>

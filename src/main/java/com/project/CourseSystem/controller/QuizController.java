@@ -42,4 +42,9 @@ public class QuizController {
         }
         return "quiz";
     }
+
+    @GetMapping("/quizReview")
+    public String getQuizReview(){
+        return "quizReview";
+    }
 }

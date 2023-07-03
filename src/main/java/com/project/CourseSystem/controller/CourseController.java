@@ -159,4 +159,14 @@ public class CourseController {
             return getPaginated(1, sortField, sortDir, model, request, response);
         }
     }
+
+    @GetMapping("/addCourse")
+    public String addCourse(){
+        return "addCourse";
+    }
+
+    @GetMapping("/addLesson")
+    public String addLesson(){
+        return "addLesson";
+    }
 }
