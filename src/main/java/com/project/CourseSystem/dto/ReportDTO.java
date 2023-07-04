@@ -2,10 +2,6 @@ package com.project.CourseSystem.dto;
 
 import com.project.CourseSystem.entity.Quiz;
 import com.project.CourseSystem.entity.UserInfo;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.*;
 
 import java.sql.Date;

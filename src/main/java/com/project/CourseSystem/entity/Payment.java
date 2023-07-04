@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -24,16 +23,10 @@ public class Payment {
         private Date paymentDate;
 
         @Column(name="paymentAmount", nullable = false)
-        private Integer paymentAmount;
+        private Float paymentAmount;
 
         @ManyToOne(optional = false)
         @JoinColumn(name="userID", nullable = false)
         private UserInfo userID;
 
-        @ManyToMany
-        @JoinTable(
-                name = "paymentCourse",
-                joinColumns = @JoinColumn(name = "paymentID"),
-                inverseJoinColumns = @JoinColumn(name = "courseID"))
-        private Set<Course> courseID;
 }

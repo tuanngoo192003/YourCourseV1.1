@@ -1,6 +1,5 @@
 package com.project.CourseSystem.repository;
 
-import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.entity.Course;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

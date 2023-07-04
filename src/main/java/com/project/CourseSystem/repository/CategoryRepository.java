@@ -1,9 +1,7 @@
 package com.project.CourseSystem.repository;
 
-import com.project.CourseSystem.dto.CategoryDTO;
 import com.project.CourseSystem.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;

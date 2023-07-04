@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
-import java.sql.Time;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -24,7 +22,7 @@ public class Enrolled {
     @Column(name="enrolledDate", nullable = false)
     private Date enrolledDate;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="courseID", nullable = false)
     private Course courseID;
 
@@ -32,7 +30,7 @@ public class Enrolled {
     @JoinColumn(name="accountID", nullable = false)
     private SystemAccount accountID;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="paymentID", nullable = true)
     private Payment paymentID;
 }

@@ -3,7 +3,6 @@ package com.project.CourseSystem.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Date;
 import java.sql.Time;
 
 @Getter

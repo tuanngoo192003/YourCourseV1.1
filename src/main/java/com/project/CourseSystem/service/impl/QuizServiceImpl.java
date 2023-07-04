@@ -8,9 +8,6 @@ import com.project.CourseSystem.repository.QuizRepository;
 import com.project.CourseSystem.service.QuizService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
 public class QuizServiceImpl implements QuizService {
 
@@ -38,5 +35,10 @@ public class QuizServiceImpl implements QuizService {
         else{
             return null;
         }
+    }
+
+    @Override
+    public Quiz getQuizById(int quizID) {
+        return quizRepository.findByID(quizID);
     }
 }

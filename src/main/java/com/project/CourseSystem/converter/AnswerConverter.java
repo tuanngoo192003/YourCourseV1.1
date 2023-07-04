@@ -13,6 +13,7 @@ public class AnswerConverter {
         answer.setContent(answerDTO.getContent());
         answer.setIsCorrect(answerDTO.getIsCorrect());
         answer.setQuestionID(answerDTO.getQuestionID());
+        answer.setAnswerOrdinal(answerDTO.getAnswerOrdinal());
         return answer;
     }
 
@@ -22,6 +23,7 @@ public class AnswerConverter {
         answerDTO.setContent(answer.getContent());
         answerDTO.setIsCorrect(answer.getIsCorrect());
         answerDTO.setQuestionID(answer.getQuestionID());
+        answerDTO.setAnswerOrdinal(answer.getAnswerOrdinal());
         return answerDTO;
     }
 }

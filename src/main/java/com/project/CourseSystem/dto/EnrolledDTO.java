@@ -3,10 +3,6 @@ package com.project.CourseSystem.dto;
 import com.project.CourseSystem.entity.Course;
 import com.project.CourseSystem.entity.Payment;
 import com.project.CourseSystem.entity.SystemAccount;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.*;
 
 import java.sql.Date;

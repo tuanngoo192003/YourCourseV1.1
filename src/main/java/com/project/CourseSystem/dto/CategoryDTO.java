@@ -1,6 +1,5 @@
 package com.project.CourseSystem.dto;
 
-import jakarta.persistence.Column;
 import lombok.*;
 
 @Setter

@@ -6,7 +6,6 @@ import lombok.*;
 
 import java.sql.Date;
 import java.sql.Time;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -28,14 +27,14 @@ public class Report {
     @Column(name="completedDate", nullable = false)
     private Date completedDate;
 
-    @Column(name="timeSpent", nullable = false)
+    @Column(name="timeSpent", nullable = true)
     private Time timeSpent;
 
     @ManyToOne
     @JoinColumn(name="userID", nullable = false)
     private UserInfo userID;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="quizID", nullable = false)
     private Quiz quizID;
 }

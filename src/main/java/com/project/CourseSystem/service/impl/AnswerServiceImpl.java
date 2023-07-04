@@ -24,6 +24,11 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
+    public Answer getById(Integer id) {
+        return answerRepository.getAnswerByID(id);
+    }
+
+    @Override
     public List<AnswerDTO> getAllByQuestionId(Integer questionId) {
         List<Answer> answerList = answerRepository.getAnswerByQuestionID(questionId);
         List<AnswerDTO> answerDTOList = new ArrayList<>();
@@ -39,4 +44,11 @@ public class AnswerServiceImpl implements AnswerService {
             return answerDTOList;
         }
     }
+
+    @Override
+    public Answer getAnswerByQuestionIDAndAnswerOrdinal(Integer questionID, String answerOrdinal) {
+        return answerRepository.getAnswerByQuestionIDAndAnswerOrdinal(questionID, answerOrdinal);
+    }
+
+
 }

@@ -5,9 +5,10 @@ import com.project.CourseSystem.converter.CourseDetailsConverter;
 import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.dto.CourseDetailsDTO;
 import com.project.CourseSystem.entity.Course;
-import com.project.CourseSystem.entity.CourseDetails;
+import com.project.CourseSystem.entity.Report;
 import com.project.CourseSystem.repository.CourseDetailsRepository;
 import com.project.CourseSystem.repository.CourseRepository;
+import com.project.CourseSystem.repository.ReportRepository;
 import com.project.CourseSystem.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,13 +30,17 @@ public class CourseServiceImpl implements CourseService {
 
     CourseDetailsConverter  courseDetailsConverter;
 
+    ReportRepository reportRepository;
+
     @Autowired
     public CourseServiceImpl(CourseRepository courseRepository, CourseConverter courseConverter,
-                             CourseDetailsRepository courseDetailsRepository, CourseDetailsConverter courseDetailsConverter) {
+                             CourseDetailsRepository courseDetailsRepository, CourseDetailsConverter courseDetailsConverter,
+                             ReportRepository reportRepository) {
         this.courseRepository = courseRepository;
         this.courseConverter = courseConverter;
         this.courseDetailsRepository = courseDetailsRepository;
         this.courseDetailsConverter = courseDetailsConverter;
+        this.reportRepository = reportRepository;
     }
 
     public List<CourseDTO> getAllCourses() {
@@ -84,6 +89,11 @@ public class CourseServiceImpl implements CourseService {
     public CourseDetailsDTO getCourseDetailsByID(int id) {
         CourseDetailsDTO courseDetailsDTO = courseDetailsConverter.convertEntityToDTO(courseDetailsRepository.findCourseDetailsByCourseID(id));
         return courseDetailsDTO;
+    }
+
+    @Override
+    public void addReport(Report report) {
+        reportRepository.save(report);
     }
 
 

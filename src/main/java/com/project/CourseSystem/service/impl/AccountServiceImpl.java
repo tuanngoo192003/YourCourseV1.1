@@ -9,7 +9,6 @@ import com.project.CourseSystem.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -73,7 +72,7 @@ public class AccountServiceImpl implements AccountService {
     public void updateUser(SystemAccountDTO system_accountDTO) {
         int id = system_accountDTO.getAccountID();
         String newPassword = system_accountDTO.getAccountPassword();
-        com.project.CourseSystem.entity.SystemAccount system_accountEntity = system_accountRespository.findById(id);
+        SystemAccount system_accountEntity = system_accountRespository.findById(id);
         system_accountEntity.setAccountPassword(newPassword);
         system_accountDTO = system_accountConverter.convertEntityToDTO(system_accountEntity);
         system_accountDTO.setAccountPassword(newPassword);

@@ -24,7 +24,6 @@ public class EnrolledConverter {
         enrolledDTO.setEnrolledID(enrolled.getEnrolledID());
         enrolledDTO.setEnrolledDate(enrolled.getEnrolledDate());
         enrolledDTO.setPaymentID(enrolled.getPaymentID());
-
         return enrolledDTO;
     }
 }
