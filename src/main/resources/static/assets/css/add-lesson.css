@@ -1,0 +1,75 @@
+h1 {
+    text-align: center;
+}
+
+form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input[type="text"],
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+.material-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.material-row .material-type {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.material-row .material-value {
+    flex: 2;
+    margin-right: 10px;
+}
+
+.remove-material {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#add-material-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin-top: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#buttons-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#submit-btn,
+#cancel-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin-right: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}

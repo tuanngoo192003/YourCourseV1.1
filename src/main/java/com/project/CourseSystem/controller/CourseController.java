@@ -408,4 +408,14 @@ public class CourseController {
             return getMyCoursePaginated(1, "courseID", "asc", model, request, response);
         }
     }
+
+    @GetMapping("/addCourse")
+    public String addCourse(){
+        return "addCourse";
+    }
+
+    @GetMapping("/addLesson")
+    public String addLesson(){
+        return "addLesson";
+    }
 }
