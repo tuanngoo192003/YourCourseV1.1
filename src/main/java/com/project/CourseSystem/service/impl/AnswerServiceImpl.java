@@ -39,4 +39,11 @@ public class AnswerServiceImpl implements AnswerService {
             return answerDTOList;
         }
     }
+
+    @Override
+    public Answer getAnswerByQuestionIDAndAnswerOrdinal(Integer questionID, String answerOrdinal) {
+        return answerRepository.getAnswerByQuestionIDAndAnswerOrdinal(questionID, answerOrdinal);
+    }
+
+
 }

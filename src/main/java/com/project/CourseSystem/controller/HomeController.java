@@ -3,7 +3,6 @@ package com.project.CourseSystem.controller;
 import com.project.CourseSystem.dto.CategoryDTO;
 import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.dto.SystemAccountDTO;
-import com.project.CourseSystem.entity.Category;
 import com.project.CourseSystem.entity.Enrolled;
 import com.project.CourseSystem.service.AccountService;
 import com.project.CourseSystem.service.CategoryService;

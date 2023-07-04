@@ -6,14 +6,14 @@ import lombok.*;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.List;
 
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReportDTO {
-
+public class ReportDataDTO {
     private Integer reportID;
 
     private Integer mark;
@@ -25,4 +25,6 @@ public class ReportDTO {
     private UserInfo userID;
 
     private Quiz quizID;
+    private List<String> answers;
+    private List<String> askedQuestions;
 }

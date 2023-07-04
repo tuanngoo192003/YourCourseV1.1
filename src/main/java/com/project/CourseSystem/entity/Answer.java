@@ -3,9 +3,6 @@ package com.project.CourseSystem.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Date;
-import java.sql.Time;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,7 +23,12 @@ public class Answer {
     @Column(name="isCorrect", nullable = false)
     private String isCorrect;
 
+    @Column(name="answerOrdinal", nullable = true)
+    private String answerOrdinal;
+
     @ManyToOne
     @JoinColumn(name="questionID", nullable = false)
     private Question questionID;
+
+
 }

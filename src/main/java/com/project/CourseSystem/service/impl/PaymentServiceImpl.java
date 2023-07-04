@@ -5,8 +5,6 @@ import com.project.CourseSystem.repository.PaymentRepository;
 import com.project.CourseSystem.service.PaymentService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class PaymentServiceImpl implements PaymentService {
 

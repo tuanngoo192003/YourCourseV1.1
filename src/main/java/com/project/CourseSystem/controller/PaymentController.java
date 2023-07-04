@@ -137,8 +137,98 @@ public class PaymentController {
                 enrolled.setPaymentID(payment);
                 enrolledList.add(enrolled);
                 enrolledService.addEnrolled(enrolledList);
+
+                    /* set up enrolled */
+                    List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
+                    session.setAttribute("enrolledList", enrolledListAccount);
                 }
             }
+        if(fromPage.equals("list")){
+            return courseController.getCourse(model, request, response);
+        }
+        else{
+            return learnController.learnPage(courseDTO1.getCourseID(), model, request, response);
+        }
+    }
+
+    @PostMapping("course/page/payment")
+    public String paymentForPage(@ModelAttribute("courseDTO") CourseDTO courseDTO, @RequestParam("paymentButton") String paymentButton,
+                          @RequestParam("fromPage") String fromPage, Model model, HttpServletRequest request, HttpServletResponse response) {
+        CourseDTO courseDTO1 = courseService.getCourseByID(courseDTO.getCourseID());
+        System.out.println(paymentButton);
+        HttpSession session = request.getSession();
+        System.out.println(courseDTO.getCourseID());
+
+        if(paymentButton.equals("Add To Cart")){
+            if(session.getAttribute("cart")==null){
+                List<CourseDTO> list = new ArrayList<>();
+                list.add(courseDTO1);
+                session.setAttribute("cart", list);
+                float sum = list.get(0).getPrice();
+                session.setAttribute("sum", sum);
+            }
+            else{
+                List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
+                list.add(courseDTO1);
+                session.setAttribute("cart", list);
+                float sum = 0;
+                for (int i = 0; i < list.size(); i++) {
+                    sum += list.get(i).getPrice();
+                }
+                session.setAttribute("sum", sum);
+            }
+        }
+        else if(paymentButton.equals("Remove from cart")){
+            List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
+            for(int i = 0; i < list.size(); i++){
+                if(list.get(i).getCourseID().equals(courseDTO1.getCourseID())){
+                    list.remove(i);
+                }
+            }
+            if(list.isEmpty()){
+                session.removeAttribute("cart");
+                session.removeAttribute("sum");
+            }
+            else{
+                session.setAttribute("cart", list);
+                if(list!=null){
+                    float sum = 0;
+                    for (int i = 0; i < list.size(); i++) {
+                        sum += list.get(i).getPrice();
+                    }
+                    session.setAttribute("sum", sum);
+                }
+            }
+        }
+        else{
+            if(session.getAttribute("CSys")==null){
+                return authController.loginPage(model, request, response);
+            }
+            else{
+                String accountName = (String)session.getAttribute("CSys");
+                SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
+                Integer userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
+                Payment payment = new Payment();
+                payment.setPaymentAmount(courseDTO1.getPrice());
+                payment.setPaymentDate(new java.sql.Date(System.currentTimeMillis()));
+                payment.setUserID(userService.findUser(userID));
+                paymentService.addPaymentForOne(payment);
+
+                //enroll user to course
+                List<Enrolled> enrolledList = new ArrayList<>();
+                Enrolled enrolled = new Enrolled();
+                enrolled.setCourseID(courseConverter.convertDtoToEtity(courseDTO1));
+                enrolled.setEnrolledDate(new java.sql.Date(System.currentTimeMillis()));
+                enrolled.setAccountID(system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName)));
+                enrolled.setPaymentID(payment);
+                enrolledList.add(enrolled);
+                enrolledService.addEnrolled(enrolledList);
+
+                /* set up enrolled */
+                List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
+                session.setAttribute("enrolledList", enrolledListAccount);
+            }
+        }
         if(fromPage.equals("list")){
             return courseController.getCourse(model, request, response);
         }
@@ -183,6 +273,10 @@ public class PaymentController {
                     }
                     enrolledService.addEnrolled(enrolledList);
                     session.removeAttribute("cart");
+
+                    /* set up enrolled */
+                    List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
+                    session.setAttribute("enrolledList", enrolledListAccount);
                 }
             }
             else{

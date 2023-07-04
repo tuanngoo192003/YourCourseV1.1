@@ -6,19 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{assets/css/courseListStyle.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/courseListStyle.css}">
     <!-- Bootstrap core CSS-->
-    <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
     <!-- Additional Boostrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" th:href="@{assets/css/fontawesome.css}">
-    <link rel="stylesheet" th:href="@{assets/css/courseListStyle.css}">
-    <link rel="stylesheet" th:href="@{assets/css/owl.css}">
-    <link rel="stylesheet" th:href="@{assets/css/lightbox.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/courseListStyle.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/owl.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/lightbox.css}">
     <title>Course List</title>
     <style>
         .header-area {
@@ -370,44 +370,54 @@
             </div>
 
             <div class="col-md-9 courseList" th:if="${courseList}!=null">
-                <div class="container-fluid">
-                    <th:block th:each="courseListEntity: ${courseList}">
-                        <form class="display"
-                                role="form"
-                                method="post"
-                                th:action="@{payment}"
-                                th:object="${courseDTO}"
-                        >
-                            <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="@{${courseListEntity.courseImage}}"></a>
-                            <div class="displayContent">
-                                <input type="text" name="fromPage" value="list" style="display: none">
-                                <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
-                                <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
-                                <p th:text="${courseListEntity.courseDes}"></p>
-                                <div th:if="${session.enrolledList!=null}">
-                                    <div th:if="${session.enrolledList.isEmpty()}">
-                                        <input type="submit" value="Buy now" class="buy-now" name="paymentButton">
-                                        <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-                                    </div>
-                                    <div th:each="enrList, iterStat :${session.enrolledList}">
-                                        <div th:if="${iterStat.last && !enrList.courseID.courseID.toString().equals(courseListEntity.courseID.toString())}">
-                                            <input type="submit" value="Buy now" class="buy-now" name="paymentButton">
-                                            <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-                                        </div>
-                                        <div th:if="${enrList.courseID.courseID.toString().equals(courseListEntity.courseID.toString())}">
-                                            <input type="submit" value="You have enrolled this course" class="enrolled" name="paymentButton" disabled>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div th:if="${session.enrolledList==null}">
+                <div th:if="${totalPages <= 1}">
+                    <div class="container-fluid">
+                        <th:block th:each="courseListEntity: ${courseList}">
+                            <form class="display"
+                                  role="form"
+                                  method="post"
+                                  th:action="@{payment}"
+                                  th:object="${courseDTO}"
+                            >
+                                <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="@{${courseListEntity.courseImage}}"></a>
+                                <div class="displayContent">
+                                    <input type="text" name="fromPage" value="list" style="display: none">
+                                    <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
+                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
+                                    <p th:text="${courseListEntity.courseDes}"></p>
                                     <input type="submit" value="Buy now" class="buy-now" name="paymentButton">
                                     <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-                                </div>
 
-                                <p th:text="'Price: '+${courseListEntity.price}+'đ'" style="float: left; margin-left: 15px;"></p>
-                            </div>
-                        </form>
-                    </th:block>
+                                    <p th:text="'Price: '+${courseListEntity.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+                                </div>
+                            </form>
+                        </th:block>
+                    </div>
+                </div>
+
+                <div th:if="${totalPages > 1}">
+                    <div class="container-fluid">
+                        <th:block th:each="courseListEntity: ${courseList}">
+                            <form class="display"
+                                  role="form"
+                                  method="post"
+                                  th:action="@{/payment}"
+                                  th:object="${courseDTO}"
+                            >
+                                <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="@{${courseListEntity.courseImage}}"></a>
+                                <div class="displayContent">
+                                    <input type="text" name="fromPage" value="list" style="display: none">
+                                    <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
+                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
+                                    <p th:text="${courseListEntity.courseDes}"></p>
+                                    <input type="submit" value="Buy now" class="buy-now" name="paymentButton">
+                                    <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
+
+                                    <p th:text="'Price: '+${courseListEntity.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+                                </div>
+                            </form>
+                        </th:block>
+                    </div>
                 </div>
                 <!-- codes given below for pagination -->
                 <div th:if="${totalPages > 1}">

@@ -10,4 +10,10 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 
     @Query(value = "SELECT * FROM question WHERE quizid = ?1", nativeQuery = true)
     public List<Question> getAllByQuizID(Integer quizID);
+
+    @Query(value = "SELECT * FROM question WHERE content = ?1 AND quizid = ?2", nativeQuery = true)
+    public Question getQuestionByQuestionIdAndQuizId(String content, Integer quizId);
+
+    @Query(value = "SELECT * FROM question WHERE questionid = ?1", nativeQuery = true)
+    public Question getQuestionByQuestionId(Integer questionId);
 }

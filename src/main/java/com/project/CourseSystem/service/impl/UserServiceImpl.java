@@ -8,20 +8,12 @@ import com.project.CourseSystem.repository.UserInfoRepository;
 import com.project.CourseSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private UserInfoConverter userInfoConverter;
     private UserInfoRepository userInfoRepository;
-
     private SystemAccountRepository systemAccountRepository;
 
     @Autowired
@@ -50,27 +42,12 @@ public class UserServiceImpl implements UserService {
         userInfoDTO = userInfoConverter.convertEntityToDTO(userInfo);
         userInfoRepository.updateUserInfo(userInfoDTO.getAboutMe(), userInfoDTO.getAvatar(),
                 userInfoDTO.getDob().toString(), userInfoDTO.getLocation(), userInfoDTO.getPhoneNums(),
-                userInfoDTO.getUserName(), userInfoDTO.getAccountID().getAccountID().toString());
+                userInfoDTO.getUserName(), userInfoDTO.getAccountID().getAccountID().toString(), userInfoDTO.getUserID());
     }
 
     @Override
-    public void updateAvatar(MultipartFile file) throws IOException{
-        String folder = "/photos/";
-        byte[] bytes = file.getBytes();
-        Path path = Paths.get(folder + file.getOriginalFilename());
-        File f = new File("/photos");
-            if(!f.exists()){
-                f.mkdir();
-                Files.write(path, bytes);
-            }
-            else{
-                Files.write(path, bytes);
-            }
-    }
-
-    @Override
-    public void saveAvatar(UserInfo userInfo) {
-        userInfoRepository.save(userInfo);
+    public void saveAvatar(String fileID, int userID) {
+        userInfoRepository.updateUserAvt(fileID, userID);
     }
 
     @Override

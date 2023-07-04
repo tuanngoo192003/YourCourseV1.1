@@ -7,15 +7,208 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{assets/css/profileStyle.css}">
     <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
-    <link rel="stylesheet" href="assets/css/owl.css">
-    <link rel="stylesheet" href="assets/css/lightbox.css">
+    <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/courseListStyle.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/owl.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/lightbox.css}">
     <title>User profile</title>
+    <style>
+        .header-area {
+            background: rgb(219, 138, 222) !important;
+            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+        }
+
+        .displayContent{
+            width: 100%;
+            height: 100%;
+        }
+
+        .displayContent h4{
+            text-align: center;
+            font-weight: bold;
+            color: black;
+        }
+
+        .displayContent p{
+            margin-left: 15px;
+            color: dimgray;
+        }
+        .display img{
+            overflow: hidden;
+            width: 100px;
+            height: 100px;
+            margin: 5px 5px;
+            border-radius: 10px;
+        }
+
+        .display {
+            display: flex;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            transition: 0.3s;
+            border-radius: 10px;
+            border: 2px solid black;
+            margin-bottom: 30px;
+        }
+
+        .buy-now-cart{;
+            padding: 20px 30px;
+            background: whitesmoke;
+            border: none;
+            color: rgb(58, 58, 58);
+            transition: 2s;
+            border-radius: 10px;
+        }
+
+        .buy-now-cart:hover{
+            background: gray;
+            border: none;
+            color: rgb(58, 58, 58);
+        }
+
+        .buy-now{
+            margin-right: 20px;
+            float: right;
+            background: whitesmoke;
+            border: none;
+            color: rgba(0, 0, 0, 0.98);
+            transition: 2s;
+            border-radius: 10px;
+        }
+
+        .buy-now:hover{
+            background: gray;
+            border: rgba(0, 0, 0, 0.98) solid 1px;
+            color: #ffb963;
+        }
+
+        .add-to-cart{
+            margin-right: 20px;
+            float: right;
+            background: linear-gradient(to right, #ffb963, #ff88f9);
+            border: none;
+            color: white;
+            transition: 2s;
+            border-radius: 10px;
+        }
+
+        .add-to-cart:hover{
+            background: white;
+            border: none;
+            color: #ffb963;
+        }
+
+        .listTitle{
+            font-weight: bold;
+            color: black;
+            margin-top: 20px;
+            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
+            margin-bottom: 40px;
+        }
+
+        .listTitle h1{
+            margin-top: 20px;
+            padding-bottom: 25px;
+            font-weight: 700;
+        }
+
+        .filterTitle{
+            font-weight: bold;
+            color: black;
+            margin-top: 5px;
+            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
+            margin-bottom: 10px;
+            padding-bottom: 25px;
+        }
+
+        .listTitle h2{
+            margin-top: 20px;
+
+            font-weight: 600;
+        }
+
+        .accordion{
+            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
+        }
+
+        .offcanvas-title{
+            font-weight: bold;
+            color: black;
+            margin-top: 15px;
+            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
+            margin-bottom: 10px;
+        }
+        .cartContent{
+            width: 100%;
+            height: 100%;
+            margin-bottom: 10px;
+            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
+        }
+
+        .cartContent h4{
+            font-size: 15px;
+            text-align: center;
+            font-weight: normal;
+            color: black;
+        }
+
+        .displayContent p{
+            color: dimgray;
+        }
+
+    </style>
 </head>
 <body>
 <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
+
+<!-- ***** OffCanvas Start *****-->
+<div class="offcanvas offcanvas-end" id="demo">
+    <div class="offcanvas-header">
+        <h1 class="offcanvas-title">Cart</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <div th:if="${session.cart!=null}">
+            <th:block th:each="cart, state: ${session.cart}">
+                <form
+                        role="form"
+                        method="post"
+                        th:action="@{payment}"
+                        th:object="${courseDTO}"
+                >
+                    <div class="cartContent" >
+                        <div style="display: inline-flex">
+                            <input type="text" name="fromPage" value="list" style="display: none">
+                            <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
+                            <div>
+                                <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
+                            </div>
+                            <h4 th:text="${cart.courseName}"></h4>
+                            <p th:text="'Price: '+${cart.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+                        </div>
+                        <div style="display:inline-flex;">
+                            <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
+                            <input type="submit" value="Remove from cart" class="buy-now-cart" name="paymentButton">
+                        </div>
+                    </div>
+
+                </form>
+            </th:block>
+            <button><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
+            <button><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
+        </div>
+        <div th:if="${session.cart==null}">
+            <div class="cartContent" style="display: inline-flex">
+                <h4>Cart is empty</h4>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ***** OffCanvas End ***** -->
+
 <!-- ***** Header Area Start ***** -->
 <header class="header-area header-sticky">
     <div class="container">
@@ -50,13 +243,9 @@
                         </li>
                         <li class="scroll-to-section"><a href="#services">Services</a></li>
                         <li><a th:href="@{/course}">Courses</a></li>
-                        <li class="has-sub">
-                            <a href="javascript:void(0)">Pages</a>
-                            <ul class="sub-menu">
-                                <li><a href="about-us.html">About Us</a></li>
-                                <li><a href="our-services.html">Our Services</a></li>
-                                <li><a href="contact-us.html">Contact Us</a></li>
-                            </ul>
+                        <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                            style="color: white; background: none; border: none">
+                            <i class="fa-solid fa-shopping-cart"></i>
                         </li>
                         <li class="scroll-to-section"><a href="#contact-section">Contact Us</a></li>
                         <li class="has-sub">
@@ -90,7 +279,7 @@
             <div class="profile-tab-nav border-right">
                 <div class="p-4">
                     <div class="img-circle text-center mb-3">
-                        <img th:src="${userInfo.avatar}" alt="Image" class="shadow">
+                        <img th:src="'https://drive.google.com/uc?id='+${userInfo.avatar}" alt="Image" class="shadow">
                     </div>
                     <form
                             method="post"
@@ -117,7 +306,7 @@
                     </a>
                     <a class="nav-link" id="notification-tab" data-toggle="pill" href="#notification" role="tab" aria-controls="notification" aria-selected="false">
                         <i class="fa fa-bell text-center mr-1"></i>
-                        Notification
+                        Your Course
                     </a>
                 </div>
             </div>
@@ -129,6 +318,8 @@
                           th:action="@{saveUser}"
                           th:object="${userInfo}"
                     >
+                        <input type="number" th:field="*{userID}" th:value="${userInfo.userID}" style="display: none">
+                        <input type="text" th:field="*{avatar}" th:value="${userInfo.avatar}" style="display: none">
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Full Name</label>
@@ -257,34 +448,30 @@
                     </form>
                 </div>
                 <div class="tab-pane fade" id="notification" role="tabpanel" aria-labelledby="notification-tab">
-                    <h3 class="mb-4">Notification Settings</h3>
-                    <div class="form-group">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="notification1">
-                            <label class="form-check-label" for="notification1">
-                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum accusantium accusamus, neque cupiditate quis
-                            </label>
+                    <h3 class="mb-4">Purchased course</h3>
+                    <div style="overflow-y: scroll">
+                        <div class="container-fluid">
+                            <th:block th:each="courseListEntity: ${courseList}">
+                                <form class="display"
+                                      role="form"
+                                      method="post"
+                                      th:action="@{/payment}"
+                                      th:object="${courseDTO}"
+                                >
+                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="@{${courseListEntity.courseImage}}"></a>
+                                    <div class="displayContent">
+                                        <input type="text" name="fromPage" value="list" style="display: none">
+                                        <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
+                                        <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
+                                        <p th:text="${courseListEntity.courseDes}"></p>
+                                        <input type="submit" value="You've bought this course" class="buy-now" name="paymentButton" disabled>
+                                    </div>
+                                </form>
+                            </th:block>
+                            <div>
+                                <button><a th:href="@{'/myCourse'+'/page/' + 1 + '?sortField=courseID' + '&sortDir=desc'}">See full purchased course</a></button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="notification2" >
-                            <label class="form-check-label" for="notification2">
-                                hic nesciunt repellat perferendis voluptatum totam porro eligendi.
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="notification3" >
-                            <label class="form-check-label" for="notification3">
-                                commodi fugiat molestiae tempora corporis. Sed dignissimos suscipit
-                            </label>
-                        </div>
-                    </div>
-                    <div>
-                        <button class="btn btn-primary">Update</button>
-                        <button class="btn btn-light">Cancel</button>
                     </div>
                 </div>
             </div>

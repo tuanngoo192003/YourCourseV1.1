@@ -2,7 +2,8 @@ package com.project.CourseSystem.controller;
 
 import com.project.CourseSystem.converter.EnrolledConverter;
 import com.project.CourseSystem.dto.*;
-import com.project.CourseSystem.entity.*;
+import com.project.CourseSystem.entity.Enrolled;
+import com.project.CourseSystem.entity.LearningMaterial;
 import com.project.CourseSystem.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +11,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
@@ -119,9 +119,9 @@ public class LearnController {
             /* check if user is enrolled */
             HttpSession session = request.getSession();
             if(session.getAttribute("CSys")!=null){
-                String accountName = (String) session.getAttribute("CSysName");
+                String accountName = (String) session.getAttribute("CSys");
                 SystemAccountDTO accountDTO = accountService.findUserByAccountName(accountName);
-                Enrolled enrolled = enrolledService.findByAccountIdAndCourseID(accountDTO.getAccountID(), courseID);
+                Enrolled enrolled = enrolledService.findByAccountIdAndCourseID(accountDTO.getAccountID(), id);
                 if(enrolled != null){
                     EnrolledDTO enrolledDTO = enrolledConverter.convertEntityToDTO(enrolled);
                     model.addAttribute("enrolledDTO", enrolledDTO);

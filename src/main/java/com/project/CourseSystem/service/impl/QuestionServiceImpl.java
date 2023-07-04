@@ -37,4 +37,15 @@ public class QuestionServiceImpl implements QuestionService {
             return questionDTOS;
         }
     }
+
+    @Override
+    public Question getQuestionByContentAndQuizId(String content, Integer quizId) {
+        return questionRepository.getQuestionByQuestionIdAndQuizId(content, quizId);
+    }
+
+    @Override
+    public Question getQuestionById(Integer questionId) {
+        return questionRepository.getQuestionByQuestionId(questionId);
+    }
+
 }

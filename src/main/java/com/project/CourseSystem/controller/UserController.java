@@ -4,11 +4,9 @@ import com.project.CourseSystem.converter.UserInfoConverter;
 import com.project.CourseSystem.dto.CategoryDTO;
 import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.dto.SystemAccountDTO;
-import com.project.CourseSystem.dto.UserInfoDTO;
+import com.project.CourseSystem.entity.Enrolled;
 import com.project.CourseSystem.entity.UserInfo;
-import com.project.CourseSystem.service.AccountService;
-import com.project.CourseSystem.service.CategoryService;
-import com.project.CourseSystem.service.UserService;
+import com.project.CourseSystem.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -19,9 +17,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -36,15 +38,27 @@ public class UserController {
 
     private CategoryService categoryService;
 
+    private CourseService courseService;
+
+    private EnrolledService enrolledService;
+
+    private GoogleDriveService driveService;
+
     public UserController(SystemAccountDTO systemAccountDTO, UserService userService,
                           AccountService accountService,
                           UserInfoConverter userInfoConverter,
-                          CategoryService categoryService){
+                          CategoryService categoryService,
+                          CourseService courseService,
+                          EnrolledService enrolledService,
+                          GoogleDriveService driveService) {
         this.systemAccountDTO = systemAccountDTO;
         this.userService = userService;
         this.accountService = accountService;
         this.userInfoConverter = userInfoConverter;
         this.categoryService = categoryService;
+        this.courseService = courseService;
+        this.enrolledService = enrolledService;
+        this.driveService = driveService;
     }
 
     @GetMapping("/profile")
@@ -55,6 +69,21 @@ public class UserController {
             return "login";
         }
         else{
+
+            List<CourseDTO> courseList = courseService.getAllCourses();
+            List<Enrolled> enrolledList = (List<Enrolled>) session.getAttribute("enrolledList");
+            List<CourseDTO> courseListTemp = new ArrayList<>();
+            System.out.println("Attention!");
+            System.out.println(enrolledList.size());
+            for(int i = 0; i < enrolledList.size(); i++){
+                for(int j = 0; j < courseList.size(); j++){
+                    if(courseList.get(j).getCourseID() == enrolledList.get(i).getCourseID().getCourseID()){
+                        courseListTemp.add(courseList.get(j));
+                    }
+                }
+            }
+            model.addAttribute("courseList", courseListTemp);
+
             CategoryDTO cDto = new CategoryDTO();
             model.addAttribute("categoryDTO", cDto);
             CourseDTO courseDTO = new CourseDTO();
@@ -73,14 +102,8 @@ public class UserController {
 
     @PostMapping("/saveUser")
     public String saveUser(@ModelAttribute UserInfo userInfo, Model model, HttpServletRequest request, HttpServletResponse response){
-        HttpSession session = request.getSession();
         userService.updateUser(userInfo);
-        SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(session.getAttribute("CSys").toString());
-        model.addAttribute("userInfo", userInfoConverter.convertEntityToDTO(userInfo));
-        String gmail = systemAccountDTO.getGmail();
-        model.addAttribute("currentGmail", gmail);
-        model.addAttribute("system_account", systemAccountDTO);
-        return "userProfile";
+        return userProfile(model, request, response);
     }
 
     @PostMapping("/changePasswordWithOldPasswordConfirm")
@@ -109,37 +132,27 @@ public class UserController {
     }
 
     @PostMapping("/updateAvatar")
-    public String uploadAvatar(@Param("file") MultipartFile file, Model model, HttpServletRequest request, HttpServletResponse response){
+    public String uploadAvatar(@RequestParam("file") MultipartFile file, Model model, HttpServletRequest request, HttpServletResponse response){
         try{
-            String avt = file.getOriginalFilename();
-            System.out.println(avt);
-            userService.updateAvatar(file);
+            String fileName = file.getOriginalFilename();
+            String mimeType = file.getContentType();
+            File tempFile = File.createTempFile("temp", null);// create a temporary file on disk
+
+            file.transferTo(tempFile); // save the uploaded file to the temporary file
+
+            com.google.api.services.drive.model.File file1 = driveService.uploadFile(tempFile.getName(), tempFile.getAbsolutePath(), "image/jpg");
+            String fileId = file1.getId();
+            /* save avatar */
+            HttpSession session = request.getSession();
+            String accountName = (String) session.getAttribute("CSys");
+            SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
+            UserInfo userInfo = userService.findUser(systemAccountDTO.getAccountID());
+            userService.saveAvatar(fileId, userInfo.getUserID());
         }
         catch (IOException e){
             model.addAttribute("error", "Error while uploading file");
             return "redirect:/profile?error=Error while uploading file";
         }
-        /* save avatar */
-        HttpSession session = request.getSession();
-        String accountName = (String) session.getAttribute("CSys");
-        SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
-        UserInfo userInfo = userService.findUser(systemAccountDTO.getAccountID());
-        String avatar = "/photos/" + file.getOriginalFilename();
-        userInfo.setAvatar(avatar);
-        userService.saveAvatar(userInfo);
-
-        /* set up object */
-        CategoryDTO cDto = new CategoryDTO();
-        model.addAttribute("categoryDTO", cDto);
-        CourseDTO courseDTO = new CourseDTO();
-        model.addAttribute("courseDTO", courseDTO);
-        model.addAttribute("category", categoryService.getAllCategories());
-
-        /* set up model */
-        model.addAttribute("userInfo", userInfoConverter.convertEntityToDTO(userInfo));
-        String gmail = systemAccountDTO.getGmail();
-        model.addAttribute("gmail", gmail);
-        model.addAttribute("system_account", systemAccountDTO);
-        return "userProfile";
+        return userProfile(model, request, response);
     }
 }

@@ -6,9 +6,6 @@ import com.project.CourseSystem.dto.CategoryDTO;
 import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.dto.SystemAccountDTO;
 import com.project.CourseSystem.dto.UserInfoDTO;
-import com.project.CourseSystem.entity.EmailDetails;
-import com.project.CourseSystem.entity.SystemAccount;
-import com.project.CourseSystem.entity.UserInfo;
 import com.project.CourseSystem.service.AccountService;
 import com.project.CourseSystem.service.CategoryService;
 import com.project.CourseSystem.service.EmailService;
@@ -23,7 +20,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class AuthController {

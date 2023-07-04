@@ -1,9 +1,6 @@
 package com.project.CourseSystem.dto;
 
 import com.project.CourseSystem.entity.SystemAccount;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import lombok.*;
 import org.springframework.stereotype.Component;
 

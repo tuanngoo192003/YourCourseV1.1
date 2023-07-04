@@ -311,10 +311,17 @@
             th:action="@{payment}"
             th:object="${courseDTO}"
     >
+        <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
         <input type="text" name="fromPage" value="learn" style="display: none">
-        <input type="submit" value="Buy now" class="buy-now" name="paymentButton">
+        <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
     </form>
 </div>
+<!-- if user purchased the course, this session appear -->
+<div th:if="${enrolledDTO}!=null" class="purchase-session sticky-top">
+    <h2 th:text="'You have enrolled to this course'"></h2>
+    <p th:text="'Learning status: '"></p>
+</div>
+
 <!-- ***** Header Area End ***** -->
 
 <!-- ***** Learn page start ***** -->
@@ -352,7 +359,8 @@
                     </button>
                     <p th:text="${lessonListDis.lessonDes}" style="margin-left: 30px"></p>
                 </h2>
-                <div th:id="'flush-collapse'+${lessonListDis.lessonID}" class="accordion-collapse collapse" th:aria-labelledby="'flush-heading'+${lessonListDis.lessonID}" data-bs-parent="#accordionFlushExample">
+                <div th:if="${enrolledDTO}!=null">
+                    <div th:id="'flush-collapse'+${lessonListDis.lessonID}" class="accordion-collapse collapse" th:aria-labelledby="'flush-heading'+${lessonListDis.lessonID}" data-bs-parent="#accordionFlushExample">
                     <div class="accordion-body">
                         <div th:each="learningMaterialListDis: ${learningMaterialList}">
                             <div th:if="${learningMaterialListDis.lessonID.lessonID==lessonListDis.lessonID}">
@@ -379,6 +387,38 @@
                         </div>
                         <div>
                             <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}" th:if="${lessonListDis.lessonID == 1}">Quiz Test</a>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div th:if="${enrolledDTO}==null">
+                    <div th:id="'flush-collapse'+${lessonListDis.lessonID}" class="accordion-collapse collapse" th:aria-labelledby="'flush-heading'+${lessonListDis.lessonID}" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <div th:each="learningMaterialListDis: ${learningMaterialList}">
+                                <div th:if="${learningMaterialListDis.lessonID.lessonID==lessonListDis.lessonID}">
+                                    <div th:if="${learningMaterialListDis.learningMaterialDes == 'youtube'}">
+                                        <div>
+                                            <i class="fa-brands fa-youtube"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
+                                        </div>
+                                    </div>
+                                    <div th:if="${learningMaterialListDis.learningMaterialDes == 'pdf'}">
+                                        <div style="display: inline-flex">
+                                            <i class="fa-regular fa-file-pdf"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
+                                        </div>
+                                    </div>
+                                    <div th:if="${learningMaterialListDis.learningMaterialDes == 'driveVideo'}">
+                                        <div style="display: inline-flex">
+                                            <i class="fa-solid fa-play"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
+                                        </div>
+                                        <p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display: inline-flex">
+                                <i class="fa-solid fa-question">
+                                    <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}" th:if="${lessonListDis.lessonID == 1}">Quiz Test</a>
+                                </i>
+                            </div>
                         </div>
                     </div>
                 </div>

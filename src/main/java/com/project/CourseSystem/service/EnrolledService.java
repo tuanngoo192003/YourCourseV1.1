@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface EnrolledService {
 
-    Enrolled findByAccountIdAndCourseID(Integer userID, Integer courseID);
+    Enrolled findByAccountIdAndCourseID(Integer accountID, Integer courseID);
 
     List<Enrolled> findByAccountId(Integer accountID);
 

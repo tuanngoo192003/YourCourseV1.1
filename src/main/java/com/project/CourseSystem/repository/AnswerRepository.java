@@ -10,4 +10,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Integer> {
 
     @Query(value = "SELECT * FROM answer WHERE questionid = ?1", nativeQuery = true)
     public List<Answer> getAnswerByQuestionID(Integer questionID);
+
+    @Query(value = "SELECT * FROM answer WHERE questionid = ?1 AND answer_ordinal = ?2", nativeQuery = true)
+    public Answer getAnswerByQuestionIDAndAnswerOrdinal(Integer questionID, String answerOrdinal);
 }

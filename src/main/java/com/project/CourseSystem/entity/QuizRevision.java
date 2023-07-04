@@ -13,11 +13,15 @@ import lombok.*;
 public class QuizRevision {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="quizRevisionID", nullable = false)
+    private Integer quizRevisionID;
+
     @ManyToOne
     @JoinColumn(name="questionID", nullable = false)
     private Question questionID;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="answerID", nullable = false)
     private Answer answerID;
 
