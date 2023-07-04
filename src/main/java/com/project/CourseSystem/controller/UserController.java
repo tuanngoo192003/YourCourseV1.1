@@ -44,13 +44,16 @@ public class UserController {
 
     private GoogleDriveService driveService;
 
+    private AuthController authController;
+
     public UserController(SystemAccountDTO systemAccountDTO, UserService userService,
                           AccountService accountService,
                           UserInfoConverter userInfoConverter,
                           CategoryService categoryService,
                           CourseService courseService,
                           EnrolledService enrolledService,
-                          GoogleDriveService driveService) {
+                          GoogleDriveService driveService,
+                          AuthController authController) {
         this.systemAccountDTO = systemAccountDTO;
         this.userService = userService;
         this.accountService = accountService;
@@ -59,14 +62,14 @@ public class UserController {
         this.courseService = courseService;
         this.enrolledService = enrolledService;
         this.driveService = driveService;
+        this.authController = authController;
     }
 
     @GetMapping("/profile")
     public String userProfile(Model model, HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         if(session.getAttribute("CSys")==null){
-            model.addAttribute("system_account", systemAccountDTO);
-            return "login";
+            return authController.loginPage(model, request, response);
         }
         else{
 
@@ -122,7 +125,7 @@ public class UserController {
             system_accountDTO.setAccountPassword(encodedPassword);
             accountService.updateUser(system_accountDTO);
             session.removeAttribute("CSys");
-            return "login";
+            return authController.loginPage(model, request, response);
         }
         else{
             model.addAttribute("system_account", systemAccountDTO);

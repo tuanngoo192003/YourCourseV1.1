@@ -272,6 +272,17 @@
     </div>
 </header>
 <!-- ***** Header Area End ***** -->
+<!-- ***** Error Session *****-->
+<div class="container" style="align-content: center">
+    <div th:if="${param.errorGmail}!=null">
+        <h2 style="color: red; font-weight: bold">Gmail existed!</h2>
+    </div>
+    <div th:if="${param.error}!=null">
+        <h2 th:text="${param.error}" style="color: red; font-weight: bold"></h2>
+    </div>
+</div>
+<!-- ***** End Error Session *****-->
+
 <!-- ***** Welcome Area Start ***** -->
 <section class="py-5 my-5">
     <div class="container">
@@ -379,9 +390,6 @@
                 </div>
                 <div class="tab-pane fade" id="gmail" role="tabpanel" aria-labelledby="gmail-tab">
                     <h3 class="mb-4">Gmail Settings</h3>
-                    <div th:if="${param.errorGmail}!=null">
-                        <p>Gmail existed!</p>
-                    </div>
                     <form class="row"
                           method="post"
                           th:action="@{/verifyCodeSendForChangeGmail}"
@@ -402,9 +410,6 @@
                 </div>
                 <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
                     <h3 class="mb-4">Password Settings</h3>
-                    <div th:if="${param.error}!=null">
-                        <p th:text="${param.error}"></p>
-                    </div>
                     <form   class="row"
                             method="post"
                             role="form"
