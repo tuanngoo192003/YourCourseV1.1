@@ -276,12 +276,19 @@
 </header>
 <!-- ***** Header Area End ***** -->
 <div class="container-fluid">
-    <h1>Quiz Review</h1>
-    <div class="container">
-        <h3 th:text="${quiz.quizName}"></h3>
+    <h1 style="font-weight: 700">Quiz Review</h1>
+    <div class="container" style="align-content: center; margin-top: 25px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2)">
+        <h2 th:text="${quiz.quizName}"></h2>
         <p th:text="${quiz.quizDes}"></p>
-        <p th:text="'Score: '+${report.mark}" style="color: red"></p>
-        <h3 th:text="'Completed date: '+${report.completedDate}"></h3>
+        <div th:if="${report.mark<50}">
+            <h4 th:text="'Score: '+${report.mark}" style="color: red"></h4>
+            <p style="color: red">Status: Not passed</p>
+        </div>
+        <div th:if="${report.mark>40}">
+            <h4 th:text="'Score: '+${report.mark}" style="color: green"></h4>
+            <p style="color: green">Status: Passed</p>
+        </div>
+        <p th:text="'Completed date: '+${report.completedDate}"></p>
         <p th:text="'Time spent: '+${report.timeSpent}"></p>
     </div>
     <div id="quiz"></div>
