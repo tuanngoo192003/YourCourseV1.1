@@ -15,6 +15,11 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
+    public Report getReportByReportID(Integer reportID) {
+        return reportRepository.findByReportID(reportID);
+    }
+
+    @Override
     public void saveReport(Report report) {
         reportRepository.save(report);
     }

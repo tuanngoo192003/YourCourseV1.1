@@ -1,19 +1,3 @@
-// Sample quiz data
-var quizData = [
-    {
-        question: "What is the capital of France?",
-        answer: "Paris"
-    },
-    {
-        question: "Who painted the Mona Lisa?",
-        answer: "Leonardo da Vinci"
-    },
-    {
-        question: "What is the largest planet in our solar system?",
-        answer: "Jupiter"
-    }
-];
-
 // Render quiz review
 var quizContainer = document.getElementById("quiz");
 
@@ -25,9 +9,33 @@ for (var i = 0; i < quizData.length; i++) {
     questionText.innerHTML = "<strong>Question " + (i + 1) + ":</strong> " + quizData[i].question;
     questionDiv.appendChild(questionText);
 
-    var answerText = document.createElement("p");
-    answerText.innerHTML = "<strong>Answer:</strong> " + quizData[i].answer;
-    questionDiv.appendChild(answerText);
+    var optionAText = document.createElement("p");
+    optionAText.innerHTML = "<strong>Option A:</strong> " + quizData[i].optionA;
+    questionDiv.appendChild(optionAText);
+
+    var optionBText = document.createElement("p");
+    optionBText.innerHTML = "<strong>Option B:</strong> " + quizData[i].optionB;
+    questionDiv.appendChild(optionBText);
+
+    var optionCText = document.createElement("p");
+    optionCText.innerHTML = "<strong>Option C:</strong> " + quizData[i].optionC;
+    questionDiv.appendChild(optionCText);
+
+    var optionDText = document.createElement("p");
+    optionDText.innerHTML = "<strong>Option D:</strong> " + quizData[i].optionD;
+    questionDiv.appendChild(optionDText);
+
+    var chosenAnswerText = document.createElement("p");
+    for(var j = 0; j < chosenAnswers.length; j++){
+        if(chosenAnswers[j].questionID == quizData[i].questionID){
+            chosenAnswerText.innerHTML = "<strong>Chosen Answer:</strong> " + chosenAnswers[j].answerContent;
+            questionDiv.appendChild(chosenAnswerText);
+        }
+    }
+
+    var correctAnswerText = document.createElement("p");
+    correctAnswerText.innerHTML = "<strong>Correct Answer:</strong> " + quizData[i].correctAnswer;
+    questionDiv.appendChild(correctAnswerText);
 
     quizContainer.appendChild(questionDiv);
 }

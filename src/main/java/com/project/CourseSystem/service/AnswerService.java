@@ -9,6 +9,8 @@ import java.util.List;
 @Service
 public interface AnswerService {
 
+    public Answer getById(Integer id);
+
     public List<AnswerDTO> getAllByQuestionId(Integer questionId);
 
     public Answer getAnswerByQuestionIDAndAnswerOrdinal(Integer questionID, String answerOrdinal);

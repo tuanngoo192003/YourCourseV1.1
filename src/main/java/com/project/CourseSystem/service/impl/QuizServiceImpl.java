@@ -36,4 +36,9 @@ public class QuizServiceImpl implements QuizService {
             return null;
         }
     }
+
+    @Override
+    public Quiz getQuizById(int quizID) {
+        return quizRepository.findByID(quizID);
+    }
 }

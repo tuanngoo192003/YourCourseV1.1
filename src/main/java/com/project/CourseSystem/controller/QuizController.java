@@ -1,16 +1,8 @@
 package com.project.CourseSystem.controller;
 
-import com.project.CourseSystem.dto.AnswerDTO;
-import com.project.CourseSystem.dto.QuestionDTO;
-import com.project.CourseSystem.dto.QuizDTO;
-import com.project.CourseSystem.dto.ReportDataDTO;
-import com.project.CourseSystem.entity.Question;
-import com.project.CourseSystem.entity.QuizRevision;
-import com.project.CourseSystem.entity.Report;
-import com.project.CourseSystem.service.AnswerService;
-import com.project.CourseSystem.service.QuestionService;
-import com.project.CourseSystem.service.QuizRevisionService;
-import com.project.CourseSystem.service.QuizService;
+import com.project.CourseSystem.dto.*;
+import com.project.CourseSystem.entity.*;
+import com.project.CourseSystem.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -34,13 +26,21 @@ public class QuizController {
     AuthController authController;
 
     QuizRevisionService quizRevisionService;
+
+    CategoryService categoryService;
+
+    ReportService reportService;
+
     public QuizController(QuizService quizService, QuestionService questionService
-    , AnswerService answerService, AuthController authController, QuizRevisionService quizRevisionService){
+    , AnswerService answerService, AuthController authController, QuizRevisionService quizRevisionService,
+                          CategoryService categoryService, ReportService reportService){
         this.quizService = quizService;
         this.questionService = questionService;
         this.answerService = answerService;
         this.authController = authController;
         this.quizRevisionService = quizRevisionService;
+        this.categoryService = categoryService;
+        this.reportService = reportService;
     }
 
     //Quiz handle
@@ -78,6 +78,8 @@ public class QuizController {
         }
         else{
             List<QuizRevision> quizRevisions = quizRevisionService.getQuizRevisionByReportID(report.getReportID());
+            model.addAttribute("quizRevisions", quizRevisions);
+            //Get all questions asked in the quiz
             List<Question> questionList = new ArrayList<>();
             for(int i = 0; i < quizRevisions.size(); i++){
                 Question question = questionService.getQuestionById(quizRevisions.get(i).getQuestionID().getQuestionID());
@@ -91,7 +93,71 @@ public class QuizController {
             }
             model.addAttribute("answers", answerDTOList);
             model.addAttribute("report", report);
+
+            //Get chosen answer
+            List<Answer> chosenAnswers = new ArrayList<>();
+            for(int i = 0; i < quizRevisions.size(); i++){
+                Answer answer = answerService.getById(quizRevisions.get(i).getAnswerID().getAnswerID());
+                chosenAnswers.add(answer);
+            }
+            model.addAttribute("chosenAnswers", chosenAnswers);
+            Quiz quiz = new Quiz();
+            quiz = quizService.getQuizById(report.getQuizID().getQuizID());
+            model.addAttribute("quiz", quiz);
         }
+
+        CategoryDTO cDto = new CategoryDTO();
+        model.addAttribute("categoryDTO", cDto);
+        CourseDTO courseDTO = new CourseDTO();
+        model.addAttribute("courseDTO", courseDTO);
+        model.addAttribute("category", categoryService.getAllCategories());
+        model.addAttribute("system_account", new SystemAccountDTO());
+        return "quizReview";
+    }
+
+    @GetMapping("quizReviewTest")
+    public String getQuizReviewTest(Model model, HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("CSys")==null){
+            return authController.loginPage(model, request, response);
+        }
+        else{
+            Report report = reportService.getReportByReportID(1);
+            List<QuizRevision> quizRevisions = quizRevisionService.getQuizRevisionByReportID(report.getReportID());
+            model.addAttribute("quizRevisions", quizRevisions);
+            //Get all questions asked in the quiz
+            List<Question> questionList = new ArrayList<>();
+            for(int i = 0; i < quizRevisions.size(); i++){
+                Question question = questionService.getQuestionById(quizRevisions.get(i).getQuestionID().getQuestionID());
+                questionList.add(question);
+            }
+            model.addAttribute("questionsDid", questionList);
+            List<AnswerDTO> answerDTOList = new ArrayList<>();
+            for(int i = 0; i < questionList.size(); i++){
+                List<AnswerDTO> answers = answerService.getAllByQuestionId(questionList.get(i).getQuestionID());
+                answerDTOList.addAll(answers);
+            }
+            model.addAttribute("answers", answerDTOList);
+            model.addAttribute("report", report);
+
+            //Get chosen answer
+            List<Answer> chosenAnswers = new ArrayList<>();
+            for(int i = 0; i < quizRevisions.size(); i++){
+                Answer answer = answerService.getById(quizRevisions.get(i).getAnswerID().getAnswerID());
+                chosenAnswers.add(answer);
+            }
+            model.addAttribute("chosenAnswers", chosenAnswers);
+            Quiz quiz = new Quiz();
+            quiz = quizService.getQuizById(report.getQuizID().getQuizID());
+            model.addAttribute("quiz", quiz);
+        }
+
+        CategoryDTO cDto = new CategoryDTO();
+        model.addAttribute("categoryDTO", cDto);
+        CourseDTO courseDTO = new CourseDTO();
+        model.addAttribute("courseDTO", courseDTO);
+        model.addAttribute("category", categoryService.getAllCategories());
+        model.addAttribute("system_account", new SystemAccountDTO());
         return "quizReview";
     }
 

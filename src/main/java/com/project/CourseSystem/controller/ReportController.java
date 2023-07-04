@@ -67,7 +67,6 @@ public class ReportController {
             reportService.saveReport(report);
 
 
-
             //Save quizRevision
             List<String> askedQuestion = reportDataDTO.getAskedQuestions();
             List<String> chosenAnswer = reportDataDTO.getAnswers();
