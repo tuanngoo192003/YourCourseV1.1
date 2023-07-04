@@ -45,10 +45,10 @@ public class Course {
     @JoinColumn(name="categoryID", nullable = false)
     private Category categoryID;
 
-    @ManyToMany
+    /*@ManyToMany
     @JoinTable(
             name = "courseAccount",
             joinColumns = @JoinColumn(name = "courseID"),
             inverseJoinColumns = @JoinColumn(name = "accountID"))
-    private Set<SystemAccount> accountID;
+    private Set<SystemAccount> accountID;*/
 }

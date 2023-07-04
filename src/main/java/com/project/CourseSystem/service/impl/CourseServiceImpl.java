@@ -92,6 +92,11 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public void saveCourse(Course course) {
+        courseRepository.save(course);
+    }
+
+    @Override
     public void addReport(Report report) {
         reportRepository.save(report);
     }

@@ -23,5 +23,7 @@ public interface CourseService {
 
     CourseDetailsDTO getCourseDetailsByID(int id);
 
+    void saveCourse(Course course);
+
     void addReport(Report report);
 }

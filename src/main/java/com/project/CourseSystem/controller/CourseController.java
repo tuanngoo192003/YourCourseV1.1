@@ -1,14 +1,16 @@
 package com.project.CourseSystem.controller;
 
+import com.project.CourseSystem.converter.CategoryConverter;
 import com.project.CourseSystem.converter.System_AccountConverter;
+import com.project.CourseSystem.dto.AddCourseForm;
 import com.project.CourseSystem.dto.CategoryDTO;
 import com.project.CourseSystem.dto.CourseDTO;
+import com.project.CourseSystem.dto.SystemAccountDTO;
 import com.project.CourseSystem.entity.Course;
+import com.project.CourseSystem.entity.CourseDetails;
 import com.project.CourseSystem.entity.Enrolled;
 import com.project.CourseSystem.entity.SystemAccount;
-import com.project.CourseSystem.service.AccountService;
-import com.project.CourseSystem.service.CategoryService;
-import com.project.CourseSystem.service.CourseService;
+import com.project.CourseSystem.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -17,8 +19,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -28,17 +35,30 @@ public class CourseController {
 
     private CategoryService categoryService;
 
+    private GoogleDriveService driveService;
+
+    private AuthController authController;
+
     private AccountService accountService;
 
-    private System_AccountConverter system_accountConverter;
+    private CategoryConverter categoryConverter;
 
+    private EnrolledService enrolledService;
+
+    private System_AccountConverter system_accountConverter;
     @Autowired
     public CourseController(CourseService courseService,  CategoryService categoryService,
-                            AccountService accountService, System_AccountConverter system_accountConverter) {
+                            AuthController authController, AccountService accountService,
+                            CategoryConverter categoryConverter, EnrolledService enrolledService,
+                            System_AccountConverter system_accountConverter, GoogleDriveService driveService) {
         this.courseService = courseService;
         this.categoryService = categoryService;
+        this.authController = authController;
         this.accountService = accountService;
+        this.categoryConverter = categoryConverter;
+        this.enrolledService = enrolledService;
         this.system_accountConverter = system_accountConverter;
+        this.driveService = driveService;
     }
 
     @GetMapping("/course")
@@ -410,12 +430,67 @@ public class CourseController {
     }
 
     @GetMapping("/addCourse")
-    public String addCourse(){
+    public String addCourse(Model model, HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession();
+        if(session.getAttribute("CSys") == null){
+            return authController.loginPage(model, request, response);
+        }
+        else{
+            String accountName = (String) session.getAttribute("CSys");
+            SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
+            if(systemAccountDTO.getRoleID().getRoleID()!=2){
+                return authController.loginPage(model, request, response);
+            }
+            else{
+                AddCourseForm addCourseForm = new AddCourseForm();
+                model.addAttribute("addCourseForm", addCourseForm);
+
+                //nav bar attribute
+                CategoryDTO cDto = new CategoryDTO();
+                CourseDTO courseDTO = new CourseDTO();
+                model.addAttribute("courseDTO", courseDTO);
+                model.addAttribute("categoryDTO", cDto);
+                model.addAttribute("category", categoryService.getAllCategories());
+            }
+        }
         return "addCourse";
     }
 
-    @GetMapping("/addLesson")
-    public String addLesson(){
+    @PostMapping("/addLesson")
+    public String addLesson(@RequestParam("file") MultipartFile file,
+                            @ModelAttribute("addCourseForm") AddCourseForm addCourseForm, Model model,
+                            HttpServletRequest request, HttpServletResponse response){
+        Course course = new Course();
+        course.setCourseName(addCourseForm.getCourseName());
+        course.setCourseDes(addCourseForm.getCourseDes());
+        course.setPrice(addCourseForm.getPrice());
+        course.setCategoryID(categoryConverter.convertDtoToEtity(categoryService.getCategoryByName(addCourseForm.getCategory())));
+        Date date = addCourseForm.getStartDate();
+        java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+        course.setStartDate(sqlDate);
+        date = addCourseForm.getEndDate();
+        sqlDate = new java.sql.Date(date.getTime());
+        course.setEndDate(sqlDate);
+        course.setCreatedDate(new java.sql.Date(new Date().getTime()));
+        try{
+            String fileName = file.getOriginalFilename();
+            String mimeType = file.getContentType();
+            File tempFile = File.createTempFile("temp", null);// create a temporary file on disk
+
+            file.transferTo(tempFile); // save the uploaded file to the temporary file
+
+            com.google.api.services.drive.model.File file1 = driveService.uploadFile(tempFile.getName(), tempFile.getAbsolutePath(), "image/jpg");
+            String fileId = file1.getId();
+
+            /* save course image */
+            course.setCourseImage(fileId);
+        }
+        catch(IOException e){
+
+        }
+        courseService.saveCourse(course);
+        CourseDetails courseDetails = new CourseDetails();
+
         return "addLesson";
     }
 }
