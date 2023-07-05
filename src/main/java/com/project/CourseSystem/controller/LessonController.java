@@ -59,6 +59,26 @@ public class LessonController {
                 String input = request.getParameter("Input");
                 addLessonForm.setLearningMaterialLink(input);
             }
+            else if(inputType.equals("fileVideo")){
+                MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+                MultipartFile file = multipartRequest.getFile("Input");
+                try{
+                    String fileName = file.getOriginalFilename();
+                    String mimeType = file.getContentType();
+                    File tempFile = File.createTempFile("temp", null);// create a temporary file on disk
+
+                    file.transferTo(tempFile); // save the uploaded file to the temporary file
+
+                    com.google.api.services.drive.model.File file1 = driveService.uploadFile(tempFile.getName(), tempFile.getAbsolutePath(), "video/mp4", "LearningMaterial");
+                    String fileId = file1.getId();
+
+                    /* save material */
+                    addLessonForm.setLearningMaterialLink(fileId);
+                }
+                catch(IOException e){
+
+                }
+            }
             else{
                 MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
                 MultipartFile file = multipartRequest.getFile("Input");
@@ -69,7 +89,7 @@ public class LessonController {
 
                     file.transferTo(tempFile); // save the uploaded file to the temporary file
 
-                    com.google.api.services.drive.model.File file1 = driveService.uploadFile(tempFile.getName(), tempFile.getAbsolutePath(), "image/jpg", "LearningMaterial");
+                    com.google.api.services.drive.model.File file1 = driveService.uploadFile(tempFile.getName(), tempFile.getAbsolutePath(), "application/pdf", "LearningMaterial");
                     String fileId = file1.getId();
 
                     /* save material */
