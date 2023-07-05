@@ -143,7 +143,7 @@ public class UserController {
 
             file.transferTo(tempFile); // save the uploaded file to the temporary file
 
-            com.google.api.services.drive.model.File file1 = driveService.uploadFile(tempFile.getName(), tempFile.getAbsolutePath(), "image/jpg");
+            com.google.api.services.drive.model.File file1 = driveService.uploadFile(tempFile.getName(), tempFile.getAbsolutePath(), "image/jpg", "UserAvatar");
             String fileId = file1.getId();
             /* save avatar */
             HttpSession session = request.getSession();

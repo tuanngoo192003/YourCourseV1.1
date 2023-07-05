@@ -2,10 +2,7 @@ package com.project.CourseSystem.controller;
 
 import com.project.CourseSystem.converter.CategoryConverter;
 import com.project.CourseSystem.converter.System_AccountConverter;
-import com.project.CourseSystem.dto.AddCourseForm;
-import com.project.CourseSystem.dto.CategoryDTO;
-import com.project.CourseSystem.dto.CourseDTO;
-import com.project.CourseSystem.dto.SystemAccountDTO;
+import com.project.CourseSystem.dto.*;
 import com.project.CourseSystem.entity.Course;
 import com.project.CourseSystem.entity.CourseDetails;
 import com.project.CourseSystem.entity.Enrolled;
@@ -442,7 +439,22 @@ public class CourseController {
                 return authController.loginPage(model, request, response);
             }
             else{
+                Course course = new Course();
+                CourseDetails courseDetails = new CourseDetails();
                 AddCourseForm addCourseForm = new AddCourseForm();
+                if(session.getAttribute("newCourse")!=null && session.getAttribute("newCourseDetails")!=null){
+                    addCourseForm.setCourseName(course.getCourseName());
+                    addCourseForm.setCourseDes(course.getCourseDes());
+                    addCourseForm.setPrice(course.getPrice());
+                    addCourseForm.setCourseImage(course.getCourseImage());
+                    addCourseForm.setCategory(course.getCategoryID().getCategoryName());
+                    addCourseForm.setStartDate(course.getStartDate());
+                    addCourseForm.setEndDate(course.getEndDate());
+                    addCourseForm.setCourseDescription(courseDetails.getCourseDescription());
+                    addCourseForm.setCourseDetailsContent(courseDetails.getCourseDetailsContent());
+                    addCourseForm.setCourseRequirements(courseDetails.getCourseRequirements());
+                    addCourseForm.setForWho(courseDetails.getForWho());
+                }
                 model.addAttribute("addCourseForm", addCourseForm);
 
                 //nav bar attribute
@@ -456,7 +468,7 @@ public class CourseController {
         return "addCourse";
     }
 
-    @PostMapping("/addLesson")
+    @PostMapping("/inputLesson")
     public String addLesson(@RequestParam("file") MultipartFile file,
                             @ModelAttribute("addCourseForm") AddCourseForm addCourseForm, Model model,
                             HttpServletRequest request, HttpServletResponse response){
@@ -479,7 +491,7 @@ public class CourseController {
 
             file.transferTo(tempFile); // save the uploaded file to the temporary file
 
-            com.google.api.services.drive.model.File file1 = driveService.uploadFile(tempFile.getName(), tempFile.getAbsolutePath(), "image/jpg");
+            com.google.api.services.drive.model.File file1 = driveService.uploadFile(tempFile.getName(), tempFile.getAbsolutePath(), "image/jpg", "CourseAvatar");
             String fileId = file1.getId();
 
             /* save course image */
@@ -488,9 +500,43 @@ public class CourseController {
         catch(IOException e){
 
         }
-        courseService.saveCourse(course);
+        HttpSession session = request.getSession();
+        session.setAttribute("newCourse", course);
+        //courseService.saveCourse(course);
+
+        //Save courseDetails
         CourseDetails courseDetails = new CourseDetails();
+        courseDetails.setCourseID(course);
+        courseDetails.setCourseDescription(addCourseForm.getCourseDescription());
+        courseDetails.setCourseRequirements(addCourseForm.getCourseRequirements());
+        courseDetails.setCourseDetailsContent(addCourseForm.getCourseDetailsContent());
+        courseDetails.setForWho(addCourseForm.getForWho());
+        //courseService.saveCourseDetails(courseDetails);
+        session.setAttribute("newCourseDetails", courseDetails);
+
+        //set model to input lesson and material
+        QuizListForm quizListForm = new QuizListForm();
+        model.addAttribute("quizListForm", quizListForm);
+        AddLessonFormDTO addLessonForm = new AddLessonFormDTO();
+        model.addAttribute("addLessonForm", addLessonForm);
 
         return "addLesson";
+    }
+
+    @PostMapping("/createNewCourse")
+    public String createNewCourse(@RequestParam("questionDTO-content")String questionContents,
+                                  @RequestParam("answerDTO-content") String answerContents,
+                                  @RequestParam("answerDTO-ordinal") String answerOrdinals,
+                                  @ModelAttribute("quizListForm") QuizListForm quizListForm,
+                                  Model model, HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession();
+        Course course = (Course) session.getAttribute("newCourse");
+        CourseDetails courseDetails = (CourseDetails) session.getAttribute("newCourseDetails");
+        List<AddLessonFormDTO> addLessonFormDTOList = (List<AddLessonFormDTO>) session.getAttribute("addLessonFormDTOList");
+
+        System.out.println(questionContents);
+        System.out.println(answerContents);
+        System.out.println(answerOrdinals);
+        return null;
     }
 }

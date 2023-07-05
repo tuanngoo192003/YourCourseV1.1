@@ -12,7 +12,7 @@
             enctype="multipart/form-data"
             role="form"
             method="post"
-            th:action="@{/addLesson}"
+            th:action="@{/inputLesson}"
             th:object="${addCourseForm}"
             id="courseForm"
     >
@@ -27,36 +27,36 @@
         </select>
 
         <label for="courseName">Course Name:</label>
-        <input type="text" id="courseName" name="courseName" th:field="*{courseName}">
+        <input type="text" id="courseName" name="courseName" th:field="*{courseName}" th:value="*{courseName}">
 
         <label for="description">Short Description:</label>
-        <textarea id="description" name="description" th:field="*{courseDes}"></textarea>
+        <textarea id="description" name="description" th:field="*{courseDes}" th:value="*{courseDes}"></textarea>
 
         <label for="file">Image:</label>
         <input type="file" name="file" id="file"/>
 
         <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" name="startDate" th:field="*{startDate}">
+        <input type="date" id="startDate" name="startDate" th:field="*{startDate}" th:value="*{courseDes}">
 
         <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate" th:field="*{endDate}">
+        <input type="date" id="endDate" name="endDate" th:field="*{endDate}" th:value="*{endDate}">
 
         <label for="price">Price(đ):</label>
-        <input type="number" id="price" name="price" th:field="*{price}">
+        <input type="number" id="price" name="price" th:field="*{price}" th:value="*{price}">
 
         <h2>Additional information</h2>
 
         <label for="courseDetailsContent">More description when accessing course:</label>
-        <textarea id="courseDetailsContent" name="courseDetailsContent" th:field="*{courseDescription}"></textarea>
+        <textarea id="courseDetailsContent" name="courseDetailsContent" th:field="*{courseDescription}" th:value="*{courseDescription}"></textarea>
 
         <label for="whatCanBeLearnt">What can be learnt after this course:</label>
-        <textarea id="whatCanBeLearnt" name="whatCanBeLearnt" th:field="*{courseDetailsContent}"></textarea>
+        <textarea id="whatCanBeLearnt" name="whatCanBeLearnt" th:field="*{courseDetailsContent}" th:value="*{courseDetailsContent}"></textarea>
 
         <label for="courseRequirement">Requirement to join in the course:</label>
-        <textarea id="courseRequirement" name="courseRequirement" th:field="*{courseRequirements}"></textarea>
+        <textarea id="courseRequirement" name="courseRequirement" th:field="*{courseRequirements}" th:value="*{courseRequirements}"></textarea>
 
         <label for="forWho">For which kind of student:</label>
-        <textarea id="forWho" name="forWho" th:field="*{forWho}"></textarea>
+        <textarea id="forWho" name="forWho" th:field="*{forWho}" th:value="*{forWho}"></textarea>
 
         <input type="submit" value="Add Lessons">
     </form>

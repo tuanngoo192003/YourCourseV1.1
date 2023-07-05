@@ -3,6 +3,7 @@ package com.project.CourseSystem.service;
 import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.dto.CourseDetailsDTO;
 import com.project.CourseSystem.entity.Course;
+import com.project.CourseSystem.entity.CourseDetails;
 import com.project.CourseSystem.entity.Report;
 import org.springframework.data.domain.Page;
 
@@ -24,6 +25,8 @@ public interface CourseService {
     CourseDetailsDTO getCourseDetailsByID(int id);
 
     void saveCourse(Course course);
+
+    void saveCourseDetails(CourseDetails courseDetails);
 
     void addReport(Report report);
 }

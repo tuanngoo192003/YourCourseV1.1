@@ -28,8 +28,12 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
     private String applicationName;
     @Value("${google.service_account_key}")
     private String serviceAccountKey;
-    @Value("${google.folder_id}")
-    private String folderID;
+    @Value("${google.folder_id_userAvatar}")
+    private String folderIDUserAvatar;
+    @Value("${google.folder_id_courseAvatar}")
+    private String folderIDCourseAvatar;
+    @Value("${google.folder_id_learningMaterial}")
+    private String folderIDLearningMaterial;
 
     public Drive getDriveService(){
         Drive service = null;
@@ -56,14 +60,22 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
     }
 
     @Override
-    public File uploadFile(String fileName, String filePath, String mimeType) {
+    public File uploadFile(String fileName, String filePath, String mimeType, String folder) {
         File file = new File();
         try{
             java.io.File fileUpload = new java.io.File(filePath);
             File fileMetadata = new File();
             fileMetadata.setName(fileName);
             fileMetadata.setMimeType(mimeType);
-            fileMetadata.setParents(Collections.singletonList(folderID));
+            if(folder.equals("UserAvatar")){
+                fileMetadata.setParents(Collections.singletonList(folderIDUserAvatar));
+            }
+            else if(folder.equals("CourseAvatar")){
+                fileMetadata.setParents(Collections.singletonList(folderIDCourseAvatar));
+            }
+            else{
+                fileMetadata.setParents(Collections.singletonList(folderIDLearningMaterial));
+            }
             com.google.api.client.http.FileContent fileContent = new com.google.api.client.http.FileContent(mimeType, fileUpload);
             file = getDriveService().files().create(fileMetadata, fileContent).setFields("id, webContentLink, webViewLink").execute();
         }

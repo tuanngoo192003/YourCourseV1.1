@@ -386,7 +386,9 @@
                             </div>
                         </div>
                         <div>
-                            <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}" th:if="${lessonListDis.lessonID == 1}">Quiz Test</a>
+                            <i class="fa-solid fa-question">
+                                <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}" th:if="${lessonListDis.lessonID == 1}">Quiz Test</a>
+                            </i>
                         </div>
                     </div>
                 </div>
