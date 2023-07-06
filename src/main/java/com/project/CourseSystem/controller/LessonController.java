@@ -54,7 +54,7 @@ public class LessonController {
         }
         else{
             List<AddLessonFormDTO> addLessonFormDTOList = new ArrayList<>();
-            addLessonForm.setLessonDes(inputType);
+            addLessonForm.setLearningMaterialDes(inputType);
             if(inputType.equals("pdfLink") || inputType.equals("youtube")){
                 String input = request.getParameter("Input");
                 addLessonForm.setLearningMaterialLink(input);
@@ -108,7 +108,7 @@ public class LessonController {
     }
 
     @GetMapping ("/addLessonTest")
-    public String addLessonTest(Model model, HttpServletRequest request, HttpServletResponse response){
+    public String addLessonForm(Model model, HttpServletRequest request, HttpServletResponse response){
         //set model to input lesson and material
         AddLessonFormDTO addLessonForm = new AddLessonFormDTO();
         model.addAttribute("addLessonForm", addLessonForm);

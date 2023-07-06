@@ -50,5 +50,10 @@ public class AnswerServiceImpl implements AnswerService {
         return answerRepository.getAnswerByQuestionIDAndAnswerOrdinal(questionID, answerOrdinal);
     }
 
+    @Override
+    public void save(Answer answer) {
+        answerRepository.save(answer);
+    }
+
 
 }

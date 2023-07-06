@@ -8,4 +8,8 @@ public interface QuizService {
     QuizDTO getAllByLessonID(int courseID);
 
     Quiz getQuizById(int quizID);
+
+    Quiz saveQuiz(Quiz quiz);
+
+
 }

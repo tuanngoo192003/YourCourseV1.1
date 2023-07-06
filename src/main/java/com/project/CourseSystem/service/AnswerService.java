@@ -14,4 +14,6 @@ public interface AnswerService {
     public List<AnswerDTO> getAllByQuestionId(Integer questionId);
 
     public Answer getAnswerByQuestionIDAndAnswerOrdinal(Integer questionID, String answerOrdinal);
+
+    public void save(Answer answer);
 }

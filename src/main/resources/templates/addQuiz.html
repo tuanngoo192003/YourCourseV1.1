@@ -23,27 +23,24 @@
             <input type="text" id="quiz-des" th:field="*{quizDTO.quizDes}" required>
 
             <label for="quiz-time">Quiz Short Description:</label>
-            <input type="time" id="quiz-time" th:field="*{quizDTO.quizPeriod}" required>
+            <input type="time" id="quiz-time">
         </div>
         <div id="add-quiz-form">
             <div>
-                Question:<input type="text" id="question" name="questionDTO-content" required><br>
+                <label for="question">Question 1:</label>
+                <input type="text" id="question" name="questionDTO-content" placeholder="Question: " required><br>
 
-                Option A:<input type="text" id="optionA" name="answerDTO-content" required>
-                Is correct:<input type="radio" id="isCorrectA" value="optionA" name="isCorrect">
-                <input type="text" id="ordinalA" name="answerDTO-ordinal" value="optionA"><br>
+                <input type="text" id="optionA" name="answerDTO-content" placeholder="OptionA: " required>
+                Is correct:<input type="radio" id="isCorrectA" value="optionA" name="isCorrect"><br>
 
-                Option B:<input type="text" id="optionB" name="answerDTO-content" required>
-                Is correct:<input type="radio" id="isCorrectB1" value="optionA" name="isCorrect">
-                <input type="text" id="ordinalB" name="answerDTO-ordinal" value="optionA"><br>
+                <input type="text" id="optionB" name="answerDTO-content" placeholder="OptionB: " required>
+                Is correct:<input type="radio" id="isCorrectB" value="optionA" name="isCorrect"><br>
 
-                Option C:<input type="text" id="optionC1" name="answerDTO-content" required>
-                Is correct:<input type="radio" id="isCorrectC1" value="optionA" name="isCorrect">
-                <input type="text" id="ordinalC" name="answerDTO-ordinal" value="optionC"><br>
+                <input type="text" id="optionC" name="answerDTO-content" placeholder="OptionC: " required>
+                Is correct:<input type="radio" id="isCorrectC" value="optionA" name="isCorrect"><br>
 
-                Option D:<input type="text" id="optionD1" name="answerDTO-content" required>
-                Is correct:<input type="radio" id="isCorrectD1" value="optionA" name="isCorrect">
-                <input type="text" id="ordinalD" name="answerDTO-ordinal" value="optionD"><br>
+                <input type="text" id="optionD" name="answerDTO-content" placeholder="OptionD: " required>
+                Is correct:<input type="radio" id="isCorrectD" value="optionA" name="isCorrect"><br>
             </div>
             <button id="create-quiz">Create quiz</button>
         </div>
@@ -56,11 +53,14 @@
         // Initialize
         const quizContainer = document.getElementById("create-quiz");
 
-        quizContainer.addEventListener("click", function (){
+        quizContainer.addEventListener("click", function () {
             createQuesAndAnsForm();
         })
 
-        function createQuesAndAnsForm(){
+        var questionCount = 0;
+
+        function createQuesAndAnsForm() {
+            questionCount += 1;
             // Get the parent element for the new form
             const formContainer = document.getElementById("add-quiz-form");
 
@@ -71,7 +71,7 @@
             // Create a label for the question input
             const questionLabel = document.createElement("label");
             questionLabel.setAttribute("for", "question");
-            questionLabel.textContent = "Question:";
+            questionLabel.textContent = "Question:"+questionCount+1;
             formGroup.appendChild(questionLabel);
 
             // Create the question input
@@ -87,19 +87,19 @@
             answerInputs.classList.add("answer-inputs");
 
             // Create the answer A input group
-            const answerGroupA = createAnswerInputGroup("A");
+            const answerGroupA = createAnswerInputGroup("A", "Option A", questionCount);
             answerInputs.appendChild(answerGroupA);
 
             // Create the answer B input group
-            const answerGroupB = createAnswerInputGroup("B");
+            const answerGroupB = createAnswerInputGroup("B", "Option B", questionCount);
             answerInputs.appendChild(answerGroupB);
 
             // Create the answer C input group
-            const answerGroupC = createAnswerInputGroup("C");
+            const answerGroupC = createAnswerInputGroup("C", "Option C", questionCount);
             answerInputs.appendChild(answerGroupC);
 
             // Create the answer D input group
-            const answerGroupD = createAnswerInputGroup("D");
+            const answerGroupD = createAnswerInputGroup("D", "Option D", questionCount);
             answerInputs.appendChild(answerGroupD);
 
             formGroup.appendChild(answerInputs);
@@ -108,9 +108,15 @@
             formContainer.appendChild(formGroup);
         }
 
-        function createAnswerInputGroup(answerId) {
+        function createAnswerInputGroup(answerId, answerLabel, index) {
             const answerGroup = document.createElement("div");
             answerGroup.classList.add("answer-group");
+
+            // Create the answer label
+            const answerLabelElem = document.createElement("label");
+            answerLabelElem.setAttribute("for", "option" + answerId);
+            answerLabelElem.textContent = answerLabel;
+            answerGroup.appendChild(answerLabelElem);
 
             // Create the answer input
             const answerInput = document.createElement("input");
@@ -118,23 +124,22 @@
             answerInput.setAttribute("id", "option" + answerId);
             answerInput.setAttribute("name", "answerDTO-content");
             answerInput.setAttribute("required", "");
+            answerInput.setAttribute("placeholder", answerLabel);
             answerGroup.appendChild(answerInput);
+
+            // Create the "is correct" radio button label
+            const isCorrectLabel = document.createElement("label");
+            isCorrectLabel.setAttribute("for", "isCorrect" + answerId);
+            isCorrectLabel.textContent = "Is Correct";
+            answerGroup.appendChild(isCorrectLabel);
 
             // Create the "is correct" radio button
             const isCorrectRadio = document.createElement("input");
             isCorrectRadio.setAttribute("type", "radio");
             isCorrectRadio.setAttribute("id", "isCorrect" + answerId);
             isCorrectRadio.setAttribute("value", "option" + answerId);
-            isCorrectRadio.setAttribute("name", "isCorrect");
+            isCorrectRadio.setAttribute("name", "isCorrect" + index);
             answerGroup.appendChild(isCorrectRadio);
-
-            // Create the answer ordinal input
-            const ordinalInput = document.createElement("input");
-            ordinalInput.setAttribute("type", "text");
-            ordinalInput.setAttribute("id", "ordinal" + answerId);
-            ordinalInput.setAttribute("name", "answerDTO-ordinal");
-            ordinalInput.setAttribute("value", "option" + answerId);
-            answerGroup.appendChild(ordinalInput);
 
             return answerGroup;
         }

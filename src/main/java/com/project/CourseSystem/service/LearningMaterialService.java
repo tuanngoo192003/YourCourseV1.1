@@ -7,4 +7,6 @@ import java.util.List;
 public interface LearningMaterialService {
 
     List<LearningMaterial> getLearningMaterialByLessonID(Integer lessonID);
+
+    void saveLearningMaterial(LearningMaterial learningMaterial);
 }

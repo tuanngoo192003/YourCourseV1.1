@@ -31,4 +31,9 @@ public class LessonServiceImpl implements LessonService {
         }
         return lessonDTOList;
     }
+
+    @Override
+    public Lesson saveLesson(Lesson lesson) {
+       return lessonRepository.save(lesson);
+    }
 }
