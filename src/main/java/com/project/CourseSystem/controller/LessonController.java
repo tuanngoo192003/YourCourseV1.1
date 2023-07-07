@@ -53,7 +53,10 @@ public class LessonController {
             return authController.loginPage(model, request, response);
         }
         else{
-            List<AddLessonFormDTO> addLessonFormDTOList = new ArrayList<>();
+            List<AddLessonFormDTO> addLessonFormDTOList = (List<AddLessonFormDTO>) session.getAttribute("addLessonFormDTOList");
+            if(addLessonFormDTOList==null){
+                addLessonFormDTOList = new ArrayList<>();
+            }
             addLessonForm.setLearningMaterialDes(inputType);
             if(inputType.equals("pdfLink") || inputType.equals("youtube")){
                 String input = request.getParameter("Input");

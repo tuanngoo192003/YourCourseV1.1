@@ -550,66 +550,14 @@ public class CourseController {
                                   @RequestParam("submit") String submit,
                                   Model model, HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
+        /* Add new lesson
+        *  Save Course to session
+        *  Save CourseDetails to session
+        *  Save QuizListFormList to session
+        *  Save addLessonFormDTOList to session
+        *  */
         if(submit.equals("Add new lesson")){
-            List<QuestionDTO> questionList = new ArrayList<>();
-            List<AnswerDTO> answerList = new ArrayList<>();
-            int tempIndex = 0;
-            for(int i = 0; i < questionContents.length(); i++){
-                String temp;
-                if(questionContents.charAt(i) == ','){
-                    QuestionDTO questionDTO = new QuestionDTO();
-                    temp = questionContents.substring(tempIndex, i);
-                    questionDTO.setContent(temp);
-                    questionList.add(questionDTO);
-                    tempIndex = i+1;
-                }
-            }
-            tempIndex = 0;
-            int ordinalCount = 0;
-            for(int i = 0; i < answerContents.length(); i++){
-                String temp;
-                AnswerDTO answerDTO = new AnswerDTO();
-                if(answerContents.charAt(i) == ','){
-                    temp = answerContents.substring(tempIndex, i);
-                    answerDTO.setContent(temp);
-                    String answerOrdinal = "";
-                    if(ordinalCount == 0){ answerDTO.setAnswerOrdinal("optionA"); answerOrdinal = "optionA"; ordinalCount++;}
-                    else if (ordinalCount == 1){ answerDTO.setAnswerOrdinal("optionB"); answerOrdinal = "optionB"; ordinalCount++;}
-                    else if (ordinalCount == 2){ answerDTO.setAnswerOrdinal("optionC"); answerOrdinal = "optionC"; ordinalCount++;}
-                    else if (ordinalCount == 3){ answerDTO.setAnswerOrdinal("optionD"); answerOrdinal = "optionD";ordinalCount=0;}
-                    if(tempIndex == 0){
-                        String isCorrect = request.getParameter("isCorrect");
-                        if(answerOrdinal.equals(isCorrect)){
-                            answerDTO.setIsCorrect("right");
-                        }
-                        else{
-                            answerDTO.setIsCorrect("wrong");
-                        }
-                    }else{
-                        String isCorrect = request.getParameter("isCorrect"+tempIndex);
-                        if(answerOrdinal.equals(isCorrect)){
-                            answerDTO.setIsCorrect("right");
-                        }
-                        else{
-                            answerDTO.setIsCorrect("wrong");
-                        }
-                    }
-                    answerList.add(answerDTO);
-                    tempIndex = i+1;
-                }
-            }
-
-            for(int i = 0; i < questionList.size(); i++){
-                System.out.println(questionList.get(i).getContent());
-            }
-            for(int i = 0; i < answerList.size(); i++){
-                System.out.println(answerList.get(i).getContent());
-            }
-            quizListForm.setQuestionDTOS(questionList);
-            quizListForm.setAnswerDTOS(answerList);
-            List<QuizListForm> quizListFormList = new ArrayList<>();
-            quizListFormList.add(quizListForm);
-            session.setAttribute("quizListFormList", quizListFormList);
+            saveCurrentQuestionsAndAnswers(questionContents, answerContents, quizListForm, model, request, response);
 
             return lessonController.addLessonForm(model, request, response);
         }
@@ -620,136 +568,12 @@ public class CourseController {
             courseService.saveCourse(course);
             courseDetails.setCourseID(course);
             courseService.saveCourseDetails(courseDetails);
-            //Add quiz handle
+            //Add quiz to questionList and answerList
             List<QuizListForm> quizListFormList = (List<QuizListForm>) session.getAttribute("quizListFormList");
             if(quizListFormList == null){
-                List<QuestionDTO> questionList = new ArrayList<>();
-                List<AnswerDTO> answerList = new ArrayList<>();
-                int tempIndex = 0;
-                for(int i = 0; i < questionContents.length(); i++){
-                    String temp;
-                    if(questionContents.charAt(i) == ',' || i == questionContents.length()-1){
-                        QuestionDTO questionDTO = new QuestionDTO();
-                        temp = questionContents.substring(tempIndex, i);
-                        questionDTO.setContent(temp);
-                        questionList.add(questionDTO);
-                        tempIndex = i+1;
-                    }
-                }
-                tempIndex = 0;
-                int ordinalCount = 0;
-                for(int i = 0; i < answerContents.length(); i++){
-                    int isCorrectIndex = 1;
-                    String temp;
-                    AnswerDTO answerDTO = new AnswerDTO();
-                    if(answerContents.charAt(i) == ',' || i == answerContents.length()-1){
-                        temp = answerContents.substring(tempIndex, i);
-                        answerDTO.setContent(temp);
-                        String answerOrdinal = "";
-                        if(ordinalCount == 0){ answerDTO.setAnswerOrdinal("optionA"); answerOrdinal = "optionA"; ordinalCount=1;}
-                        else if (ordinalCount == 1){ answerDTO.setAnswerOrdinal("optionB"); answerOrdinal = "optionB"; ordinalCount=2;}
-                        else if (ordinalCount == 2){ answerDTO.setAnswerOrdinal("optionC"); answerOrdinal = "optionC"; ordinalCount=3;}
-                        else if (ordinalCount == 3){ answerDTO.setAnswerOrdinal("optionD"); answerOrdinal = "optionD";ordinalCount=0;}
-                        if(tempIndex == 0){
-                            String isCorrect = request.getParameter("isCorrect");
-                            if(answerOrdinal.equals(isCorrect)){
-                                answerDTO.setIsCorrect("right");
-                            }
-                            else{
-                                answerDTO.setIsCorrect("wrong");
-                            }
-                        }else{
-                            String name = "isCorrect"+isCorrectIndex;
-                            String isCorrect = request.getParameter(name);
-                            System.out.println(name);
-                            System.out.println(isCorrect);
-                            System.out.println("iscorrect test---------------");
-                            if(answerOrdinal.equals(isCorrect)){
-                                answerDTO.setIsCorrect("right");
-                            }
-                            else{
-                                answerDTO.setIsCorrect("wrong");
-                            }
-                        }
-                        answerList.add(answerDTO);
-                        isCorrectIndex++;
-                        tempIndex = i+1;
-                    }
-                }
-                //add Quiz
-                Quiz quiz = new Quiz();
-                quiz.setCourseID(course);
-                quiz.setQuizName(quizListForm.getQuizDTO().getQuizName());
-                quiz.setQuizDes(quizListForm.getQuizDTO().getQuizDes());
-                Time time = new Time(0,0,0);
-                quiz.setQuizPeriod(time);
-                quiz = quizService.saveQuiz(quiz);
-                //save Question
-                QuestionDTO questionDTO = new QuestionDTO();
-                for(int i = 0; i < questionList.size(); i++){
-                    questionDTO = questionList.get(i);
-                    Question question = new Question();
-                    question.setQuizID(quiz);
-                    question.setContent(questionDTO.getContent());
-                    question = questionService.saveQuestion(question);
-                    if(i==questionList.size()-1){
-                        AnswerDTO answerDTO4 = answerList.get(answerList.size()-4);
-                        Answer answer3 = new Answer();
-                        answer3.setQuestionID(question);
-                        answer3.setContent(answerDTO4.getContent());
-                        answer3.setAnswerOrdinal(answerDTO4.getAnswerOrdinal());
-                        answer3.setIsCorrect(answerDTO4.getIsCorrect());
-                        answerService.save(answer3);
+                //If the new course has one lesson only
+                Quiz quiz = saveQuizToDatabase(questionContents, answerContents, quizListForm, course, model, request, response);
 
-                        AnswerDTO answerDTO3 = answerList.get(answerList.size()-3);
-                        Answer answer2 = new Answer();
-                        answer2.setQuestionID(question);
-                        answer2.setContent(answerDTO3.getContent());
-                        answer2.setAnswerOrdinal(answerDTO3.getAnswerOrdinal());
-                        answer2.setIsCorrect(answerDTO3.getIsCorrect());
-                        answerService.save(answer2);
-
-                        AnswerDTO answerDTO2 = answerList.get(answerList.size()-2);
-                        Answer answer1 = new Answer();
-                        answer1.setQuestionID(question);
-                        answer1.setContent(answerDTO2.getContent());
-                        answer1.setAnswerOrdinal(answerDTO2.getAnswerOrdinal());
-                        answer1.setIsCorrect(answerDTO2.getIsCorrect());
-                        answerService.save(answer1);
-
-                        AnswerDTO answerDTO1 = answerList.get(answerList.size()-1);
-                        Answer answer = new Answer();
-                        answer.setQuestionID(question);
-                        answer.setContent(answerDTO1.getContent());
-                        answer.setAnswerOrdinal(answerDTO1.getAnswerOrdinal());
-                        answer.setIsCorrect(answerDTO1.getIsCorrect());
-                        answerService.save(answer);
-                    }
-                    else{
-                        if(i == 0){
-                            for(int j = 0; j < 4; j++){
-                                AnswerDTO answerDTO1 = answerList.get(j);
-                                Answer answer = new Answer();
-                                answer.setQuestionID(question);
-                                answer.setContent(answerDTO1.getContent());
-                                answer.setAnswerOrdinal(answerDTO1.getAnswerOrdinal());
-                                answer.setIsCorrect(answerDTO1.getIsCorrect());
-                                answerService.save(answer);
-                            }
-                        }else{
-                            //save Answer
-                            for(int j = i+3; j < j+4; j++){
-                                AnswerDTO answerDTO1 = answerList.get(j);
-                                Answer answer = new Answer();
-                                answer.setQuestionID(question);
-                                answer.setContent(answerDTO1.getContent());
-                                answer.setAnswerOrdinal(answerDTO1.getAnswerOrdinal());
-                                answer.setIsCorrect(answerDTO1.getIsCorrect());
-                                answerService.save(answer);
-                            }
-                        }
-                    }
-                }
                 //Save lesson
                 List<AddLessonFormDTO> addLessonFormDTOList = (List<AddLessonFormDTO>) session.getAttribute("addLessonFormDTOList");
                 Lesson lesson = new Lesson();
@@ -767,13 +591,189 @@ public class CourseController {
                 learningMaterial.setLearningMaterialLink(addLessonFormDTOList.get(0).getLearningMaterialLink());
                 learningMaterialService.saveLearningMaterial(learningMaterial);
 
-                System.out.println(questionContents);
-                System.out.println(answerContents);
             }
             else{
+                saveCurrentQuestionsAndAnswers(questionContents, answerContents, quizListForm, model, request, response);
+                List<AddLessonFormDTO> addLessonFormDTOList = (List<AddLessonFormDTO>) session.getAttribute("addLessonFormDTOList");
 
+                for(int start = 0; start < addLessonFormDTOList.size(); start++){
+                    QuizListForm quizListFormTemp = quizListFormList.get(start);
+                    String questionContentsTemp = quizListFormTemp.getQuestionContents();
+                    String answerContentsTemp = quizListFormTemp.getAnswerContents();
+
+                    Quiz quiz = saveQuizToDatabase(questionContentsTemp, answerContentsTemp, quizListFormTemp, course, model, request, response);
+
+                    //Save lesson
+                    Lesson lesson = new Lesson();
+                    lesson.setCourseID(course);
+                    lesson.setLessonName(addLessonFormDTOList.get(start).getLessonName());
+                    lesson.setLessonDes(addLessonFormDTOList.get(start).getLessonDes());
+                    lesson.setQuizID(quiz);
+                    lesson = lessonService.saveLesson(lesson);
+
+                    //Save lesson content/Learning material
+                    LearningMaterial learningMaterial = new LearningMaterial();
+                    learningMaterial.setLessonID(lesson);
+                    learningMaterial.setLearningMaterialName(addLessonFormDTOList.get(start).getLearningMaterialName());
+                    learningMaterial.setLearningMaterialDes(addLessonFormDTOList.get(start).getLearningMaterialDes());
+                    learningMaterial.setLearningMaterialLink(addLessonFormDTOList.get(start).getLearningMaterialLink());
+                    learningMaterialService.saveLearningMaterial(learningMaterial);
+                }
             }
             return getCourse(model, request, response);
         }
+    }
+
+    private void saveCurrentQuestionsAndAnswers(String questionContents, String answerContents, QuizListForm quizListForm,
+                                                Model model, HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession();
+        List<QuizListForm> quizListFormList = (List<QuizListForm>) session.getAttribute("quizListFormList");
+        if(quizListFormList == null){
+            quizListFormList = new ArrayList<>();
+        }
+        quizListForm.setQuestionContents(questionContents);
+        quizListForm.setAnswerContents(answerContents);
+        quizListFormList.add(quizListForm);
+        session.setAttribute("quizListFormList", quizListFormList);
+    }
+
+    private Quiz saveQuizToDatabase(String questionContents, String answerContents, QuizListForm quizListForm,
+                                    Course course, Model model, HttpServletRequest request, HttpServletResponse response){
+        List<QuestionDTO> questionList = new ArrayList<>();
+        List<AnswerDTO> answerList = new ArrayList<>();
+        int tempIndex = 0;
+        for(int i = 0; i < questionContents.length(); i++){
+            String temp;
+            if(questionContents.charAt(i) == ',' || i == questionContents.length()-1){
+                QuestionDTO questionDTO = new QuestionDTO();
+                temp = questionContents.substring(tempIndex, i);
+                questionDTO.setContent(temp);
+                questionList.add(questionDTO);
+                tempIndex = i+1;
+            }
+        }
+        tempIndex = 0;
+        int ordinalCount = 0;
+        for(int i = 0; i < answerContents.length(); i++){
+            int isCorrectIndex = 1;
+            String temp;
+            AnswerDTO answerDTO = new AnswerDTO();
+            if(answerContents.charAt(i) == ',' || i == answerContents.length()-1){
+                temp = answerContents.substring(tempIndex, i);
+                answerDTO.setContent(temp);
+                String answerOrdinal = "";
+                if(ordinalCount == 0){ answerDTO.setAnswerOrdinal("optionA"); answerOrdinal = "optionA"; ordinalCount=1;}
+                else if (ordinalCount == 1){ answerDTO.setAnswerOrdinal("optionB"); answerOrdinal = "optionB"; ordinalCount=2;}
+                else if (ordinalCount == 2){ answerDTO.setAnswerOrdinal("optionC"); answerOrdinal = "optionC"; ordinalCount=3;}
+                else if (ordinalCount == 3){ answerDTO.setAnswerOrdinal("optionD"); answerOrdinal = "optionD";ordinalCount=0;}
+                if(tempIndex == 0){
+                    String isCorrect = request.getParameter("isCorrect");
+                    if(answerOrdinal.equals(isCorrect)){
+                        answerDTO.setIsCorrect("right");
+                    }
+                    else{
+                        answerDTO.setIsCorrect("wrong");
+                    }
+                }else{
+                    String name = "isCorrect"+isCorrectIndex;
+                    String isCorrect = request.getParameter(name);
+                    System.out.println(name);
+                    System.out.println(isCorrect);
+                    System.out.println("iscorrect test---------------");
+                    if(answerOrdinal.equals(isCorrect)){
+                        answerDTO.setIsCorrect("right");
+                    }
+                    else{
+                        answerDTO.setIsCorrect("wrong");
+                    }
+                }
+                answerList.add(answerDTO);
+                isCorrectIndex++;
+                tempIndex = i+1;
+            }
+        }
+        //add Quiz to database
+        Quiz quiz = new Quiz();
+        quiz.setCourseID(course);
+        quiz.setQuizName(quizListForm.getQuizDTO().getQuizName());
+        quiz.setQuizDes(quizListForm.getQuizDTO().getQuizDes());
+        Time time = new Time(0,0,0);
+        quiz.setQuizPeriod(time);
+        quiz = quizService.saveQuiz(quiz);
+        //save Question to database
+        QuestionDTO questionDTO = new QuestionDTO();
+        /* Algorithm to save answer
+         *  For each question, save that question and 4 answer to the database
+         * */
+        int plusIndex = 3;
+        for(int i = 0; i < questionList.size(); i++){
+            questionDTO = questionList.get(i);
+            Question question = new Question();
+            question.setQuizID(quiz);
+            question.setContent(questionDTO.getContent());
+            question = questionService.saveQuestion(question);
+            if(i==questionList.size()-1){
+                AnswerDTO answerDTO4 = answerList.get(answerList.size()-4);
+                Answer answer3 = new Answer();
+                answer3.setQuestionID(question);
+                answer3.setContent(answerDTO4.getContent());
+                answer3.setAnswerOrdinal(answerDTO4.getAnswerOrdinal());
+                answer3.setIsCorrect(answerDTO4.getIsCorrect());
+                answerService.save(answer3);
+
+                AnswerDTO answerDTO3 = answerList.get(answerList.size()-3);
+                Answer answer2 = new Answer();
+                answer2.setQuestionID(question);
+                answer2.setContent(answerDTO3.getContent());
+                answer2.setAnswerOrdinal(answerDTO3.getAnswerOrdinal());
+                answer2.setIsCorrect(answerDTO3.getIsCorrect());
+                answerService.save(answer2);
+
+                AnswerDTO answerDTO2 = answerList.get(answerList.size()-2);
+                Answer answer1 = new Answer();
+                answer1.setQuestionID(question);
+                answer1.setContent(answerDTO2.getContent());
+                answer1.setAnswerOrdinal(answerDTO2.getAnswerOrdinal());
+                answer1.setIsCorrect(answerDTO2.getIsCorrect());
+                answerService.save(answer1);
+
+                AnswerDTO answerDTO1 = answerList.get(answerList.size()-1);
+                Answer answer = new Answer();
+                answer.setQuestionID(question);
+                answer.setContent(answerDTO1.getContent());
+                answer.setAnswerOrdinal(answerDTO1.getAnswerOrdinal());
+                answer.setIsCorrect(answerDTO1.getIsCorrect());
+                answerService.save(answer);
+            }
+            else{
+                if(i == 0){
+                    for(int j = 0; j < 4; j++){
+                        AnswerDTO answerDTO1 = answerList.get(j);
+                        Answer answer = new Answer();
+                        answer.setQuestionID(question);
+                        answer.setContent(answerDTO1.getContent());
+                        answer.setAnswerOrdinal(answerDTO1.getAnswerOrdinal());
+                        answer.setIsCorrect(answerDTO1.getIsCorrect());
+                        answerService.save(answer);
+                    }
+                }else{
+                    int j = i+plusIndex;
+                    int n = j + 4;
+                    //save Answer
+                    while(j<n){
+                        AnswerDTO answerDTO1 = answerList.get(j);
+                        Answer answer = new Answer();
+                        answer.setQuestionID(question);
+                        answer.setContent(answerDTO1.getContent());
+                        answer.setAnswerOrdinal(answerDTO1.getAnswerOrdinal());
+                        answer.setIsCorrect(answerDTO1.getIsCorrect());
+                        answerService.save(answer);
+                        j++;
+                    }
+                    plusIndex+=3;
+                }
+            }
+        }
+        return quiz;
     }
 }
