@@ -13,6 +13,7 @@ import lombok.*;
 public class RatingCourse {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="ratingID", nullable = false)
     private Integer ratingID;
 

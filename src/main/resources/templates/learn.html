@@ -181,6 +181,50 @@
             font-weight: normal;
             color: black;
         }
+
+        .star-rating input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .star-rating label {
+            font-size: 2rem;
+            color: gray;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .star-rating input[type="radio"]:checked + label {
+            color: gold;
+        }
+
+        .star-rated input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .star-rated label {
+            font-size: 2rem;
+            color: gray;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .star-rated input[type="radio"]:checked + label {
+            color: gold;
+        }
+
+        .btn-primary{
+            margin-top: 10px;
+            background-color: #ffb963;
+            border-color: #ffb963;
+        }
+
+        .btn-primary:hover{
+            background-color: #ffb963;
+            border-color: #ffb963;
+        }
+
     </style>
 </head>
 <body>
@@ -317,9 +361,22 @@
     </form>
 </div>
 <!-- if user purchased the course, this session appear -->
-<div th:if="${enrolledDTO}!=null" class="purchase-session sticky-top">
+<div th:if="${enrolledDTO}!=null" class="purchase-session sticky-top" style="height: 400px; overflow-y: scroll">
     <h2 th:text="'You have enrolled to this course'"></h2>
-    <p th:text="'Learning status: '"></p>
+    <div th:if="${totalStatus == 'Course: Completed'}">
+        <p th:text="${totalStatus}" style="color: green"></p>
+    </div>
+    <div th:if="${totalStatus == 'Course: Not completed'}">
+        <p th:text="${totalStatus}" style="color: #b0b038"></p>
+    </div>
+    <div th:each="learningStatusDis : ${learningStatus}">
+        <div th:if="${learningStatusDis.checkStatus==1}">
+            <i class="fa-solid fa-circle-check" style="color: green"><p th:text="${learningStatusDis.statusContent}" style="color:black;"></p></i>
+        </div>
+        <div th:if="${learningStatusDis.checkStatus==0}">
+            <i class="fa-solid fa-circle-xmark" style="color: red"><p th:text="${learningStatusDis.statusContent}" style="color: black"></p></i>
+        </div>
+    </div>
 </div>
 
 <!-- ***** Header Area End ***** -->
@@ -387,7 +444,7 @@
                         </div>
                         <div>
                             <i class="fa-solid fa-question">
-                                <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}" th:if="${lessonListDis.lessonID == 1}">Quiz Test</a>
+                                <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}">Quiz Test</a>
                             </i>
                         </div>
                     </div>
@@ -418,7 +475,7 @@
                             </div>
                             <div style="display: inline-flex">
                                 <i class="fa-solid fa-question">
-                                    <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}" th:if="${lessonListDis.lessonID == 1}">Quiz Test</a>
+                                    <p>Quiz Test</p>
                                 </i>
                             </div>
                         </div>
@@ -426,6 +483,50 @@
                 </div>
             </div>
         </th:block>
+    </div>
+</div>
+
+<div class="container" th:if="${totalStatus=='Course: Completed'}" style="border: rgba(173, 173, 173, 0.99) 1px solid">
+    <h3>Thanks for rating!</h3>
+    <div th:if="${rating!=null}">
+        <div class="star-rated">
+            <input type="radio" id="star1" name="rating" value="1" th:checked="${rating == 1}" disabled/>
+            <label for="star1" title="1 star">&#9733;</label>
+            <input type="radio" id="star2" name="rating" value="2" th:checked="${rating == 2}" disabled/>
+            <label for="star2" title="2 stars">&#9733;</label>
+            <input type="radio" id="star3" name="rating" value="3" th:checked="${rating == 3}" disabled/>
+            <label for="star3" title="3 stars">&#9733;</label>
+            <input type="radio" id="star4" name="rating" value="4" th:checked="${rating == 4}" disabled/>
+            <label for="star4" title="4 stars">&#9733;</label>
+            <input type="radio" id="star5" name="rating" value="5" th:checked="${rating == 5}" disabled/>
+            <label for="star5" title="5 stars">&#9733;</label>
+        </div>
+        <h5 th:text="'Your comment: '+${comment}"></h5>
+    </div>
+    <div th:if="${rating==null}">
+        <form
+                role="form"
+                method="post"
+                th:action="@{/feedback}"
+                th:object="${ratingCourseDTO}"
+        >
+            <div class="star-rating">
+                <input type="radio" id="star1-" name="rating" value="1" required/>
+                <label for="star1-" title="1 star">&#9733;</label>
+                <input type="radio" id="star2-" name="rating" value="2" required/>
+                <label for="star2-" title="2 stars">&#9733;</label>
+                <input type="radio" id="star3-" name="rating" value="3" required/>
+                <label for="star3-" title="3 stars">&#9733;</label>
+                <input type="radio" id="star4-" name="rating" value="4" required/>
+                <label for="star4-" title="4 stars">&#9733;</label>
+                <input type="radio" id="star5-" name="rating" value="5" required/>
+                <label for="star5-" title="5 stars">&#9733;</label>
+            </div>
+            <label for="comment">Comment:</label>
+            <textarea class="form-control" rows="5" id="comment" name="comment" th:field="*{comment}" required></textarea>
+            <input type="number" th:value="${course.courseID}" name="currentCourseID" style="display: none"/>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
 </div>
 <div class="container">
@@ -490,5 +591,33 @@
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script>
+      $(document).ready(function() {
+          var starRating = $(".star-rating");
+
+          starRating.on("click", "input[type='radio']", function() {
+              var selected = $(this).val();
+
+              starRating.find("label").css("color", "gray");
+
+              // Add gold color to selected and preceding labels
+              $(this).prevAll("input[type='radio']").addBack().each(function() {
+                  starRating.find("label[for='" + $(this).attr("id") + "']").css("color", "gold");
+              });
+          });
+      });
+      $(document).ready(function() {
+          var starRating = $(".star-rated");
+
+          // Get the rating value from the input element
+          var selected = starRating.find("input[type='radio']:checked").val();
+
+          // Set the colors of the stars based on the rating value
+          starRating.find("label").css("color", "gray");
+          starRating.find("input[type='radio'][value='" + selected + "']").prevAll("input[type='radio']").addBack().each(function() {
+              starRating.find("label[for='" + $(this).attr("id") + "']").css("color", "gold");
+          });
+      });
+  </script>
 </body>
 </html>
