@@ -105,8 +105,8 @@
             top: 0px;
             padding: 10px;
             box-shadow: 0px 0px 5px 0px #ccc;
-            width: 20%;
-            height: 300px;
+            width: 25%;
+            height: 350px;
             border-radius: 7px;
             border: #041418 solid 2px;
         }
@@ -247,6 +247,7 @@
                         <div style="display: inline-flex">
                             <input type="text" name="fromPage" value="learn" style="display: none">
                             <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
+                            <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
                             <div>
                                 <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
                             </div>
@@ -336,29 +337,68 @@
         </div>
     </div>
 </header>
-<!-- if user not purchase the course, this session appear -->
+<!-- if user didn't purchase the course, this session appear -->
 <div th:if="${enrolledDTO}==null" class="purchase-session sticky-top">
-    <h2 th:text="'Price: '+${course.price}+'₫'"></h2>
-    <form
-            role="form"
-            method="post"
-            th:action="@{payment}"
-            th:object="${courseDTO}"
-    >
-        <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
-        <input type="text" name="fromPage" value="learn" style="display: none">
-        <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-    </form>
-    <form
-            role="form"
-            method="post"
-            th:action="@{payment}"
-            th:object="${courseDTO}"
-    >
-        <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
-        <input type="text" name="fromPage" value="learn" style="display: none">
-        <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
-    </form>
+    <!-- if the course has discount -->
+    <div th:if="${discountPrice!=null}">
+        <h2>
+            <span>Price: </span>
+            <span th:text="${course.price}+'₫'" style="text-decoration: line-through;"></span>
+            <span th:text="${discountPrice}+'₫'" style="color: red;"></span>
+        </h2>
+        <h4 th:text="'Start from: '+${discountDTO.discountStart}"></h4>
+        <h4 th:text="'End at: '+${discountDTO.discountEnd}"></h4>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="${discountPrice}" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
+        </form>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="${discountPrice}" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
+        </form>
+    </div>
+    <!-- if the course doesn't have discount -->
+    <div th:if="${discountPrice==null}">
+        <h2 th:text="'Price: '+${course.price}+'₫'"></h2>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="0" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
+        </form>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="0" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
+        </form>
+    </div>
+
+
 </div>
 <!-- if user purchased the course, this session appear -->
 <div th:if="${enrolledDTO}!=null" class="purchase-session sticky-top" style="height: 400px; overflow-y: scroll">

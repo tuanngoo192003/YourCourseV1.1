@@ -177,15 +177,16 @@
         <div th:if="${session.cart!=null}">
             <th:block th:each="cart, state: ${session.cart}">
                 <form
-                      role="form"
-                      method="post"
-                      th:action="@{payment}"
-                      th:object="${courseDTO}"
+                        role="form"
+                        method="post"
+                        th:action="@{payment}"
+                        th:object="${courseDTO}"
                 >
                     <div class="cartContent" >
                         <div style="display: inline-flex">
-                            <input type="text" name="fromPage" value="list" style="display: none">
+                            <input type="text" name="fromPage" value="learn" style="display: none">
                             <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
+                            <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
                             <div>
                                 <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
                             </div>
@@ -370,32 +371,7 @@
             </div>
 
             <div class="col-md-9 courseList" th:if="${courseList}!=null">
-                <div th:if="${totalPages <= 1}">
-                    <div class="container-fluid">
-                        <th:block th:each="courseListEntity: ${courseList}">
-                            <form class="display"
-                                  role="form"
-                                  method="post"
-                                  th:action="@{payment}"
-                                  th:object="${courseDTO}"
-                            >
-                                <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="@{${courseListEntity.courseImage}}"></a>
-                                <div class="displayContent">
-                                    <input type="text" name="fromPage" value="list" style="display: none">
-                                    <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
-                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
-                                    <p th:text="${courseListEntity.courseDes}"></p>
-                                    <input type="submit" value="Buy now" class="buy-now" name="paymentButton">
-                                    <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-
-                                    <p th:text="'Price: '+${courseListEntity.price}+'đ'" style="float: left; margin-left: 15px;"></p>
-                                </div>
-                            </form>
-                        </th:block>
-                    </div>
-                </div>
-
-                <div th:if="${totalPages > 1}">
+                <div>
                     <div class="container-fluid">
                         <th:block th:each="courseListEntity: ${courseList}">
                             <form class="display"
@@ -412,7 +388,6 @@
                                     <p th:text="${courseListEntity.courseDes}"></p>
                                     <input type="submit" value="Buy now" class="buy-now" name="paymentButton">
                                     <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-
                                     <p th:text="'Price: '+${courseListEntity.price}+'đ'" style="float: left; margin-left: 15px;"></p>
                                 </div>
                             </form>

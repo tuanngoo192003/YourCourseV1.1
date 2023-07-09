@@ -1,6 +1,7 @@
 package com.project.CourseSystem.controller;
 
 import com.project.CourseSystem.converter.CourseConverter;
+import com.project.CourseSystem.converter.DiscountConverter;
 import com.project.CourseSystem.converter.EnrolledConverter;
 import com.project.CourseSystem.dto.*;
 import com.project.CourseSystem.entity.*;
@@ -45,11 +46,16 @@ public class LearnController {
 
     private RatingCourseService ratingCourseService;
 
+    private DiscountService discountService;
+
+    private DiscountConverter discountConverter;
+
     private LearnController(LessonService lessonService, QuizService quizService, CourseService courseService
     , CategoryService categoryService, EnrolledService enrolledService, EnrolledConverter enrolledConverter,
                             AccountService accountService, LearningMaterialService learningMaterialService,
                             ReportService reportService, UserService userService, CourseConverter courseConverter,
-                            RatingCourseService ratingCourseService) {
+                            RatingCourseService ratingCourseService, DiscountService discountService,
+                            DiscountConverter discountConverter) {
         this.lessonService = lessonService;
         this.quizService = quizService;
         this.courseService = courseService;
@@ -62,6 +68,8 @@ public class LearnController {
         this.userService = userService;
         this.courseConverter = courseConverter;
         this.ratingCourseService = ratingCourseService;
+        this.discountService = discountService;
+        this.discountConverter = discountConverter;
     }
 
     @GetMapping("/learn")
@@ -186,6 +194,17 @@ public class LearnController {
                         model.addAttribute("comment", ratingCourse.getComment());
                     }
                 }
+            }
+            /* Get discount */
+            Discount discount = discountService.getDiscountByCourseId(courseID);
+            if(discount != null){
+                //calculate discount price
+                float discountPercent = (100 - (float)discount.getPercentage())/100;
+                float temp = course.getPrice() * discountPercent;
+                int discountPrice = (int) temp;
+                DiscountDTO discountDTO = discountConverter.convertToDTO(discount);
+                model.addAttribute("discountDTO", discountDTO);
+                model.addAttribute("discountPrice", discountPrice);
             }
             return "learn";
         }

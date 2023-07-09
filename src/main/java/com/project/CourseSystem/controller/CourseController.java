@@ -54,6 +54,8 @@ public class CourseController {
 
     private LearningMaterialService learningMaterialService;
 
+    private DiscountService discountService;
+
     @Autowired
     public CourseController(CourseService courseService,  CategoryService categoryService,
                             AuthController authController, AccountService accountService,
@@ -61,7 +63,8 @@ public class CourseController {
                             System_AccountConverter system_accountConverter, GoogleDriveService driveService,
                             LessonController lessonController, QuizService quizService,
                             LessonService lessonService, QuestionService questionService,
-                            AnswerService answerService, LearningMaterialService learningMaterialService){
+                            AnswerService answerService, LearningMaterialService learningMaterialService,
+                            DiscountService discountService){
         this.courseService = courseService;
         this.categoryService = categoryService;
         this.authController = authController;
@@ -76,6 +79,7 @@ public class CourseController {
         this.questionService = questionService;
         this.answerService = answerService;
         this.learningMaterialService = learningMaterialService;
+        this.discountService = discountService;
     }
 
     @GetMapping("/course")
@@ -146,6 +150,10 @@ public class CourseController {
         model.addAttribute("courseDTO", courseDTO);
         model.addAttribute("categoryDTO", cDto);
         model.addAttribute("category", categoryService.getAllCategories());
+
+        //add discount
+        List<Discount> discountList = discountService.getAllDiscounts();
+        if(!discountList.isEmpty()) model.addAttribute("listOfDiscount", discountList);
         return "list";
     }
 
@@ -331,6 +339,10 @@ public class CourseController {
         model.addAttribute("courseDTO", courseDTO);
         model.addAttribute("categoryDTO", cDto);
         model.addAttribute("category", categoryService.getAllCategories());
+
+        //add discount
+        List<Discount> discountList = discountService.getAllDiscounts();
+        if(!discountList.isEmpty()) model.addAttribute("listOfDiscount", discountList);
         return "list";
     }
 
