@@ -36,4 +36,14 @@ public class LessonServiceImpl implements LessonService {
     public Lesson saveLesson(Lesson lesson) {
        return lessonRepository.save(lesson);
     }
+
+    @Override
+    public Lesson getLessonByLessonID(Integer lessonID) {
+        return lessonRepository.findByLessonID(lessonID);
+    }
+
+    @Override
+    public void deteteLesson(Lesson lesson) {
+        lessonRepository.delete(lesson);
+    }
 }

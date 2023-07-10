@@ -6,8 +6,24 @@
   <title>Add Lesson</title>
   <link rel="stylesheet" th:href="@{assets/css/add-lesson.css}">
   <style>
+    html{
+      height: 100%;
+      background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f7f7f7;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #submit-btn,
+    #cancel-btn,
     #back-btn{
-      background-color: #4CAF50;
+      background-color: rgba(246,191,159,1);
       color: white;
       border: none;
       padding: 10px 16px;
@@ -18,45 +34,48 @@
   </style>
 </head>
 <body>
-<h1>Add Lesson</h1>
+<div class="container">
+  <h1>Add Lesson</h1>
 
-<form
-        id="lesson-form"
-        role="form"
-        method="post"
-        th:action="@{/addLesson}"
-        th:object="${addLessonForm}"
-        enctype="multipart/form-data"
->
-  <div id="lesson-container">
-    <label for="lesson-title">Lesson Title:</label>
-    <input type="text" id="lesson-title" th:field="*{lessonName}" required>
+  <form
+          id="lesson-form"
+          role="form"
+          method="post"
+          th:action="@{/addLesson}"
+          th:object="${addLessonForm}"
+          enctype="multipart/form-data"
+  >
+    <div id="lesson-container">
+      <label for="lesson-title">Lesson Title:</label>
+      <input type="text" id="lesson-title" th:field="*{lessonName}" required>
 
-    <label for="lesson-des">Lesson Short Description:</label>
-    <input type="text" id="lesson-des" th:field="*{lessonDes}" required>
-  </div>
-  <div id="materials-container">
-    <label>Learning Materials:</label>
-    <div class="material-row">
-      <select class="material-type" id="createMaterialForm" required>
-        <option value="">Select Type</option>
-        <option value="link" id="link">Link</option>
-        <option value="file" id="uploadFile">File</option>
-      </select>
+      <label for="lesson-des">Lesson Short Description:</label>
+      <input type="text" id="lesson-des" th:field="*{lessonDes}" required>
     </div>
-    <div>
-      <div id="form-container-forMaterial"></div>
-      <div id="material-type"></div>
+    <div id="materials-container">
+      <label>Learning Materials:</label>
+      <div class="material-row">
+        <select class="material-type" id="createMaterialForm" required>
+          <option value="">Select Type</option>
+          <option value="link" id="link">Link</option>
+          <option value="file" id="uploadFile">File</option>
+        </select>
+      </div>
+      <div>
+        <div id="form-container-forMaterial"></div>
+        <div id="material-type"></div>
+      </div>
+      <input type="text" class="material-value" placeholder="Material name" th:field="*{learningMaterialName}" required>
     </div>
-    <input type="text" class="material-value" placeholder="Material name" th:field="*{learningMaterialName}" required>
-  </div>
 
-  <div id="buttons-container">
-    <button type="submit" id="submit-btn" value="Submit" name="submit">Continue To Add Quiz</button>
-    <button type="button" id="cancel-btn"><a th:href="@{/allCourses}" style="color: white; text-decoration: none">Cancel</a></button>
-    <button type="button" id="back-btn"><a th:href="@{/addCourse}" style="color: white; text-decoration: none">Back to course editor</a></button>
-  </div>
-</form>
+    <div id="buttons-container">
+      <button type="submit" id="submit-btn" value="Submit" name="submit">Continue To Add Quiz</button>
+      <button type="button" id="cancel-btn"><a th:href="@{/cancel}" style="color: white; text-decoration: none">Cancel</a></button>
+      <button type="button" id="back-btn"><a th:href="@{/addCourse}" style="color: white; text-decoration: none">Back to course editor</a></button>
+    </div>
+  </form>
+</div>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {

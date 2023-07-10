@@ -9,6 +9,8 @@ import lombok.*;
 @Builder
 public class AddLessonFormDTO {
 
+    private Integer lessonID;
+
     private String lessonName;
 
     private String lessonDes;

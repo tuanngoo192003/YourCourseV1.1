@@ -5,15 +5,53 @@
     <meta charset="UTF-8">
     <title>AddQuiz</title>
     <link rel="stylesheet" th:href="@{assets/css/add-quiz.css}">
+    <style>
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f7f7;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body{
+            padding-bottom: 30px;
+        }
+
+        html{
+            height: 100%;
+            background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
+        }
+
+        .answer-input{
+            display: flex;
+        }
+
+        .answer-input input[type="text"]{
+            margin-right: 10px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .answer-input label{
+            font-weight: normal;
+        }
+
+        #add-quiz-form{
+            width: 80%;
+        }
+    </style>
 </head>
 <body>
-<h1>Add Quiz</h1>
+<div class="container">
+    <h1>Add Quiz</h1>
 
     <form
-        role="form"
-        method="post"
-        th:action="@{/createNewCourse}"
-        th:object="${quizListForm}"
+            role="form"
+            method="post"
+            th:action="@{/createNewCourse}"
+            th:object="${quizListForm}"
     >
         <div id="quiz-container">
             <label for="quiz-title">Quiz Name:</label>
@@ -22,32 +60,32 @@
             <label for="quiz-des">Quiz Short Description:</label>
             <input type="text" id="quiz-des" th:field="*{quizDTO.quizDes}" required>
 
-            <label for="quiz-time">Quiz Short Description:</label>
-            <input type="time" id="quiz-time">
         </div>
         <div id="add-quiz-form">
             <div>
                 <label for="question">Question 1:</label>
                 <input type="text" id="question" name="questionDTO-content" placeholder="Question: " required><br>
+                <div class="answer-input">
+                    <input type="text" id="optionA" name="answerDTO-content" placeholder="OptionA: " required>
+                    Is correct:<input type="radio" id="isCorrectA" value="optionA" name="isCorrect"><br>
 
-                <input type="text" id="optionA" name="answerDTO-content" placeholder="OptionA: " required>
-                Is correct:<input type="radio" id="isCorrectA" value="optionA" name="isCorrect"><br>
+                    <input type="text" id="optionB" name="answerDTO-content" placeholder="OptionB: " required>
+                    Is correct:<input type="radio" id="isCorrectB" value="optionB" name="isCorrect"><br>
+                </div>
+                <div class="answer-input">
+                    <input type="text" id="optionC" name="answerDTO-content" placeholder="OptionC: " required>
+                    Is correct:<input type="radio" id="isCorrectC" value="optionC" name="isCorrect"><br>
 
-                <input type="text" id="optionB" name="answerDTO-content" placeholder="OptionB: " required>
-                Is correct:<input type="radio" id="isCorrectB" value="optionB" name="isCorrect"><br>
-
-                <input type="text" id="optionC" name="answerDTO-content" placeholder="OptionC: " required>
-                Is correct:<input type="radio" id="isCorrectC" value="optionC" name="isCorrect"><br>
-
-                <input type="text" id="optionD" name="answerDTO-content" placeholder="OptionD: " required>
-                Is correct:<input type="radio" id="isCorrectD" value="optionD" name="isCorrect"><br>
+                    <input type="text" id="optionD" name="answerDTO-content" placeholder="OptionD: " required>
+                    Is correct:<input type="radio" id="isCorrectD" value="optionD" name="isCorrect"><br>
+                </div>
             </div>
-            <button id="create-quiz">Create quiz</button>
         </div>
+        <button type="button" id="create-quiz" style="margin-bottom: 15px">Create quiz</button><br>
         <button type="submit" id="next-btn" value="Add new lesson" name="submit">Add new lesson</button>
         <button type="submit" id="submit-btn" value="Create course" name="submit">Create course</button>
     </form>
-
+</div>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // Initialize
@@ -64,15 +102,12 @@
             // Get the parent element for the new form
             const formContainer = document.getElementById("add-quiz-form");
 
-            // Create a new form group
-            const formGroup = document.createElement("div");
-            formGroup.classList.add("form-group");
-
             // Create a label for the question input
             const questionLabel = document.createElement("label");
             questionLabel.setAttribute("for", "question");
-            questionLabel.textContent = "Question:"+questionCount+1;
-            formGroup.appendChild(questionLabel);
+            var count = questionCount+1;
+            questionLabel.textContent = "Question:"+count;
+            formContainer.appendChild(questionLabel);
 
             // Create the question input
             const questionInput = document.createElement("input");
@@ -80,32 +115,34 @@
             questionInput.setAttribute("id", "question");
             questionInput.setAttribute("name", "questionDTO-content");
             questionInput.setAttribute("required", "");
-            formGroup.appendChild(questionInput);
+            formContainer.appendChild(questionInput);
 
-            // Create the answer inputs
-            const answerInputs = document.createElement("div");
-            answerInputs.classList.add("answer-inputs");
+            // Create a new question group
+            const answerInput1 = document.createElement("div");
+            answerInput1.classList.add("answer-input");
+
+            const answerInput2 = document.createElement("div");
+            answerInput2.classList.add("answer-input");
 
             // Create the answer A input group
             const answerGroupA = createAnswerInputGroup("A", "Option A", questionCount);
-            answerInputs.appendChild(answerGroupA);
+            answerInput1.appendChild(answerGroupA);
 
             // Create the answer B input group
             const answerGroupB = createAnswerInputGroup("B", "Option B", questionCount);
-            answerInputs.appendChild(answerGroupB);
+            answerInput1.appendChild(answerGroupB);
 
             // Create the answer C input group
             const answerGroupC = createAnswerInputGroup("C", "Option C", questionCount);
-            answerInputs.appendChild(answerGroupC);
+            answerInput2.appendChild(answerGroupC);
 
             // Create the answer D input group
             const answerGroupD = createAnswerInputGroup("D", "Option D", questionCount);
-            answerInputs.appendChild(answerGroupD);
-
-            formGroup.appendChild(answerInputs);
+            answerInput2.appendChild(answerGroupD);
 
             // Add the new form group to the parent element
-            formContainer.appendChild(formGroup);
+            formContainer.appendChild(answerInput1);
+            formContainer.appendChild(answerInput2);
         }
 
         function createAnswerInputGroup(answerId, answerLabel, index) {

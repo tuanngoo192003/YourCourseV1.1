@@ -11,5 +11,5 @@ public interface QuizService {
 
     Quiz saveQuiz(Quiz quiz);
 
-
+    void deleteQuiz(Quiz quiz);
 }

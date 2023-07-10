@@ -184,7 +184,7 @@
                 >
                     <div class="cartContent" >
                         <div style="display: inline-flex">
-                            <input type="text" name="fromPage" value="learn" style="display: none">
+                            <input type="text" name="fromPage" value="list" style="display: none">
                             <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
                             <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
                             <div>
@@ -243,10 +243,9 @@
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Fundamental Programming</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Programming</a></li>
                             </ul>
                         </li>
-                        <li class="scroll-to-section"><a href="#services">Services</a></li>
                         <li><a th:href="@{/course}">Courses</a></li>
                         <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
                             style="color: white; background: none; border: none">
@@ -380,15 +379,31 @@
                                   th:action="@{/payment}"
                                   th:object="${courseDTO}"
                             >
-                                <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="@{${courseListEntity.courseImage}}"></a>
+                                <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
                                 <div class="displayContent">
                                     <input type="text" name="fromPage" value="list" style="display: none">
                                     <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
                                     <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
                                     <p th:text="${courseListEntity.courseDes}"></p>
+                                    <div th:if="${listOfDiscount!=null}">
+                                        <div th:with="messageDisplay=false">
+                                            <div th:if="messageDisplay">
+                                                <p th:text="'Price: '+${courseListEntity.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+                                            </div>
+                                            <div th:each="discounts, count: ${listOfDiscount}">
+                                                <div th:if="${discounts.courseID.courseID==courseListEntity.courseID}">
+                                                    <p th:text="'Discount: '+${courseListEntity.price * (100 - discounts.percentage) / 100}+'đ'" style="float: left; margin-left: 15px; color: red"></p>
+                                                    <input type="number" name="discountPrice" th:value="${courseListEntity.price * (100 - discounts.percentage) / 100}" style="display: none">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <input type="submit" value="Buy now" class="buy-now" name="paymentButton">
                                     <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-                                    <p th:text="'Price: '+${courseListEntity.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+                                </div>
+                                <div th:if="${session.role == 2}">
+                                    <button><a th:href="@{/updateCourse(courseID=${courseListEntity.courseID})}">Edit</a></button>
+                                    <button><a th:href="@{/deleteCourse(courseID=${courseListEntity.courseID})}">Delete</a></button>
                                 </div>
                             </form>
                         </th:block>
@@ -435,7 +450,7 @@
     </div>
 </div>
 </body>
-<script>
-
-</script>
+<!-- Bootstrap core JavaScript -->
+<script src="assets/js/slick-slider.js"></script>
+<script src="assets/js/custom.js"></script>
 </html>

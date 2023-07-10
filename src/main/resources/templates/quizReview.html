@@ -163,6 +163,41 @@
             color: dimgray;
         }
 
+        .offcanvas-title{
+            font-weight: bold;
+            color: black;
+            margin-top: 15px;
+            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
+            margin-bottom: 10px;
+        }
+        .cartContent{
+            width: 100%;
+            height: 100%;
+            margin-bottom: 10px;
+            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
+        }
+
+        .cartContent h4{
+            font-size: 15px;
+            text-align: center;
+            font-weight: normal;
+            color: black;
+        }
+
+        .buy-now-cart{;
+            padding: 20px 30px;
+            background: whitesmoke;
+            border: none;
+            color: rgb(58, 58, 58);
+            transition: 2s;
+            border-radius: 10px;
+        }
+
+        .buy-now-cart:hover{
+            background: gray;
+            border: none;
+            color: rgb(58, 58, 58);
+        }
     </style>
 </head>
 <body>
@@ -185,6 +220,7 @@
                         <div style="display: inline-flex">
                             <input type="text" name="fromPage" value="list" style="display: none">
                             <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
+                            <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
                             <div>
                                 <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
                             </div>
@@ -241,10 +277,9 @@
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Fundamental Programming</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Programming</a></li>
                             </ul>
                         </li>
-                        <li class="scroll-to-section"><a href="#services">Services</a></li>
                         <li><a th:href="@{/course}">Courses</a></li>
                         <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
                             style="color: white; background: none; border: none">

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Quiz</title>
+    <link rel="stylesheet" th:href="@{assets/css/add-quiz.css}">
+    <style>
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f7f7;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body{
+            padding-bottom: 30px;
+        }
+
+        html{
+            height: 100%;
+            background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
+        }
+
+        .answer-input{
+            display: flex;
+        }
+
+        .answer-input input[type="text"]{
+            margin-right: 10px;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .answer-input label{
+            font-weight: normal;
+        }
+
+        .add-quiz-form{
+            border: rgb(58, 58, 58) solid 1px;
+            padding: 10px;
+            max-width: 500px;
+            margin: 0 0 30px 0px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form
+                role="form"
+                method="post"
+                th:action="@{/updateQuiz}"
+        >
+            <div id="quiz-container">
+                <label for="quiz-title">Quiz Name:</label>
+                <input type="text" id="quiz-title" name="quizName" th:value="${quiz.quizName}" required>
+
+                <label for="quiz-des">Quiz Short Description:</label>
+                <input type="text" id="quiz-des" name="quizDes" th:value="${quiz.quizDes}" required>
+            </div>
+            <div id="add-quiz-form-container">
+                <div class="add-quiz-form" th:each="questions: ${questionList}">
+                    <div id="ques-and-ans-container">
+                        <label for="question" th:text="'Question'+${questions.questionID}"></label>
+                        <input type="text" id="question" th:name="'questionDTO-content'+${questions.questionID}" placeholder="Question: "
+                               th:value="${questions.content}" required><br>
+                        <div class="answer-input" th:each="answers: ${answerList}">
+                            <div th:if="${answers.questionID.questionID==questions.questionID}">
+                                <div th:switch="${answers.answerOrdinal}">
+                                    <div th:case="'optionA'">
+                                        <input type="text" id="optionA" th:name="'answerDTO-content'+${answers.answerID}" placeholder="OptionA: "
+                                               th:value="${answers.content}" required>
+                                        Is correct:<input type="radio" id="isCorrectA" value="optionA" th:name="'isCorrect'+${questions.questionID}"
+                                                          th:checked="${answers.isCorrect=='right'}"><br>
+                                    </div>
+                                    <div th:case="'optionB'">
+                                        <input type="text" id="optionB" th:name="'answerDTO-content'+${answers.answerID}" placeholder="OptionB: "
+                                               th:value="${answers.content}" required>
+                                        Is correct:<input type="radio" id="isCorrectB" value="optionB" th:name="'isCorrect'+${questions.questionID}"
+                                                          th:checked="${answers.isCorrect=='right'}"><br>
+                                    </div>
+                                    <div th:case="'optionC'">
+                                        <input type="text" id="optionC" th:name="'answerDTO-content'+${answers.answerID}" placeholder="OptionC: "
+                                               th:value="${answers.content}" required>
+                                        Is correct:<input type="radio" id="isCorrectC" value="optionC" th:name="'isCorrect'+${questions.questionID}"
+                                                          th:checked="${answers.isCorrect=='right'}"><br>
+                                    </div>
+                                    <div th:case="'optionD'">
+                                        <input type="text" id="optionD" th:name="'answerDTO-content'+${answers.answerID}" placeholder="OptionD: "
+                                               th:value="${answers.content}" required>
+                                        Is correct:<input type="radio" id="isCorrectD" value="optionD" th:name="'isCorrect'+${questions.questionID}"
+                                                          th:checked="${answers.isCorrect=='right'}"><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <button type="button" id="create-quiz" style="margin-bottom: 15px">Add quiz</button><br>
+    </div>
+<script th:inline="javascript">
+    document.addEventListener("DOMContentLoaded", function() {
+        // Initialize
+        const quizContainer = document.getElementById("create-quiz");
+
+        quizContainer.addEventListener("click", function () {
+            createQuesAndAnsForm();
+        })
+
+        var questionCount = 0;
+
+        function createQuesAndAnsForm() {
+            questionCount += 1;
+            // Get the parent element for the new form
+            const parentsContainer = document.getElementById("add-quiz-form-container");
+
+            const formContainer = document.createElement("div");
+            formContainer.setAttribute("class", "add-quiz-form");
+            parentsContainer.appendChild(formContainer);
+
+            const quesAnsContainer = document.createElement("div");
+            quesAnsContainer.setAttribute("id", "ques-and-ans-container");
+            formContainer.appendChild(quesAnsContainer);
+
+
+
+            // Create a label for the question input
+            const questionLabel = document.createElement("label");
+            questionLabel.setAttribute("for", "question");
+            var count = questionCount;
+            questionLabel.textContent = "New Question:"+count;
+            quesAnsContainer.appendChild(questionLabel);
+
+            // Create the question input
+            const questionInput = document.createElement("input");
+            questionInput.setAttribute("type", "text");
+            questionInput.setAttribute("id", "question");
+            questionInput.setAttribute("placeholder", "Question: ")
+            questionInput.setAttribute("name", "questionDTO-content");
+            questionInput.setAttribute("required", "");
+            quesAnsContainer.appendChild(questionInput);
+
+            // Create a new question group
+            const answerInput = document.createElement("div");
+
+            // Create the answer A input group
+            const answerGroupA = createAnswerInputGroup("A", "Option A", questionCount);
+            answerInput.appendChild(answerGroupA);
+
+            // Create the answer B input group
+            const answerGroupB = createAnswerInputGroup("B", "Option B", questionCount);
+            answerInput.appendChild(answerGroupB);
+
+            // Create the answer C input group
+            const answerGroupC = createAnswerInputGroup("C", "Option C", questionCount);
+            answerInput.appendChild(answerGroupC);
+
+            // Create the answer D input group
+            const answerGroupD = createAnswerInputGroup("D", "Option D", questionCount);
+            answerInput.appendChild(answerGroupD);
+
+            // Add the new form group to the parent element
+            quesAnsContainer.appendChild(answerInput);
+        }
+
+        function createAnswerInputGroup(answerId, answerLabel, index) {
+            const answerGroup = document.createElement("div");
+            answerGroup.classList.add("answer-input");
+
+            // Create the answer input
+            const answerInput = document.createElement("input");
+            answerInput.setAttribute("type", "text");
+            answerInput.setAttribute("id", "option" + answerId);
+            answerInput.setAttribute("name", "answerDTO-content");
+            answerInput.setAttribute("required", "");
+            answerInput.setAttribute("placeholder", answerLabel);
+            answerGroup.appendChild(answerInput);
+
+            // Create the "is correct" radio button label
+            const isCorrectLabel = document.createElement("label");
+            isCorrectLabel.setAttribute("for", "isCorrect" + answerId);
+            isCorrectLabel.textContent = "Is Correct";
+            answerGroup.appendChild(isCorrectLabel);
+
+            // Create the "is correct" radio button
+            const isCorrectRadio = document.createElement("input");
+            isCorrectRadio.setAttribute("type", "radio");
+            isCorrectRadio.setAttribute("id", "isCorrect" + answerId);
+            isCorrectRadio.setAttribute("value", "option" + answerId);
+            isCorrectRadio.setAttribute("name", "isCorrect" + index);
+            answerGroup.appendChild(isCorrectRadio);
+
+            return answerGroup;
+        }
+    });
+</script>
+</body>
+</html>

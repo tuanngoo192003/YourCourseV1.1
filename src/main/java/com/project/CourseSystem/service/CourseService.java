@@ -28,5 +28,7 @@ public interface CourseService {
 
     void saveCourseDetails(CourseDetails courseDetails);
 
+    void updateCourse(Course course);
+
     void addReport(Report report);
 }

@@ -55,5 +55,10 @@ public class AnswerServiceImpl implements AnswerService {
         answerRepository.save(answer);
     }
 
+    @Override
+    public void deleteAnswer(Answer answer) {
+        answerRepository.delete(answer);
+    }
+
 
 }

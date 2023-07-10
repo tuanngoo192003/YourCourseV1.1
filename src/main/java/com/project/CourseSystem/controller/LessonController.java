@@ -110,7 +110,7 @@ public class LessonController {
         return "addQuiz";
     }
 
-    @GetMapping ("/addLessonTest")
+    @GetMapping ("/addLessonForm")
     public String addLessonForm(Model model, HttpServletRequest request, HttpServletResponse response){
         //set model to input lesson and material
         AddLessonFormDTO addLessonForm = new AddLessonFormDTO();

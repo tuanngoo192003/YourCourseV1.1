@@ -46,4 +46,9 @@ public class QuizServiceImpl implements QuizService {
     public Quiz saveQuiz(Quiz quiz) {
         return quizRepository.save(quiz);
     }
+
+    @Override
+    public void deleteQuiz(Quiz quiz) {
+        quizRepository.delete(quiz);
+    }
 }

@@ -13,4 +13,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Integer> {
 
     @Query(value = "SELECT quizid FROM lesson WHERE lessonid = ?1", nativeQuery = true)
     Integer getQuizIDByLessonID(int lessonID);
+
+    @Query(value = "SELECT * FROM lesson WHERE lessonid = ?1", nativeQuery = true)
+    Lesson findByLessonID(Integer lessonID);
 }
