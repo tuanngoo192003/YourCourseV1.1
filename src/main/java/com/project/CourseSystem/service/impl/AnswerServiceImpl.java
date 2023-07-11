@@ -60,5 +60,15 @@ public class AnswerServiceImpl implements AnswerService {
         answerRepository.delete(answer);
     }
 
+    @Override
+    public void saveAnswer(Answer answer) {
+        answerRepository.save(answer);
+    }
+
+    @Override
+    public void updateAnswer(Answer answer) {
+        answerRepository.updateAnswer(answer.getContent(), answer.getIsCorrect(), answer.getAnswerID());
+    }
+
 
 }

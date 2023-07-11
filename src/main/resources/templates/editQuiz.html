@@ -54,6 +54,7 @@
                 th:action="@{/updateQuiz}"
         >
             <div id="quiz-container">
+                <input type="number" name="quizID" th:value="${quiz.quizID}" style="display: none">
                 <label for="quiz-title">Quiz Name:</label>
                 <input type="text" id="quiz-title" name="quizName" th:value="${quiz.quizName}" required>
 
@@ -98,7 +99,25 @@
                         </div>
                     </div>
                 </div>
+                <div style="display: none">
+                    <input type="text" name="questionDTO-content" placeholder="Question: "
+                           value="skipFirstQuestion" required><br>
+                    <div class="answer-input">
+                        <input type="text" name="answerDTO-content" placeholder="OptionA: "
+                               value="skipA" required>
+
+                        <input type="text" name="answerDTO-content" placeholder="OptionB: "
+                               value="skipB" required>
+
+                        <input type="text" name="answerDTO-content" placeholder="OptionC: "
+                               value="skipC" required>
+
+                        <input type="text" name="answerDTO-content" placeholder="OptionD: "
+                               value="skipD" required>
+                    </div>
+                </div>
             </div>
+            <input type="submit" name="submit" value="Save">
         </form>
         <button type="button" id="create-quiz" style="margin-bottom: 15px">Add quiz</button><br>
     </div>

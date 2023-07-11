@@ -113,6 +113,7 @@
 
     // Add event listener to the "Add Material" option
     createMaterialForm.addEventListener("change", function () {
+      document.getElementById("numberOfNewQuestion").innerHTML = [[${session.numberOfNewQuestion}]] + 1;
       createMaForm();
     });
 

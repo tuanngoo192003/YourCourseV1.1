@@ -1,9 +1,6 @@
 package com.project.CourseSystem.controller;
 
-import com.project.CourseSystem.converter.AnswerConverter;
-import com.project.CourseSystem.converter.CategoryConverter;
-import com.project.CourseSystem.converter.QuestionConverter;
-import com.project.CourseSystem.converter.QuizConverter;
+import com.project.CourseSystem.converter.*;
 import com.project.CourseSystem.dto.*;
 import com.project.CourseSystem.entity.*;
 import com.project.CourseSystem.service.*;
@@ -21,6 +18,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,13 +58,16 @@ public class AdminController {
 
     QuizConverter quizConverter;
 
+    CourseConverter courseConverter;
+
     AdminController(CourseController courseController, AuthController authController,
                     AccountService accountService, CourseService courseService,
                     GoogleDriveService driveService, CategoryConverter categoryConverter,
                     CategoryService categoryService, LearnController learnController,
                     LessonService lessonService, LearningMaterialService learningMaterialService,
                     QuizService quizService, QuestionService questionService, AnswerService answerService,
-                    AnswerConverter answerConverter, QuestionConverter questionConverter, QuizConverter quizConverter){
+                    AnswerConverter answerConverter, QuestionConverter questionConverter,
+                    QuizConverter quizConverter, CourseConverter courseConverter){
         this.courseController = courseController;
         this.authController = authController;
         this.accountService = accountService;
@@ -83,6 +84,7 @@ public class AdminController {
         this.answerConverter = answerConverter;
         this.questionConverter = questionConverter;
         this.quizConverter = quizConverter;
+        this.courseConverter = courseConverter;
     }
 
     @GetMapping("/cancel")
@@ -302,6 +304,18 @@ public class AdminController {
                     List<Answer> answerList = getAnswers(questionList);
                     model.addAttribute("answerList", answerList);
 
+                    List<Integer> listOfQuestionID = new ArrayList<>();
+                    for(int i = 0; i < questionList.size(); i++){
+                        listOfQuestionID.add(questionList.get(i).getQuestionID());
+                    }
+                    session.setAttribute("listOfQuestionID", listOfQuestionID);
+                    List<Integer> listOfAnswerID = new ArrayList<>();
+                    for(int i = 0; i < answerList.size(); i++){
+                        listOfAnswerID.add(answerList.get(i).getAnswerID());
+                    }
+                    session.setAttribute("listOfAnswerID", listOfAnswerID);
+                    session.setAttribute("numberOfNewQuestion", 0);
+
                     return "editQuiz";
                 }
                 else if (choice.equals("Cancel")){
@@ -389,10 +403,195 @@ public class AdminController {
     }
 
     @PostMapping("/updateQuiz")
-    public String updateQuiz(Model model, HttpServletRequest request, HttpServletResponse response){
+    public String updateQuiz(@RequestParam("questionDTO-content")String questionContents,
+                             @RequestParam("answerDTO-content") String answerContents,
+                             Model model, HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         Integer courseID = (Integer) session.getAttribute("courseIDSession");
+        //Update quiz
+        String quizID = request.getParameter("quizID");
+        String quizName = request.getParameter("quizName");
+        String quizDes = request.getParameter("quizDes");
+        Quiz quiz = new Quiz();
+        quiz.setQuizID(Integer.parseInt(quizID));
+        quiz.setQuizName(quizName);
+        quiz.setQuizDes(quizDes);
+        Time time = new Time(0,0,0);
+        quiz.setQuizPeriod(time);
+        quiz.setCourseID(courseConverter.convertDtoToEtity(courseService.getCourseByID(courseID)));
+        quizService.saveQuiz(quiz);
+
+        //Update question and answer
+
+        //Get list of questionID and answerID
+        List<Integer> listOfQuestionID = (List<Integer>) session.getAttribute("listOfQuestionID");
+        List<Integer> listOfAnswerID = (List<Integer>) session.getAttribute("listOfAnswerID");
+
+        for(int i = 0; i < listOfQuestionID.size(); i++){
+            Question question = new Question();
+            Integer questionID = listOfQuestionID.get(i);
+            String questionContent = request.getParameter("questionDTO-content" + listOfQuestionID.get(i));
+            question.setQuestionID(questionID);
+            question.setContent(questionContent);
+            question.setQuizID(quiz);
+            questionService.saveQuestion(question);
+            List<AnswerDTO> answerDTOList = answerService.getAllByQuestionId(questionID);
+            for (int j = 0; j < answerDTOList.size(); j++) {
+                Integer answerID = answerDTOList.get(j).getAnswerID();
+                Answer answer = answerService.getById(answerID);;
+                String answerContent = request.getParameter("answerDTO-content" + answerDTOList.get(j).getAnswerID());
+                String isCorrect = request.getParameter("isCorrect"+questionID);
+                if(isCorrect.equals(answer.getAnswerOrdinal())){
+                    answer.setIsCorrect("right");
+                } else{
+                    answer.setIsCorrect("wrong");
+                }
+                answer.setContent(answerContent);
+
+                answerService.updateAnswer(answer);
+            }
+        }
+
+        //Get new question and answer
+        int index = questionContents.indexOf(",");
+        if (index != -1) { // checks if a comma exists in the string
+            questionContents = questionContents.substring(index + 1); // removes the first substring before the first comma
+        }
+        index = -1;
+        for (int i = 0; i < 4; i++) { // iterates four times to skip the first four substrings
+            index = answerContents.indexOf(",");
+            if (index != -1) {
+                answerContents = answerContents.substring(index + 1);
+            }
+        }
+        System.err.println(questionContents);
+        System.err.println(answerContents);
+
+        saveNewQuestionAndAnswer(questionContents, answerContents, quiz, request, response);
+
+
         return learnController.learnPage(courseID, model, request, response);
+    }
+
+    public void saveNewQuestionAndAnswer(String questionContents, String answerContents, Quiz quiz,
+                                         HttpServletRequest request, HttpServletResponse response){
+        List<QuestionDTO> questionList = new ArrayList<>();
+        List<AnswerDTO> answerList = new ArrayList<>();
+        int tempIndex = 0;
+        for(int i = 0; i < questionContents.length(); i++){
+            String temp;
+            if(questionContents.charAt(i) == ',' || i == questionContents.length()-1){
+                QuestionDTO questionDTO = new QuestionDTO();
+                temp = questionContents.substring(tempIndex, i);
+                questionDTO.setContent(temp);
+                questionList.add(questionDTO);
+                tempIndex = i+1;
+            }
+        }
+        tempIndex = 0;
+        int ordinalCount = 0;
+        for(int i = 0; i < answerContents.length(); i++){
+            int isCorrectIndex = 1;
+            String temp;
+            AnswerDTO answerDTO = new AnswerDTO();
+            if(answerContents.charAt(i) == ',' || i == answerContents.length()-1){
+                temp = answerContents.substring(tempIndex, i);
+                answerDTO.setContent(temp);
+                String answerOrdinal = "";
+                if(ordinalCount == 0){ answerDTO.setAnswerOrdinal("optionA"); answerOrdinal = "optionA"; ordinalCount=1;}
+                else if (ordinalCount == 1){ answerDTO.setAnswerOrdinal("optionB"); answerOrdinal = "optionB"; ordinalCount=2;}
+                else if (ordinalCount == 2){ answerDTO.setAnswerOrdinal("optionC"); answerOrdinal = "optionC"; ordinalCount=3;}
+                else if (ordinalCount == 3){ answerDTO.setAnswerOrdinal("optionD"); answerOrdinal = "optionD";ordinalCount=0;}
+                    String name = "isCorrect"+isCorrectIndex;
+                    String isCorrect = request.getParameter(name);
+                    System.out.println(name);
+                    System.out.println(isCorrect);
+                    System.out.println("iscorrect test---------------");
+                    if(answerOrdinal.equals(isCorrect)){
+                        answerDTO.setIsCorrect("right");
+                    }
+                    else{
+                        answerDTO.setIsCorrect("wrong");
+                    }
+                answerList.add(answerDTO);
+                isCorrectIndex++;
+                tempIndex = i+1;
+            }
+        }
+        //save Question to database
+        QuestionDTO questionDTO = new QuestionDTO();
+        /* Algorithm to save answer
+         *  For each question, save that question and 4 answer to the database
+         * */
+        int plusIndex = 3;
+        for(int i = 0; i < questionList.size(); i++){
+            questionDTO = questionList.get(i);
+            Question question = new Question();
+            question.setQuizID(quiz);
+            question.setContent(questionDTO.getContent());
+            question = questionService.saveQuestion(question);
+            if(i==questionList.size()-1){
+                AnswerDTO answerDTO4 = answerList.get(answerList.size()-4);
+                Answer answer3 = new Answer();
+                answer3.setQuestionID(question);
+                answer3.setContent(answerDTO4.getContent());
+                answer3.setAnswerOrdinal(answerDTO4.getAnswerOrdinal());
+                answer3.setIsCorrect(answerDTO4.getIsCorrect());
+                answerService.save(answer3);
+
+                AnswerDTO answerDTO3 = answerList.get(answerList.size()-3);
+                Answer answer2 = new Answer();
+                answer2.setQuestionID(question);
+                answer2.setContent(answerDTO3.getContent());
+                answer2.setAnswerOrdinal(answerDTO3.getAnswerOrdinal());
+                answer2.setIsCorrect(answerDTO3.getIsCorrect());
+                answerService.save(answer2);
+
+                AnswerDTO answerDTO2 = answerList.get(answerList.size()-2);
+                Answer answer1 = new Answer();
+                answer1.setQuestionID(question);
+                answer1.setContent(answerDTO2.getContent());
+                answer1.setAnswerOrdinal(answerDTO2.getAnswerOrdinal());
+                answer1.setIsCorrect(answerDTO2.getIsCorrect());
+                answerService.save(answer1);
+
+                AnswerDTO answerDTO1 = answerList.get(answerList.size()-1);
+                Answer answer = new Answer();
+                answer.setQuestionID(question);
+                answer.setContent(answerDTO1.getContent());
+                answer.setAnswerOrdinal(answerDTO1.getAnswerOrdinal());
+                answer.setIsCorrect(answerDTO1.getIsCorrect());
+                answerService.save(answer);
+            }
+            else{
+                if(i == 0){
+                    for(int j = 0; j < 4; j++){
+                        AnswerDTO answerDTO1 = answerList.get(j);
+                        Answer answer = new Answer();
+                        answer.setQuestionID(question);
+                        answer.setContent(answerDTO1.getContent());
+                        answer.setAnswerOrdinal(answerDTO1.getAnswerOrdinal());
+                        answer.setIsCorrect(answerDTO1.getIsCorrect());
+                        answerService.save(answer);
+                    }
+                }else{
+                    int j = i+plusIndex;
+                    int n = j + 4;
+                    //save Answer
+                    while(j<n){
+                        AnswerDTO answerDTO1 = answerList.get(j);
+                        Answer answer = new Answer();
+                        answer.setQuestionID(question);
+                        answer.setContent(answerDTO1.getContent());
+                        answer.setAnswerOrdinal(answerDTO1.getAnswerOrdinal());
+                        answer.setIsCorrect(answerDTO1.getIsCorrect());
+                        answerService.save(answer);
+                        j++;
+                    }
+                    plusIndex+=3;
+                }
+            }
+        }
     }
 
     @GetMapping("/allUsers")
