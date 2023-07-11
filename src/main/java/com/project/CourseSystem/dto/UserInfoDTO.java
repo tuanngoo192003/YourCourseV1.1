@@ -24,6 +24,8 @@ public class UserInfoDTO {
 
     private String phoneNums;
 
+    private String gender;
+
     private String avatar;
 
     private SystemAccount accountID;

@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
-    @Query(value = "SELECT * FROM payment WHERE payment_date >= DATE_FORMAT(DATE_SUB(NOW(), INTERVAL ?1 MONTH), '%Y-%m-01') AND payment_date < DATE_FORMAT(DATE_SUB(DATE_SUB(NOW(), INTERVAL ?1 MONTH), INTERVAL 1 DAY), '%Y-%m-%d')", nativeQuery = true)
-    List<Payment> getPaymentByMonth(int startMonth, int endMonth);
+    @Query(value = "SELECT * FROM payment WHERE payment_date >= DATE_SUB(NOW(), INTERVAL ?1 MONTH) \n" +
+            "AND payment_date < DATE_SUB(NOW(), INTERVAL ?2 MONTH)", nativeQuery = true)
+    List<Payment> getPaymentByMonth(int endMonth, int startMonth);
 }

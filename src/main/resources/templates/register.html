@@ -244,7 +244,7 @@
         <span></span>
         <label>Confirm password<label style="color: red; position: relative; top: 10px;">*</label></label>
     </div>
-        <div style="display: none">
+    <div style="display: none">
         <label>Assign as: </label>
         <select
                 id="role"
@@ -253,7 +253,24 @@
                 style="margin-bottom: 20px"
         >
             <option value=1>STUDENT</option>
-        </select></br></div>
+        </select></br>
+    </div>
+        <!-- Full name -->
+        <div class="txt_field">
+            <input
+                    type="text"
+                    name="userfullname"
+                    required
+            />
+            <span></span>
+            <label>Enter your full name<label style="color: red; position: relative; top: 10px;">*</label></label>
+        </div>
+        <div>
+            <p>Gender</p>
+            <input type="radio" name="gender" value="male" required>Male <br>
+            <input type="radio" name="gender" value="female" required>Female <br>
+        </div>
+        <!-- Policy -->
         <input type="checkbox" name="policy" id="policy">
         By selecting "Register", you are confirming that you have read and agree
             with our <a th:href="@{/policy}">Private Policy</a>

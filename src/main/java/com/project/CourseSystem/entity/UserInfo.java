@@ -31,6 +31,9 @@ public class UserInfo {
     @Column(name="dob")
     private Date dob;
 
+    @Column(name="gender", nullable = true, length = 10)
+    private String gender;
+
     @Column(name="phoneNums", nullable = true, length = 11)
     private String phoneNums;
 

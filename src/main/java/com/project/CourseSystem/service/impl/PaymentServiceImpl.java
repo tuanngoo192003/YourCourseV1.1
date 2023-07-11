@@ -28,8 +28,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<Payment> getPaymentByMonth(int startMonth, int endMonth) {
-        List<Payment> paymentList = paymentRepository.getPaymentByMonth(startMonth, endMonth);
+    public List<Payment> getPaymentByMonth(int endMonth, int startMonth) {
+        List<Payment> paymentList = paymentRepository.getPaymentByMonth(endMonth, startMonth);
         return paymentList;
     }
 

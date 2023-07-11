@@ -31,12 +31,16 @@ public class HomeController {
 
     private EnrolledService enrolledService;
 
+    private DashboardController dashboardController;
+
     public HomeController(AccountService accountService, CategoryService categoryService,
-                          CourseService courseService, EnrolledService enrolledService){
+                          CourseService courseService, EnrolledService enrolledService,
+                          DashboardController dashboardController){
         this.categoryService = categoryService;
         this.accountService = accountService;
         this.courseService = courseService;
         this.enrolledService = enrolledService;
+        this.dashboardController = dashboardController;
     }
 
     /* home page */
@@ -78,8 +82,14 @@ public class HomeController {
                 List<Enrolled> enrolledList = enrolledService.findByAccountId(system_accountDTO1.getAccountID());
                 session.setAttribute("enrolledList", enrolledList);
                 /* set up role */
-                session.setAttribute("role", 2);
-                return "/home";
+                int role = system_accountDTO1.getRoleID().getRoleID();
+                session.setAttribute("role", role);
+                if(role==2){
+                    return dashboardController.getDashboard(model, request, response);
+                }
+                else{
+                    return "/home";
+                }
             }
             else{
                 /* set up object */

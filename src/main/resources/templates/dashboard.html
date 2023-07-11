@@ -2,6 +2,9 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
     <!-- Bootstrap core CSS-->
     <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
@@ -22,36 +25,8 @@
             background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
         }
 
-        .displayContent{
-            width: 100%;
-            height: 100%;
-        }
-
-        .displayContent h4{
-            text-align: center;
-            font-weight: bold;
-            color: black;
-        }
-
-        .displayContent p{
-            margin-left: 15px;
-            color: dimgray;
-        }
-        .display img{
-            overflow: hidden;
-            width: 100px;
-            height: 100px;
-            margin: 5px 5px;
-            border-radius: 10px;
-        }
-
-        .display {
-            display: flex;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-            transition: 0.3s;
-            border-radius: 10px;
-            border: 2px solid black;
-            margin-bottom: 30px;
+        body{
+            background-color: #E8EDEFF9;
         }
 
         .buy-now-cart{;
@@ -67,71 +42,6 @@
             background: gray;
             border: none;
             color: rgb(58, 58, 58);
-        }
-
-        .buy-now{
-            margin-right: 20px;
-            float: right;
-            background: whitesmoke;
-            border: none;
-            color: rgba(0, 0, 0, 0.98);
-            transition: 2s;
-            border-radius: 10px;
-        }
-
-        .buy-now:hover{
-            background: gray;
-            border: rgba(0, 0, 0, 0.98) solid 1px;
-            color: #ffb963;
-        }
-
-        .add-to-cart{
-            margin-right: 20px;
-            float: right;
-            background: linear-gradient(to right, #ffb963, #ff88f9);
-            border: none;
-            color: white;
-            transition: 2s;
-            border-radius: 10px;
-        }
-
-        .add-to-cart:hover{
-            background: white;
-            border: none;
-            color: #ffb963;
-        }
-
-        .listTitle{
-            font-weight: bold;
-            color: black;
-            margin-top: 20px;
-            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
-            margin-bottom: 40px;
-        }
-
-        .listTitle h1{
-            margin-top: 20px;
-            padding-bottom: 25px;
-            font-weight: 700;
-        }
-
-        .filterTitle{
-            font-weight: bold;
-            color: black;
-            margin-top: 5px;
-            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
-            margin-bottom: 10px;
-            padding-bottom: 25px;
-        }
-
-        .listTitle h2{
-            margin-top: 20px;
-
-            font-weight: 600;
-        }
-
-        .accordion{
-            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
         }
 
         .offcanvas-title{
@@ -157,6 +67,70 @@
 
         .displayContent p{
             color: dimgray;
+        }
+
+        .row-flex{
+            display: flex;
+            flex-wrap: wrap;
+
+        }
+
+        .column-flex-3{
+
+            width: 20%;
+        }
+
+        .colum-flex-9{
+
+            width: 80%;
+        }
+
+        #dashboard-title{
+            margin-top: 20px;
+            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
+            margin-bottom: 40px;
+            padding-bottom: 15px;
+            width: 100%;
+        }
+
+        #dashboard-title h2{
+            font-weight: bold;
+            color: black;
+        }
+
+        .admin-avt{
+            margin-top: 20px;
+            margin-left: 5px;
+            vertical-align: middle;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+        }
+
+        .menu{
+            margin-left: 10px;
+        }
+
+        .menu button{
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: rgba(246, 191, 159, 1);
+            transition: 2s;
+        }
+
+        .menu button a{
+            color: white;
+        }
+
+        .menu button:hover{
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #F1ECEBFF;
+            color: rgba(246, 191, 159, 1);
+        }
+
+        .menu button a:hover{
+            color: rgba(246, 191, 159, 1);
         }
 
     </style>
@@ -216,8 +190,7 @@
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
                     <a th:href="@{/home}" class="logo">
-                        <p style="margin-top: 40px; color: white">YourCourse</p>
-                        <!--<img src="assets/images/templatemo-eduwell.png" alt="EduWell Template">-->
+                        <p style="margin-top: 40px; margin-right: 300px; color: white">YourCourse</p>
                     </a>
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Menu Start ***** -->
@@ -272,78 +245,104 @@
 </header>
 <!-- ***** Header Area End ***** -->
 
-<div class="container">
-    <div class="chart-container">
-        <h2>Category Distribution</h2>
-        <canvas id="pieChart" class="small-chart"></canvas>
+<div class="container-fluid">
+    <div id="dashboard-title">
+        <h2>Dashboard</h2>
     </div>
-    <div class="chart-container">
-        <h2>Revenue growth</h2>
-        <canvas id="lineColumnChart"></canvas>
-    </div>
-    <div class="chart-container">
-        <h2>Number of registered user five week recent</h2>
-        <canvas id="barChart"></canvas>
-    </div>
-    <div class="chart-container">
-        <h2>User Comments</h2>
-        <table>
-            <tr>
-                <th>Course Name</th>
-                <th>Rating</th>
-                <th>Comment</th>
-            </tr>
-            <th:block th:each="rates: ${userRating}">
-                <th:block th:each="course: ${courseList}">
-                    <tr th:if="${rates.courseID.courseID == course.courseID}">
-                        <td th:text="${course.courseName}"></td>
-                        <td>
-                            <th:block th:switch="${rates.rating}">
-                                <div th:case="1">
-                                    <span class="star-rating">⭐</span>
-                                </div>
-                                <div th:case="2">
-                                    <span class="star-rating">⭐⭐</span>
-                                </div>
-                                <div th:case="3">
-                                    <span class="star-rating">⭐⭐⭐</span>
-                                </div>
-                                <div th:case="4">
-                                    <span class="star-rating">⭐⭐⭐⭐</span>
-                                </div>
-                                <div th:case="5">
-                                    <span class="star-rating">⭐⭐⭐⭐⭐</span>
-                                </div>
-                            </th:block>
-                        </td>
-                        <td th:text="${rates.comment}"></td>
+    <div class="row-flex">
+        <div class="column-flex-3">
+            <div class="chart-container" style="width: 90%; height: 100%; align-content: center">
+                <div class="admin-info" style="margin-bottom: 15px;">
+                    <img th:src="'https://drive.google.com/uc?id='+${userInfo.avatar}" alt="Image" class="admin-avt">
+                    <p th:text="'Welcome, '+${userInfo.userName}" style="margin-top: 15px; margin-left: 10px"></p>
+                </div>
+                <div class="menu">
+                    <button><a th:href="@{/allCourses}">Go to all course</a></button>
+                    <button><a th:href="@{/allUsers}">Go to user list</a></button>
+                    <button><a th:href="@{/dashboard}">Dashboard</a></button>
+                    <button><a th:href="@{/profile}">Your profile</a></button>
+                </div>
+            </div>
+        </div>
+        <div class="colum-flex-9">
+            <div class="chart-container">
+                <h2>Category Distribution</h2>
+                <canvas id="pieChart" class="small-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <div>
+                    <h2>Revenue growth</h2>
+                    <canvas id="lineColumnChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div>
+                    <h2>Number of registered user five week recent</h2>
+                    <canvas id="barChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h2>User Comments</h2>
+                <table>
+                    <tr>
+                        <th>Course Name</th>
+                        <th>Rating</th>
+                        <th>Comment</th>
                     </tr>
-                </th:block>
-            </th:block>
+                    <th:block th:each="rates: ${userRating}">
+                        <th:block th:each="course: ${courseList}">
+                            <tr th:if="${rates.courseID.courseID == course.courseID}">
+                                <td th:text="${course.courseName}"></td>
+                                <td>
+                                    <th:block th:switch="${rates.rating}">
+                                        <div th:case="1">
+                                            <span class="star-rating">⭐</span>
+                                        </div>
+                                        <div th:case="2">
+                                            <span class="star-rating">⭐⭐</span>
+                                        </div>
+                                        <div th:case="3">
+                                            <span class="star-rating">⭐⭐⭐</span>
+                                        </div>
+                                        <div th:case="4">
+                                            <span class="star-rating">⭐⭐⭐⭐</span>
+                                        </div>
+                                        <div th:case="5">
+                                            <span class="star-rating">⭐⭐⭐⭐⭐</span>
+                                        </div>
+                                    </th:block>
+                                </td>
+                                <td th:text="${rates.comment}"></td>
+                            </tr>
+                        </th:block>
+                    </th:block>
 
-            <tr>
-                <td>Science</td>
-                <td><span class="star-rating">⭐⭐⭐</span></td>
-                <td>About to make bomb to send to China💀.</td>
-            </tr>
-            <tr>
-                <td>English</td>
-                <td><span class="star-rating">⭐⭐⭐⭐⭐</span></td>
-                <td>Now i can understand mom joke💀.</td>
-            </tr>
-            <tr>
-                <td>History</td>
-                <td><span class="star-rating">⭐⭐</span></td>
-                <td>Hail Hitler💀.</td>
-            </tr>
-            <tr>
-                <td>Geography</td>
-                <td><span class="star-rating">⭐⭐⭐⭐</span></td>
-                <td>Discovering new Species around the world💀.</td>
-            </tr>
-        </table>
+                    <tr>
+                        <td>Science</td>
+                        <td><span class="star-rating">⭐⭐⭐</span></td>
+                        <td>About to make bomb to send to China💀.</td>
+                    </tr>
+                    <tr>
+                        <td>English</td>
+                        <td><span class="star-rating">⭐⭐⭐⭐⭐</span></td>
+                        <td>Now i can understand mom joke💀.</td>
+                    </tr>
+                    <tr>
+                        <td>History</td>
+                        <td><span class="star-rating">⭐⭐</span></td>
+                        <td>Hail Hitler💀.</td>
+                    </tr>
+                    <tr>
+                        <td>Geography</td>
+                        <td><span class="star-rating">⭐⭐⭐⭐</span></td>
+                        <td>Discovering new Species around the world💀.</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
+
 
 <!-- ***** Footer ***** -->
 <div class="container-fluid" style="background: #d69fd5;">
@@ -360,7 +359,7 @@
         </div>
     </div>
 </div>
-<p th:text="${week1}"></p>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script th:inline="javascript">
     // Pie Chart
@@ -376,23 +375,35 @@
         }
     });
 
+    // Get the current month as a Date object
+    var now = new Date();
+
+    // Create an array of labels that goes back 6 months
+    var labelMonths = [];
+    for (var i = 5; i >= 0; i--) {
+        var label = new Date(now.getFullYear(), now.getMonth() - i, 1).toLocaleString('default', { month: 'short' });
+        labelMonths.push(label);
+    }
+
     // Line and Column Mixed Chart
     var lineColumnChart = new Chart(document.getElementById('lineColumnChart'), {
         type: 'bar',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            labels: labelMonths,
             datasets: [
                 {
                     type: 'line',
                     label: 'Overall Progress',
-                    data: [60, 65, 70, 75, 80, 85],
+                    data: [ [[${revenueOfSixMonthRecent}]], [[${revenueOfFiveMonthRecent}]], [[${revenueOfFourMonthRecent}]]
+                        , [[${revenueOfThreeMonthRecent}]], [[${revenueOfTwoMonthRecent}]], [[${revenueOfOneMonthRecent}]] ],
                     borderColor: '#FF6384',
                     fill: false
                 },
                 {
                     type: 'bar',
                     label: 'Individual Ratings',
-                    data: [60, 40, 50, 30, 40, 50],
+                    data: [ [[${revenueOfSixMonthRecent}]], [[${revenueOfFiveMonthRecent}]], [[${revenueOfFourMonthRecent}]]
+                        , [[${revenueOfThreeMonthRecent}]], [[${revenueOfTwoMonthRecent}]], [[${revenueOfOneMonthRecent}]] ],
                     backgroundColor: '#36A2EB'
                 }
             ]
@@ -409,6 +420,7 @@
         }
     });
 
+    /*
     // Line Chart for Active Learning Time
     var lineChart = new Chart(document.getElementById('lineChart'), {
         type: 'line',
@@ -423,7 +435,7 @@
                 }
             ]
         }
-    });
+    });*/
 
     // Calculate the start and end dates of each week
     var now = new Date();

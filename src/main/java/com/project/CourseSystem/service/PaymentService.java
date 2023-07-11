@@ -10,5 +10,5 @@ public interface PaymentService {
 
     List<Payment> getAllPayment();
 
-    List<Payment> getPaymentByMonth(int startMonth, int endMonth);
+    List<Payment> getPaymentByMonth(int endMonth, int startMonth);
 }

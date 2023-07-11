@@ -7,6 +7,9 @@ import com.project.CourseSystem.repository.SystemAccountCRUDRepository;
 import com.project.CourseSystem.repository.SystemAccountRepository;
 import com.project.CourseSystem.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -123,6 +126,13 @@ public class AccountServiceImpl implements AccountService {
     public List<SystemAccount> getRecentRegisterAccount(int numberOfWeek) {
         List<SystemAccount> systemAccountList = system_accountRespository.findRecentRegisterAccount(numberOfWeek);
         return systemAccountList;
+    }
+
+    @Override
+    public Page<SystemAccount> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
+                Sort.by(sortField).descending();
+        return system_accountRespository.findAll(PageRequest.of(pageNo - 1, pageSize, sort));
     }
 
     public boolean isUsernameExist(String account_name){

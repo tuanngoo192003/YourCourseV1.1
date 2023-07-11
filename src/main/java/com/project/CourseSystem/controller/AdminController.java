@@ -7,12 +7,10 @@ import com.project.CourseSystem.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -60,6 +58,8 @@ public class AdminController {
 
     CourseConverter courseConverter;
 
+    UserService userService;
+
     AdminController(CourseController courseController, AuthController authController,
                     AccountService accountService, CourseService courseService,
                     GoogleDriveService driveService, CategoryConverter categoryConverter,
@@ -67,7 +67,8 @@ public class AdminController {
                     LessonService lessonService, LearningMaterialService learningMaterialService,
                     QuizService quizService, QuestionService questionService, AnswerService answerService,
                     AnswerConverter answerConverter, QuestionConverter questionConverter,
-                    QuizConverter quizConverter, CourseConverter courseConverter){
+                    QuizConverter quizConverter, CourseConverter courseConverter,
+                    UserService userService){
         this.courseController = courseController;
         this.authController = authController;
         this.accountService = accountService;
@@ -85,6 +86,7 @@ public class AdminController {
         this.questionConverter = questionConverter;
         this.quizConverter = quizConverter;
         this.courseConverter = courseConverter;
+        this.userService = userService;
     }
 
     @GetMapping("/cancel")
@@ -596,6 +598,42 @@ public class AdminController {
 
     @GetMapping("/allUsers")
     public String userList(Model model, HttpServletRequest request, HttpServletResponse response){
+        return userListPage(1, "id", "asc", model, request, response);
+    }
+
+    @GetMapping("/allUsers/page/{pageNo}")
+    public String userListPage(@PathVariable (value = "pageNo") int pageNo,
+                               @RequestParam("sortField") String sortField,
+                               @RequestParam("sortDir") String sortDir,
+                               Model model, HttpServletRequest request, HttpServletResponse response){
+        CategoryDTO cDto = new CategoryDTO();
+        model.addAttribute("categoryDTO", cDto);
+        CourseDTO courseDTO = new CourseDTO();
+        model.addAttribute("courseDTO", courseDTO);
+        model.addAttribute("category", categoryService.getAllCategories());
+
+        List<String> roleList = new ArrayList<>();
+        roleList.add("STUDENT");
+        roleList.add("ADMIN");
+        roleList.add("SUPPORTER");
+        model.addAttribute("roleList", roleList);
+
+        int pageSize = 10;
+        Page<UserInfo> page = userService.findPaginated(pageNo, pageSize, sortField, sortDir);
+        List<UserInfo> userList = page.getContent();
+        Page<SystemAccount> accountPage = accountService.findPaginated(pageNo, pageSize, sortField, sortDir);
+        List<SystemAccount> accountList = accountPage.getContent();
+        model.addAttribute("accountList", accountList);
+
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc")?"desc":"asc");
+
+        model.addAttribute("currentPage", pageNo);
+
         return "userList";
     }
 }
