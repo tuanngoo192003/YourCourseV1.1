@@ -5,6 +5,8 @@ import com.project.CourseSystem.repository.RatingCourseRepository;
 import com.project.CourseSystem.service.RatingCourseService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RatingCourseServiceImpl implements RatingCourseService {
 
@@ -23,5 +25,11 @@ public class RatingCourseServiceImpl implements RatingCourseService {
     public RatingCourse getRatingCourseByCourseIdAndUserId(Integer courseId, Integer userId) {
         RatingCourse ratingCourse = ratingCourseRepository.getRatingCourseByCourseIdAndUserId(courseId, userId);
         return ratingCourse;
+    }
+
+    @Override
+    public List<RatingCourse> getAllRating() {
+        List<RatingCourse> ratingCourseList = ratingCourseRepository.findAll();
+        return ratingCourseList;
     }
 }

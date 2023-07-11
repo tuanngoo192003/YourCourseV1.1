@@ -5,12 +5,12 @@ import com.project.CourseSystem.repository.PaymentRepository;
 import com.project.CourseSystem.service.PaymentService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PaymentServiceImpl implements PaymentService {
 
     PaymentRepository paymentRepository;
-
-
 
     PaymentServiceImpl(PaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
@@ -19,6 +19,18 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void addPaymentForOne(Payment payment) {
         paymentRepository.save(payment);
+    }
+
+    @Override
+    public List<Payment> getAllPayment() {
+        List<Payment> paymentList = paymentRepository.findAll();
+        return paymentList;
+    }
+
+    @Override
+    public List<Payment> getPaymentByMonth(int startMonth, int endMonth) {
+        List<Payment> paymentList = paymentRepository.getPaymentByMonth(startMonth, endMonth);
+        return paymentList;
     }
 
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 
+import java.sql.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,6 +31,9 @@ public class SystemAccount {
 
     @Column(name="verificationCode", nullable = true, length = 6)
     private String verificationCode;
+
+    @Column(name="registerDate", nullable = true)
+    private Date registerDate;
 
     @ManyToOne
     @JoinColumn(name="roleID", nullable = false)

@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.Date;
+
 @Controller
 public class GmailController {
 
@@ -153,6 +155,7 @@ public class GmailController {
                     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                     String encodedPassword = passwordEncoder.encode(temp.getAccountPassword());
                     temp.setAccountPassword(encodedPassword);
+                    temp.setRegisterDate(new java.sql.Date(new Date().getTime()));
                     //save account
                     accountService.saveUser(temp);
                     //add userInfo
