@@ -105,8 +105,8 @@
             top: 0px;
             padding: 10px;
             box-shadow: 0px 0px 5px 0px #ccc;
-            width: 20%;
-            height: 300px;
+            width: 25%;
+            height: 350px;
             border-radius: 7px;
             border: #041418 solid 2px;
         }
@@ -181,6 +181,50 @@
             font-weight: normal;
             color: black;
         }
+
+        .star-rating input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .star-rating label {
+            font-size: 2rem;
+            color: gray;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .star-rating input[type="radio"]:checked + label {
+            color: gold;
+        }
+
+        .star-rated input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .star-rated label {
+            font-size: 2rem;
+            color: gray;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .star-rated input[type="radio"]:checked + label {
+            color: gold;
+        }
+
+        .btn-primary{
+            margin-top: 10px;
+            background-color: #ffb963;
+            border-color: #ffb963;
+        }
+
+        .btn-primary:hover{
+            background-color: #ffb963;
+            border-color: #ffb963;
+        }
+
     </style>
 </head>
 <body>
@@ -194,15 +238,16 @@
         <div th:if="${session.cart!=null}">
             <th:block th:each="cart, state: ${session.cart}">
                 <form
-                      role="form"
-                      method="post"
-                      th:action="@{payment}"
-                      th:object="${courseDTO}"
+                        role="form"
+                        method="post"
+                        th:action="@{payment}"
+                        th:object="${courseDTO}"
                 >
                     <div class="cartContent" >
                         <div style="display: inline-flex">
-                            <input type="text" name="fromPage" value="learn" style="display: none">
+                            <input type="text" name="fromPage" value="list" style="display: none">
                             <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
+                            <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
                             <div>
                                 <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
                             </div>
@@ -259,10 +304,9 @@
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Fundamental Programming</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Programming</a></li>
                             </ul>
                         </li>
-                        <li class="scroll-to-section"><a href="#services">Services</a></li>
                         <li><a th:href="@{/course}">Courses</a></li>
                         <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
                             style="color: white; background: none; border: none">
@@ -292,34 +336,88 @@
         </div>
     </div>
 </header>
-<!-- if user not purchase the course, this session appear -->
+<!-- ***** Header Area End ***** -->
+
+<!-- if user didn't purchase the course, this session appear -->
 <div th:if="${enrolledDTO}==null" class="purchase-session sticky-top">
-    <h2 th:text="'Price: '+${course.price}+'₫'"></h2>
-    <form
-            role="form"
-            method="post"
-            th:action="@{payment}"
-            th:object="${courseDTO}"
-    >
-        <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
-        <input type="text" name="fromPage" value="learn" style="display: none">
-        <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-    </form>
-    <form
-            role="form"
-            method="post"
-            th:action="@{payment}"
-            th:object="${courseDTO}"
-    >
-        <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
-        <input type="text" name="fromPage" value="learn" style="display: none">
-        <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
-    </form>
+    <!-- if the course has discount -->
+    <div th:if="${discountPrice!=null}">
+        <h2>
+            <span>Price: </span>
+            <span th:text="${course.price}+'₫'" style="text-decoration: line-through;"></span>
+            <span th:text="${discountPrice}+'₫'" style="color: red;"></span>
+        </h2>
+        <h4 th:text="'Start from: '+${discountDTO.discountStart}"></h4>
+        <h4 th:text="'End at: '+${discountDTO.discountEnd}"></h4>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="${discountPrice}" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
+        </form>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="${discountPrice}" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
+        </form>
+    </div>
+    <!-- if the course doesn't have discount -->
+    <div th:if="${discountPrice==null}">
+        <h2 th:text="'Price: '+${course.price}+'₫'"></h2>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="0" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
+        </form>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="0" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
+        </form>
+    </div>
+
+
 </div>
 <!-- if user purchased the course, this session appear -->
-<div th:if="${enrolledDTO}!=null" class="purchase-session sticky-top">
+<div th:if="${enrolledDTO}!=null" class="purchase-session sticky-top" style="height: 400px; overflow-y: scroll">
     <h2 th:text="'You have enrolled to this course'"></h2>
-    <p th:text="'Learning status: '"></p>
+    <div th:if="${totalStatus == 'Course: Completed'}">
+        <p th:text="${totalStatus}" style="color: green"></p>
+    </div>
+    <div th:if="${totalStatus == 'Course: Not completed'}">
+        <p th:text="${totalStatus}" style="color: #b0b038"></p>
+    </div>
+    <div th:each="learningStatusDis : ${learningStatus}">
+        <div th:if="${learningStatusDis.checkStatus==1}">
+            <i class="fa-solid fa-circle-check" style="color: green"><p th:text="${learningStatusDis.statusContent}" style="color:black;"></p></i>
+        </div>
+        <div th:if="${learningStatusDis.checkStatus==0}">
+            <i class="fa-solid fa-circle-xmark" style="color: red"><p th:text="${learningStatusDis.statusContent}" style="color: black"></p></i>
+        </div>
+    </div>
 </div>
 
 <!-- ***** Header Area End ***** -->
@@ -383,11 +481,18 @@
                                     <p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p>
                                     <iframe th:src="${'https://drive.google.com/file/d/'+learningMaterialListDis.learningMaterialLink+'/preview'}" width="100%" height="420px"></iframe>
                                 </div>
+                                <div th:if="${learningMaterialListDis.learningMaterialDes == 'filePDF'}">
+                                    <div style="display: inline-flex">
+                                        <i class="fa-solid fa-book"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
+                                    </div>
+                                    <p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p>
+                                    <iframe th:src="${'https://drive.google.com/file/d/'+learningMaterialListDis.learningMaterialLink+'/preview'}" width="100%" height="420px"></iframe>
+                                </div>
                             </div>
                         </div>
                         <div>
                             <i class="fa-solid fa-question">
-                                <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}" th:if="${lessonListDis.lessonID == 1}">Quiz Test</a>
+                                <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}">Quiz Test</a>
                             </i>
                         </div>
                     </div>
@@ -418,7 +523,7 @@
                             </div>
                             <div style="display: inline-flex">
                                 <i class="fa-solid fa-question">
-                                    <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}" th:if="${lessonListDis.lessonID == 1}">Quiz Test</a>
+                                    <p>Quiz Test</p>
                                 </i>
                             </div>
                         </div>
@@ -426,6 +531,50 @@
                 </div>
             </div>
         </th:block>
+    </div>
+</div>
+
+<div class="container" th:if="${totalStatus=='Course: Completed'}" style="border: rgba(173, 173, 173, 0.99) 1px solid">
+    <h3>Thanks for rating!</h3>
+    <div th:if="${rating!=null}">
+        <div class="star-rated">
+            <input type="radio" id="star1" name="rating" value="1" th:checked="${rating == 1}" disabled/>
+            <label for="star1" title="1 star">&#9733;</label>
+            <input type="radio" id="star2" name="rating" value="2" th:checked="${rating == 2}" disabled/>
+            <label for="star2" title="2 stars">&#9733;</label>
+            <input type="radio" id="star3" name="rating" value="3" th:checked="${rating == 3}" disabled/>
+            <label for="star3" title="3 stars">&#9733;</label>
+            <input type="radio" id="star4" name="rating" value="4" th:checked="${rating == 4}" disabled/>
+            <label for="star4" title="4 stars">&#9733;</label>
+            <input type="radio" id="star5" name="rating" value="5" th:checked="${rating == 5}" disabled/>
+            <label for="star5" title="5 stars">&#9733;</label>
+        </div>
+        <h5 th:text="'Your comment: '+${comment}"></h5>
+    </div>
+    <div th:if="${rating==null}">
+        <form
+                role="form"
+                method="post"
+                th:action="@{/feedback}"
+                th:object="${ratingCourseDTO}"
+        >
+            <div class="star-rating">
+                <input type="radio" id="star1-" name="rating" value="1" required/>
+                <label for="star1-" title="1 star">&#9733;</label>
+                <input type="radio" id="star2-" name="rating" value="2" required/>
+                <label for="star2-" title="2 stars">&#9733;</label>
+                <input type="radio" id="star3-" name="rating" value="3" required/>
+                <label for="star3-" title="3 stars">&#9733;</label>
+                <input type="radio" id="star4-" name="rating" value="4" required/>
+                <label for="star4-" title="4 stars">&#9733;</label>
+                <input type="radio" id="star5-" name="rating" value="5" required/>
+                <label for="star5-" title="5 stars">&#9733;</label>
+            </div>
+            <label for="comment">Comment:</label>
+            <textarea class="form-control" rows="5" id="comment" name="comment" th:field="*{comment}" required></textarea>
+            <input type="number" th:value="${course.courseID}" name="currentCourseID" style="display: none"/>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
 </div>
 <div class="container">
@@ -490,5 +639,33 @@
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script>
+      $(document).ready(function() {
+          var starRating = $(".star-rating");
+
+          starRating.on("click", "input[type='radio']", function() {
+              var selected = $(this).val();
+
+              starRating.find("label").css("color", "gray");
+
+              // Add gold color to selected and preceding labels
+              $(this).prevAll("input[type='radio']").addBack().each(function() {
+                  starRating.find("label[for='" + $(this).attr("id") + "']").css("color", "gold");
+              });
+          });
+      });
+      $(document).ready(function() {
+          var starRating = $(".star-rated");
+
+          // Get the rating value from the input element
+          var selected = starRating.find("input[type='radio']:checked").val();
+
+          // Set the colors of the stars based on the rating value
+          starRating.find("label").css("color", "gray");
+          starRating.find("input[type='radio'][value='" + selected + "']").prevAll("input[type='radio']").addBack().each(function() {
+              starRating.find("label[for='" + $(this).attr("id") + "']").css("color", "gold");
+          });
+      });
+  </script>
 </body>
 </html>

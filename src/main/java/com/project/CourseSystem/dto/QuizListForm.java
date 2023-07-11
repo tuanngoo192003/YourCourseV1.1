@@ -12,7 +12,7 @@ import java.util.List;
 public class QuizListForm {
     QuizDTO quizDTO;
 
-    List<QuestionDTO> questionDTOS;
+    String questionContents;
 
-    List<AnswerDTO> answerDTOS;
+    String answerContents;
 }

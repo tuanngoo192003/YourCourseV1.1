@@ -27,4 +27,9 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
     public void saveLearningMaterial(LearningMaterial learningMaterial) {
         learningMaterialRepository.save(learningMaterial);
     }
+
+    @Override
+    public void deleteLearningMaterial(Integer learningMaterialID) {
+        learningMaterialRepository.deleteById(learningMaterialID);
+    }
 }

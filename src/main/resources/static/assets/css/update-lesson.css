@@ -7,17 +7,15 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-body{
-    padding-bottom: 30px;
-}
-
 h1 {
     text-align: center;
 }
 
 form {
+    border: rgb(58, 58, 58) solid 1px;
+    padding: 10px;
     max-width: 500px;
-    margin: 0 auto;
+    margin: 0 0 30px 0px;
 }
 
 label {
@@ -28,7 +26,7 @@ label {
 
 input[type="text"],
 select {
-    width: 100%;
+    width: 90%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -71,15 +69,15 @@ select {
     cursor: pointer;
 }
 
-#quiz-container {
+#buttons-container {
     margin-top: 20px;
     text-align: center;
 }
 
 #submit-btn,
-#create-quiz,
-#next-btn{
-    background-color: rgba(246,191,159,1);
+#cancel-btn,
+#back-btn{
+    background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
     color: white;
     border: none;
     padding: 10px 16px;

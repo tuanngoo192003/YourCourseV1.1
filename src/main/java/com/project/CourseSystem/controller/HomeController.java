@@ -77,6 +77,8 @@ public class HomeController {
                 /* set up enrolled */
                 List<Enrolled> enrolledList = enrolledService.findByAccountId(system_accountDTO1.getAccountID());
                 session.setAttribute("enrolledList", enrolledList);
+                /* set up role */
+                session.setAttribute("role", 2);
                 return "/home";
             }
             else{

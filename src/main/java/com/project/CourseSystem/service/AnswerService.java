@@ -16,4 +16,10 @@ public interface AnswerService {
     public Answer getAnswerByQuestionIDAndAnswerOrdinal(Integer questionID, String answerOrdinal);
 
     public void save(Answer answer);
+
+    void deleteAnswer(Answer answer);
+
+    void saveAnswer(Answer answer);
+
+    void updateAnswer(Answer answer);
 }

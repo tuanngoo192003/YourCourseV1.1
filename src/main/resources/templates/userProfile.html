@@ -463,7 +463,7 @@
                                       th:action="@{/payment}"
                                       th:object="${courseDTO}"
                                 >
-                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="@{${courseListEntity.courseImage}}"></a>
+                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
                                     <div class="displayContent">
                                         <input type="text" name="fromPage" value="list" style="display: none">
                                         <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">

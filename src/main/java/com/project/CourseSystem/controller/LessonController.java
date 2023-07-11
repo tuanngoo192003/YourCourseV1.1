@@ -53,7 +53,10 @@ public class LessonController {
             return authController.loginPage(model, request, response);
         }
         else{
-            List<AddLessonFormDTO> addLessonFormDTOList = new ArrayList<>();
+            List<AddLessonFormDTO> addLessonFormDTOList = (List<AddLessonFormDTO>) session.getAttribute("addLessonFormDTOList");
+            if(addLessonFormDTOList==null){
+                addLessonFormDTOList = new ArrayList<>();
+            }
             addLessonForm.setLearningMaterialDes(inputType);
             if(inputType.equals("pdfLink") || inputType.equals("youtube")){
                 String input = request.getParameter("Input");
@@ -107,7 +110,7 @@ public class LessonController {
         return "addQuiz";
     }
 
-    @GetMapping ("/addLessonTest")
+    @GetMapping ("/addLessonForm")
     public String addLessonForm(Model model, HttpServletRequest request, HttpServletResponse response){
         //set model to input lesson and material
         AddLessonFormDTO addLessonForm = new AddLessonFormDTO();

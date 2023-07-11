@@ -9,4 +9,6 @@ public interface LearningMaterialService {
     List<LearningMaterial> getLearningMaterialByLessonID(Integer lessonID);
 
     void saveLearningMaterial(LearningMaterial learningMaterial);
+
+    void deleteLearningMaterial(Integer learningMaterialID);
 }

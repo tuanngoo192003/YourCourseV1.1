@@ -90,6 +90,7 @@ public class AuthController {
         HttpSession session = request.getSession();
         session.removeAttribute("CSys");
         session.removeAttribute("enrolledList");
+        session.removeAttribute("role");
         return "redirect:/home";
     }
 
