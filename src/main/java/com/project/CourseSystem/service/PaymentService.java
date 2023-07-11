@@ -11,4 +11,6 @@ public interface PaymentService {
     List<Payment> getAllPayment();
 
     List<Payment> getPaymentByMonth(int endMonth, int startMonth);
+
+    List<Payment> findPaymentByUserID(Integer userID);
 }

@@ -60,6 +60,8 @@ public class AdminController {
 
     UserService userService;
 
+    PaymentService paymentService;
+
     AdminController(CourseController courseController, AuthController authController,
                     AccountService accountService, CourseService courseService,
                     GoogleDriveService driveService, CategoryConverter categoryConverter,
@@ -68,7 +70,7 @@ public class AdminController {
                     QuizService quizService, QuestionService questionService, AnswerService answerService,
                     AnswerConverter answerConverter, QuestionConverter questionConverter,
                     QuizConverter quizConverter, CourseConverter courseConverter,
-                    UserService userService){
+                    UserService userService, PaymentService paymentService){
         this.courseController = courseController;
         this.authController = authController;
         this.accountService = accountService;
@@ -87,6 +89,7 @@ public class AdminController {
         this.quizConverter = quizConverter;
         this.courseConverter = courseConverter;
         this.userService = userService;
+        this.paymentService = paymentService;
     }
 
     @GetMapping("/cancel")
@@ -598,7 +601,7 @@ public class AdminController {
 
     @GetMapping("/allUsers")
     public String userList(Model model, HttpServletRequest request, HttpServletResponse response){
-        return userListPage(1, "id", "asc", model, request, response);
+        return userListPage(1, "accountID", "asc", model, request, response);
     }
 
     @GetMapping("/allUsers/page/{pageNo}")
@@ -619,14 +622,14 @@ public class AdminController {
         model.addAttribute("roleList", roleList);
 
         int pageSize = 10;
-        Page<UserInfo> page = userService.findPaginated(pageNo, pageSize, sortField, sortDir);
-        List<UserInfo> userList = page.getContent();
+        List<UserInfo> userList = userService.findAllUser();
+        model.addAttribute("userList", userList);
         Page<SystemAccount> accountPage = accountService.findPaginated(pageNo, pageSize, sortField, sortDir);
         List<SystemAccount> accountList = accountPage.getContent();
         model.addAttribute("accountList", accountList);
 
-        model.addAttribute("totalPages", page.getTotalPages());
-        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("totalPages", accountPage.getTotalPages());
+        model.addAttribute("totalItems", accountPage.getTotalElements());
 
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDir", sortDir);
@@ -635,5 +638,125 @@ public class AdminController {
         model.addAttribute("currentPage", pageNo);
 
         return "userList";
+    }
+
+    @GetMapping("/allUsers/sort/page/{pageNo}")
+    public String userListPageSort(@PathVariable (value = "pageNo") int pageNo,
+                               @RequestParam("sortField") String sortField,
+                               @RequestParam("sortDir") String sortDir,
+                               String feild,
+                               Model model, HttpServletRequest request, HttpServletResponse response){
+        CategoryDTO cDto = new CategoryDTO();
+        model.addAttribute("categoryDTO", cDto);
+        CourseDTO courseDTO = new CourseDTO();
+        model.addAttribute("courseDTO", courseDTO);
+        model.addAttribute("category", categoryService.getAllCategories());
+
+        List<String> roleList = new ArrayList<>();
+        roleList.add("STUDENT");
+        roleList.add("ADMIN");
+        roleList.add("SUPPORTER");
+        model.addAttribute("roleList", roleList);
+
+        int pageSize = 10;
+        List<UserInfo> userList = userService.findAllUser();
+        model.addAttribute("userList", userList);
+        Page<SystemAccount> accountPage = accountService.findPaginated(pageNo, pageSize, sortField, sortDir);
+        List<SystemAccount> accountList = accountPage.getContent();
+        accountList = filter(feild, accountList);
+        model.addAttribute("accountList", accountList);
+
+        // Calculate the new total number of elements
+        int totalElement = accountList.size();
+
+        // Calculate the new total number of pages
+        int totalPage = (int) Math.ceil((double) totalElement / pageSize);
+
+        model.addAttribute("totalPages", totalPage);
+        model.addAttribute("totalItems", totalElement);
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc")?"desc":"asc");
+
+        model.addAttribute("currentPage", pageNo);
+
+        return "userList";
+    }
+
+    @PostMapping("/userListFilter")
+    public String filter(@RequestParam("role") String feild, Model model,
+                         HttpServletRequest request, HttpServletResponse response){
+        return userListPageSort(1, "accountID", "asc", feild, model, request, response);
+    }
+    private List<SystemAccount> filter(String feild, List<SystemAccount> accountList){
+        List<SystemAccount> temp = new ArrayList<>();
+        if(feild.equals("STUDENT")){
+            for(SystemAccount account : accountList){
+                if(account.getRoleID().getRoleName().equals("STUDENT")){
+                    temp.add(account);
+                }
+            }
+        }
+        else if(feild.equals("ADMIN")){
+            for(SystemAccount account : accountList){
+                if(account.getRoleID().getRoleName().equals("ADMIN")){
+                    temp.add(account);
+                }
+            }
+        } else if (feild.equals("SUPPORTER")) {
+            for(SystemAccount account : accountList){
+                if(account.getRoleID().getRoleName().equals("SUPPORTER")){
+                    temp.add(account);
+                }
+            }
+        } else if (feild.equals("ALL")){
+            return accountList;
+        } else if(feild.equals("Most paid user")){
+            UserInfo userInfo = new UserInfo();
+            Float max = 0.0f;
+            for(int i = 0; i< accountList.size(); i++){
+                Float tempMax = 0.0f;
+                SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountList.get(i).getAccountName());
+                int userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
+                UserInfo userInfoTemp = userService.findUser(userID);
+                List<Payment> paymentList = paymentService.findPaymentByUserID(userInfoTemp.getUserID());
+                for(Payment payment : paymentList){
+                    tempMax += payment.getPaymentAmount();
+                }
+                if(max < tempMax){
+                    max = tempMax;
+                    userInfo = userInfoTemp;
+                }
+            }
+            for(SystemAccount account : accountList){
+                if(account.getAccountID() == userInfo.getAccountID().getAccountID()){
+                    temp.add(account);
+                }
+            }
+        } else if (feild.equals("Least paid user")) {
+            UserInfo userInfo = new UserInfo();
+            Float min = Float.MAX_VALUE;
+            for(int i = 0; i< accountList.size(); i++){
+                Float tempMin = 0.0f;
+                SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountList.get(i).getAccountName());
+                int userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
+                UserInfo userInfoTemp = userService.findUser(userID);
+                List<Payment> paymentList = paymentService.findPaymentByUserID(userInfoTemp.getUserID());
+                for(Payment payment : paymentList){
+                    tempMin += payment.getPaymentAmount();
+                }
+                if(min > tempMin){
+                    min = tempMin;
+                    userInfo = userInfoTemp;
+                }
+            }
+            for(SystemAccount account : accountList){
+                if(account.getAccountID() == userInfo.getAccountID().getAccountID()){
+                    temp.add(account);
+                }
+            }
+        }
+        return temp;
     }
 }

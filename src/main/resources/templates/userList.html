@@ -20,6 +20,11 @@
     <link rel="stylesheet" th:href="@{/assets/css/lightbox.css}">
     <title>User List</title>
     <style>
+
+        body{
+            background-color: #E8EDEFF9;
+        }
+
         .row-flex{
             display: flex;
             flex-wrap: wrap;
@@ -27,10 +32,12 @@
         }
 
         .column-flex-3{
-            width: 20%;
+            margin-right: 6px;
+            width: 19%;
         }
 
         .colum-flex-9{
+            margin-left: 6px;
             width: 80%;
         }
 
@@ -49,6 +56,30 @@
 
         .accordion{
             border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
+        }
+
+        .display-user{
+            margin-bottom: 10px;
+            background-color: whitesmoke;
+            display: flex;
+            border-radius: 7px;
+            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
+        }
+
+        .display-user img{
+            margin: 10px;
+            width: 120px;
+            height: 120px;
+            vertical-align: middle;
+            border-radius: 50%;
+        }
+
+        .account-info{
+            margin: 10px 10px 0px 10px;
+        }
+
+        .account-info h4{
+            text-align: center;
         }
     </style>
 </head>
@@ -162,7 +193,7 @@
     </div>
 </header>
 <!-- ***** Header Area End ***** -->
-<div id="userList-title">
+<div id="userList-title" class="container">
     <h2>User list</h2>
     <div class="row-flex">
         <div class="column-flex-3">
@@ -176,12 +207,16 @@
                     </h2>
                     <div th:id="flush-collapseRole" class="accordion-collapse collapse" aria-labelledby="flush-headingRole" data-bs-parent="#accordionFlushRole">
                         <form method="post" role="form" th:action="@{/userListFilter}">
-                            <div th:each="ro, state: ${roleList}">
-                                <div class="accordion-body">
+                            <div class="accordion-body">
+                                <div th:each="ro, state: ${roleList}">
                                     <div class="option">
                                         <input type="checkbox" th:value="${ro}" name="role" onclick="this.form.submit()"><p th:text="${ro}"></p>
                                         <br>
                                     </div>
+                                </div>
+                                <div class="option">
+                                    <input type="checkbox" value="ALL" name="role" onclick="this.form.submit()"><p th:text="'ALL'"></p>
+                                    <br>
                                 </div>
                             </div>
                         </form>
@@ -201,11 +236,11 @@
                         <form method="post" role="form" th:action="@{/userListFilter}">
                             <div class="accordion-body">
                                 <div class="option">
-                                    <input type="checkbox" value="Most paid user" name="role" onclick="this.form.submit()"><p th:text="'Most paid user'"></p>
+                                    <input type="checkbox" value="Most paid user" name="role" onclick="this.form.submit()"><p th:text="'Most paid users'"></p>
                                     <br>
                                 </div>
                                 <div class="option">
-                                    <input type="checkbox" value="Least paid user" name="role" onclick="this.form.submit()"><p th:text="'Least paid user'"></p>
+                                    <input type="checkbox" value="Least paid user" name="role" onclick="this.form.submit()"><p th:text="'Least paid users'"></p>
                                     <br>
                                 </div>
                             </div>
@@ -215,12 +250,40 @@
             </div>
         </div>
         <div class="colum-flex-9">
+            <!-- Bootstrap 5 modal -->
+            <div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="userDetailsModalLabel">User details information</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="user-details-container">
+                                <!-- User details will be inserted here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="display-user" th:each="accounts: ${accountList}">
-                <img th:src="'https://drive.google.com/uc?id='+${users.avatar}" alt="Image" class="shadow">
-                <div>
-                    <h4 th:text="${users.userName}"></h4>
-                    <p th:text="${users.dob}"></p>
-                    <p th:text="${users.phoneNums}"></p>
+                <div th:each="users: ${userList}">
+                    <div th:if="${users.accountID.accountID == accounts.accountID}">
+                        <img th:src="'https://drive.google.com/uc?id='+${users.avatar}" alt="Image" class="shadow">
+                    </div>
+                </div>
+                <div class="account-info">
+                    <h4 th:text="'Account name'+${accounts.accountName}"></h4>
+                    <p th:text="'Gmail'+${accounts.gmail}"></p>
+                    <p th:text="'Registered date'+${accounts.registerDate}"></p>
+                    <p th:text="'Role'+${accounts.roleID.roleName}"></p>
+                    <div th:each="users: ${userList}">
+                        <div th:if="${users.accountID.accountID == accounts.accountID}">
+                            <button class="details-btn" th:data-username="${users.userName}" th:data-gender="${users.gender}"
+                                    th:data-userdob="${users.dob}" th:data-phonenum="${users.phoneNums}"
+                                    th:data-location="${users.location}" th:data-aboutme="${users.aboutMe}">View details</button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <!-- codes given below for pagination -->
@@ -261,6 +324,39 @@
         </div>
     </div>
 </div>
+
+<script>
+    const userDetailsModal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+    const userDetailsContainer = document.querySelector('.user-details-container');
+
+    // Add a click event listener to the "View details" button
+    const detailsBtns = document.querySelectorAll('.details-btn');
+    detailsBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Get the user details from the data attributes
+            const username = btn.getAttribute('data-username');
+            const gender = btn.getAttribute('data-gender');
+            const dob = btn.getAttribute('data-userdob');
+            const phoneNums = btn.getAttribute('data-phonenum');
+            const location = btn.getAttribute('data-location');
+            const aboutMe = btn.getAttribute('data-aboutme');
+
+            // Build the user details HTML
+            const userDetailsHtml = `
+        <p><strong>Username:</strong> ${username}</p>
+        <p><strong>Gender:</strong> ${gender}</p>
+        <p><strong>Date of birth:</strong> ${dob}</p>
+        <p><strong>Phone numbers:</strong> ${phoneNums}</p>
+        <p><strong>Location:</strong> ${location}</p>
+        <p><strong>About me:</strong> ${aboutMe}</p>
+      `;
+
+            // Set the user details HTML in the modal and show the modal
+            userDetailsContainer.innerHTML = userDetailsHtml;
+            userDetailsModal.show();
+        });
+    });
+</script>
 </body>
 <!-- Bootstrap core JavaScript -->
 <script src="assets/js/slick-slider.js"></script>

@@ -33,4 +33,10 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentList;
     }
 
+    @Override
+    public List<Payment> findPaymentByUserID(Integer userID) {
+        List<Payment> paymentList = paymentRepository.findPaymentByUserID(userID);
+        return paymentList;
+    }
+
 }
