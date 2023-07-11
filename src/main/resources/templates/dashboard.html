@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Learning Progress Dashboard</title>
+    <link rel="stylesheet" th:href="@{assets/css/dashboard.css}">
+</head>
+<body>
+<!-- ***** Header Area Start ***** -->
+<!--<header class="header-area header-sticky">-->
+<!--    <div class="container">-->
+<!--        <div class="row">-->
+<!--            <div class="col-12">-->
+<!--                <nav class="main-nav">-->
+<!--                    &lt;!&ndash; ***** Logo Start ***** &ndash;&gt;-->
+<!--                    <a th:href="@{/home}" class="logo">-->
+<!--                        <p style="margin-top: 40px; color: white">YourCourse</p>-->
+<!--                        &lt;!&ndash;<img src="assets/images/templatemo-eduwell.png" alt="EduWell Template">&ndash;&gt;-->
+<!--                    </a>-->
+<!--                    &lt;!&ndash; ***** Logo End ***** &ndash;&gt;-->
+<!--                    &lt;!&ndash; ***** Menu Start ***** &ndash;&gt;-->
+<!--                    <ul class="nav">-->
+<!--                        <form-->
+<!--                                role="form"-->
+<!--                                method="post"-->
+<!--                                th:action="@{/search}"-->
+<!--                                th:object="${courseDTO}"-->
+<!--                        >-->
+<!--                            <input type="text" th:field="*{courseName}" placeholder="Search.." style="opacity: 0.5; border-radius: 7px">-->
+<!--                        </form>-->
+<!--                        <li class="has-sub">-->
+<!--                            <a>Category</a>-->
+<!--                            <ul class="sub-menu">-->
+<!--                                <li><a th:href="@{/getCourseByCategoryID(categoryID=1)}">Language Learning</a></li>-->
+<!--                                <li><a th:href="@{/getCourseByCategoryID(categoryID=2)}">Web development</a></li>-->
+<!--                                <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>-->
+<!--                                <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>-->
+<!--                                <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>-->
+<!--                            </ul>-->
+<!--                        </li>-->
+<!--                        <li class="scroll-to-section"><a href="#services">Services</a></li>-->
+<!--                        <li><a th:href="@{/course}">Courses</a></li>-->
+<!--                        <li class="has-sub">-->
+<!--                            <a href="javascript:void(0)">Pages</a>-->
+<!--                            <ul class="sub-menu">-->
+<!--                                <li><a href="about-us.html">About Us</a></li>-->
+<!--                                <li><a href="our-services.html">Our Services</a></li>-->
+<!--                                <li><a href="contact-us.html">Contact Us</a></li>-->
+<!--                            </ul>-->
+<!--                        </li>-->
+<!--                        <li class="scroll-to-section"><a href="#contact-section">Contact Us</a></li>-->
+<!--                        <li class="has-sub">-->
+<!--                            <i class="fa-solid fa-user" style="color: white">-->
+<!--                                <ul class="sub-menu">-->
+<!--                                    <p th:if="${session.CSys}!=null">-->
+<!--                                        <li><a th:href="@{/profile}">My Account</a></li>-->
+<!--                                        <li><a th:href="@{/logout}">Log out</a></li>-->
+<!--                                    </p>-->
+<!--                                    <p th:if="${session.CSys}==null">-->
+<!--                                        <li><a th:href="@{/login}">Log in</a></li>-->
+<!--                                    </p>-->
+<!--                                </ul>-->
+<!--                            </i>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+<!--                    <a class='menu-trigger'>-->
+<!--                        <span>Menu</span>-->
+<!--                    </a>-->
+<!--                    &lt;!&ndash; ***** Menu End ***** &ndash;&gt;-->
+<!--                </nav>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</header>-->
+<!-- ***** Header Area End ***** -->
+
+<!--Homemade taskbar-->
+<div class="taskbar">
+    <h1>YOUR COURSE</h1>
+    <div class="taskbar-space"></div>
+    <input type="text" class="taskbar-input" placeholder="Search">
+    <select class="taskbar-dropdown">
+        <option value="">Category</option>
+        <option value="math">Math</option>
+        <option value="science">Science</option>
+        <option value="english">English</option>
+    </select>
+    <a href="#" class="taskbar-button">Services</a>
+    <a href="#" class="taskbar-button">Courses</a>
+    <select class="taskbar-dropdown">
+        <option value="">Page</option>
+        <option value="about">About us</option>
+        <option value="service">Our service</option>
+        <option value="contact">Contact us</option>
+    </select>
+</div>
+
+
+<div class="container">
+    <div class="chart-container">
+        <h2>Subject Distribution</h2>
+        <canvas id="pieChart" class="small-chart"></canvas>
+    </div>
+    <div class="chart-container">
+        <h2>Performance Over Time</h2>
+        <canvas id="lineColumnChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <h2>Time Learning in a Week</h2>
+        <canvas id="barChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <h2>User Comments</h2>
+        <table>
+            <tr>
+                <th>Subject</th>
+                <th>Rating</th>
+                <th>Comment</th>
+            </tr>
+            <tr>
+                <td>Math</td>
+                <td><span class="star-rating">⭐⭐⭐⭐</span></td>
+                <td>Gotta find the mtfk who put letters in math💀.</td>
+            </tr>
+            <tr>
+                <td>Science</td>
+                <td><span class="star-rating">⭐⭐⭐</span></td>
+                <td>About to make bomb to send to CHina💀.</td>
+            </tr>
+            <tr>
+                <td>English</td>
+                <td><span class="star-rating">⭐⭐⭐⭐⭐</span></td>
+                <td>Now i can understand mom joke💀.</td>
+            </tr>
+            <tr>
+                <td>History</td>
+                <td><span class="star-rating">⭐⭐</span></td>
+                <td>Hail Hitler💀.</td>
+            </tr>
+            <tr>
+                <td>Geography</td>
+                <td><span class="star-rating">⭐⭐⭐⭐</span></td>
+                <td>Discovering new Species around the world💀.</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+
+<footer class="footer">
+    <div class="container">
+        <ul class="social-icons">
+            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+            <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
+            <li><a href="#"><i class="fa fa-rss"></i></a></li>
+            <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+        </ul>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Pie Chart
+    var pieChart = new Chart(document.getElementById('pieChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Math', 'Science', 'English', 'History', 'Geography'],
+            datasets: [{
+                data: [25, 20, 30, 10, 15],
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#33FF99', '#9933FF']
+            }]
+        }
+    });
+
+    // Line and Column Mixed Chart
+    var lineColumnChart = new Chart(document.getElementById('lineColumnChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [
+                {
+                    type: 'line',
+                    label: 'Overall Progress',
+                    data: [60, 65, 70, 75, 80, 85],
+                    borderColor: '#FF6384',
+                    fill: false
+                },
+                {
+                    type: 'bar',
+                    label: 'Individual Ratings',
+                    data: [60, 40, 50, 30, 40, 50],
+                    backgroundColor: '#36A2EB'
+                }
+            ]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }]
+            }
+        }
+    });
+
+    // Line Chart for Active Learning Time
+    var lineChart = new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [
+                {
+                    label: 'Active Learning Time',
+                    data: [45, 60, 55, 70, 65, 50, 40],
+                    borderColor: '#FFCE56',
+                    fill: false
+                }
+            ]
+        }
+    });
+
+    // Bar Chart for Time Learning in a Week
+    var barChart = new Chart(document.getElementById('barChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [
+                {
+                    label: 'Time Learning (hours)',
+                    data: [10, 15, 12, 8],
+                    backgroundColor: '#33FF99'
+                }
+            ]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        max: 20
+                    }
+                }]
+            }
+        }
+    });
+</script>
+</body>
+</html>
