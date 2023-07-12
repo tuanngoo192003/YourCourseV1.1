@@ -112,5 +112,10 @@ public class CourseServiceImpl implements CourseService {
         reportRepository.save(report);
     }
 
+    @Override
+    public Course findFirstCourseByCategoryID(Integer categoryID) {
+        return courseRepository.findFirstCourseByCategory(categoryID);
+    }
+
 
 }

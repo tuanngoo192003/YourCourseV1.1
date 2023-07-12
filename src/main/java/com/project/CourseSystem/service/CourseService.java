@@ -31,4 +31,6 @@ public interface CourseService {
     void updateCourse(Course course);
 
     void addReport(Report report);
+
+    Course findFirstCourseByCategoryID(Integer categoryID);
 }

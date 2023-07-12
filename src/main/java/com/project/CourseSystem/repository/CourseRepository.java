@@ -28,4 +28,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             "course_image = ?2, course_des = ?3, created_date = ?4, start_date = ?5, end_date = ?6, price = ?7, categoryid = ?8  WHERE (courseid = ?9);", nativeQuery = true)
     void updateCourse(String courseName, String courseImage, String courseDes, Date createdDate
             , Date startDate, Date endDate, Float price, int categoryID, int courseID);
+
+    @Query(value = "SELECT * FROM Course WHERE categoryID = ?1 LIMIT 1", nativeQuery = true)
+    Course findFirstCourseByCategory(Integer categoryID);
 }

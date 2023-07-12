@@ -90,53 +90,16 @@
             color: #ffb963;
         }
 
-        .add-to-cart{
-            margin-right: 20px;
-            float: right;
-            background: linear-gradient(to right, #ffb963, #ff88f9);
-            border: none;
-            color: white;
-            transition: 2s;
-            border-radius: 10px;
-        }
-
-        .add-to-cart:hover{
-            background: white;
-            border: none;
-            color: #ffb963;
-        }
-
-        .listTitle{
-            font-weight: bold;
-            color: black;
-            margin-top: 20px;
-            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
-            margin-bottom: 40px;
-        }
-
         .listTitle h1{
             margin-top: 20px;
             padding-bottom: 25px;
             font-weight: 700;
         }
 
-        .filterTitle{
-            font-weight: bold;
-            color: black;
-            margin-top: 5px;
-            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
-            margin-bottom: 10px;
-            padding-bottom: 25px;
-        }
-
         .listTitle h2{
             margin-top: 20px;
 
             font-weight: 600;
-        }
-
-        .accordion{
-            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
         }
 
         .offcanvas-title{
@@ -162,6 +125,24 @@
 
         .displayContent p{
             color: dimgray;
+        }
+
+        .sticky-top{
+            top:25vh;
+            z-index: 990;
+        }
+        .dashboard{
+            margin-top: 110px;
+            margin-right: 20px;
+            float: right;
+            background-color: white;
+            top: 0px;
+            padding: 10px;
+            box-shadow: 0px 0px 5px 0px #ccc;
+            width: 10%;
+            height: 100px;
+            border-radius: 7px;
+            border: #041418 solid 2px;
         }
 
     </style>
@@ -216,7 +197,7 @@
 <!-- ***** OffCanvas End ***** -->
 
 <!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky">
+<header class="header-area header-sticky" style="z-index: 999;">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -275,6 +256,13 @@
     </div>
 </header>
 <!-- ***** Header Area End ***** -->
+
+<!-- if user is admin this session appear -->
+<div th:if="${system_account.roleID.roleID==2}" class="dashboard sticky-top">
+    <div>
+        <button><a th:href="@{/dashboard}">Dashboard</a></button>
+    </div>
+</div>
 
 <!-- ***** Error Session *****-->
 <div class="container" style="align-content: center">
