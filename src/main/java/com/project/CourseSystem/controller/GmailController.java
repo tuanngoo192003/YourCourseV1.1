@@ -18,6 +18,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Date;
 
 @Controller
 public class GmailController {
@@ -105,6 +108,7 @@ public class GmailController {
 
     @PostMapping("regisGmailConfirmation")
     public String registrationVerification(@ModelAttribute("system_account") SystemAccountDTO system_accountDTO, Model model,
+                                           @RequestParam("userfullname") String userfullname, @RequestParam("gender") String gender,
                                            HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         if(accountService.isGmailExist(system_accountDTO.getGmail())){
@@ -123,6 +127,8 @@ public class GmailController {
             String status = emailService.sendSimpleEmail(emailDetails);
             if(status.equals("Mail sent successfully...")){
                 session.setAttribute("systemAccountRegister", system_accountDTO);
+                session.setAttribute("userfullname", userfullname);
+                session.setAttribute("gender", gender);
                 session.setAttribute("change", "registrationGmail");
                 session.setAttribute("vrf", verificationCode);
                 return "redirect:/verify";
@@ -153,12 +159,15 @@ public class GmailController {
                     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
                     String encodedPassword = passwordEncoder.encode(temp.getAccountPassword());
                     temp.setAccountPassword(encodedPassword);
+                    temp.setRegisterDate(new java.sql.Date(new Date().getTime()));
                     //save account
                     accountService.saveUser(temp);
                     //add userInfo
                     UserInfoDTO userInfoDTO1 = new UserInfoDTO();
                     SystemAccount systemAccountTemp = system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(temp.getAccountName()));
                     userInfoDTO1.setAccountID(systemAccountTemp);
+                    userInfoDTO1.setUserName((String) session.getAttribute("userfullname"));
+                    userInfoDTO1.setGender((String) session.getAttribute("gender"));
                     userService.saveUser(userInfoConverter.convertDtoToEntity(userInfoDTO1));
                     return "redirect:/registration?success";
                 }

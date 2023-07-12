@@ -25,7 +25,7 @@ public class Quiz {
     @Column(name="quizDes", nullable = true, length = 200)
     private String quizDes;
 
-    @Column(name="quizPeriod", nullable = false)
+    @Column(name="quizPeriod", nullable = true)
     private Time quizPeriod;
 
     @ManyToOne

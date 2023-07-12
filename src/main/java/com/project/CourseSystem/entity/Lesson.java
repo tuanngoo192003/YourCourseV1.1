@@ -11,7 +11,6 @@ import lombok.*;
 @Entity
 @Table(name="lesson")
 public class Lesson {
-
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name="lessonID", nullable = false)

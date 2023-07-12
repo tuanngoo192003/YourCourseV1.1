@@ -17,19 +17,13 @@
 
     <!-- Additional CSS Files -->
     <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/courseListStyle.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/owl.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/lightbox.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
     <style>
         .header-area {
             background: rgb(219, 138, 222) !important;
             background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
         }
 
-        .displayContent{
-            width: 100%;
-            height: 100%;
-        }
 
         .displayContent h4{
             text-align: center;
@@ -163,6 +157,41 @@
             color: dimgray;
         }
 
+        .offcanvas-title{
+            font-weight: bold;
+            color: black;
+            margin-top: 15px;
+            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
+            margin-bottom: 10px;
+        }
+        .cartContent{
+            width: 100%;
+            height: 100%;
+            margin-bottom: 10px;
+            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
+        }
+
+        .cartContent h4{
+            font-size: 15px;
+            text-align: center;
+            font-weight: normal;
+            color: black;
+        }
+
+        .buy-now-cart{;
+            padding: 20px 30px;
+            background: whitesmoke;
+            border: none;
+            color: rgb(58, 58, 58);
+            transition: 2s;
+            border-radius: 10px;
+        }
+
+        .buy-now-cart:hover{
+            background: gray;
+            border: none;
+            color: rgb(58, 58, 58);
+        }
     </style>
 </head>
 <body>
@@ -185,6 +214,7 @@
                         <div style="display: inline-flex">
                             <input type="text" name="fromPage" value="list" style="display: none">
                             <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
+                            <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
                             <div>
                                 <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
                             </div>
@@ -241,10 +271,9 @@
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Fundamental Programming</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Programming</a></li>
                             </ul>
                         </li>
-                        <li class="scroll-to-section"><a href="#services">Services</a></li>
                         <li><a th:href="@{/course}">Courses</a></li>
                         <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
                             style="color: white; background: none; border: none">
@@ -265,9 +294,6 @@
                             </i>
                         </li>
                     </ul>
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
                     <!-- ***** Menu End ***** -->
                 </nav>
             </div>
@@ -275,6 +301,7 @@
     </div>
 </header>
 <!-- ***** Header Area End ***** -->
+
 <div class="container-fluid">
     <h1 style="font-weight: 700">Quiz Review</h1>
     <div class="container" style="align-content: center; margin-top: 25px; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2)">
@@ -292,25 +319,42 @@
         <p th:text="'Time spent: '+${report.timeSpent}"></p>
     </div>
     <div id="quiz"></div>
+    <button><a th:href="@{/learn(courseID=${currentCourse.courseID})}">Return to course</a></button>
 </div>
 <!-- ***** Footer *****-->
-<div class="container-fluid" style="background: #d69fd5;">
-    <div class="row">
-        <div class="col-lg-12">
-            <ul class="social-icons">
-                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                <li><a href="#"><i class="fa fa-rss"></i></a></li>
-                <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-            </ul>
-        </div>
-        <div class="col-lg-12">
-            <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
-                <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+<footer>
+    <div class="container-fluid footer-st" style="background: #d69fd5;">
+        <div class="row">
+            <div class="col-lg-6">
+                <div style="margin-left: 50px">
+                    <p>About us</p>
+                    <div style="margin-top: 30px">
+                        <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
+                        <a style="color: #fff">Our team: FPT University-SWP391-Group 5</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Further information</p>
+                <div style="margin-top: 30px">
+                    <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
+                    <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Follow us</p>
+                <ul class="social-icons">
+                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                </ul>
+            </div>
+            <div class="col-lg-12" style="margin-top: 30px">
+                <p class="copyright"> © 2023 YourCourse Web Application
+            </div>
         </div>
     </div>
-</div>
+</footer>
+<!-- ***** End Footer *****-->
 <script th:inline="javascript">
     var chosenAnswers = [
         /*[# th:each="chosenAns: ${chosenAnswers}"]*/

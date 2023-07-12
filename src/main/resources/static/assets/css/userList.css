@@ -664,133 +664,6 @@ header
 }
 
 
-/*
----------------------------------------------
-banner
----------------------------------------------
-*/
-
-section.main-banner {
-    margin-top: 0px;
-}
-
-.main-banner {
-    padding-top: 180px;
-}
-
-.main-banner .right-image {
-    margin-left: 120px;
-    position: relative;
-    z-index: 2;
-}
-
-.main-banner .right-image img {
-    position: relative;
-    z-index: 2;
-}
-
-.main-banner .right-image::after {
-    position: absolute;
-    background-image: url(../images/banner-right-dec.png);
-    width: 378px;
-    height: 378px;
-    content: '';
-    right: -25%;
-    z-index: 1;
-}
-
-.main-banner .header-text::after {
-    position: absolute;
-    background-image: url(../images/banner-left-dec.png);
-    width: 214px;
-    height: 429px;
-    content: '';
-    left: 0;
-    bottom: -240px;
-    z-index: 1;
-}
-
-.main-banner .header-text h6 {
-    position: relative;
-    z-index: 2;
-    font-size: 17px;
-    font-weight: 500;
-    text-transform: capitalize;
-    color: #777777;;
-}
-
-.main-banner .header-text h2 {
-    position: relative;
-    z-index: 2;
-    margin-top: 20px;
-    font-size: 64px;
-    color: #111111;
-    font-weight: 900;
-    line-height: 74px;
-    margin-bottom: 40px;
-}
-
-.main-banner .header-text h2 em {
-    font-style: normal;
-    color: #dc8cdb;
-}
-
-.main-banner .main-button-gradient {
-    position: relative;
-    z-index: 2;
-}
-
-/* courseList css start here */
-
-
-
-.sort{
-
-}
-
-.container-fluid{
-    padding: 20px;
-}
-.filter{
-
-    padding-top: 20px;
-}
-
-.courseList{
-    border-left: 1px solid #d69fd5;
-    height: 100%;
-}
-
-.display:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-}
-
-.displayContent h4{
-    font-weight: bold;
-    color: black;
-}
-
-.displayContent p{
-    color: dimgray;
-}
-.display img{
-    overflow: hidden;
-    width: 100px;
-    height: 100px;
-}
-
-#price{
-    float: right;
-}
-
-.display {
-    display: flex;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-    transition: 0.3s;
-    border-radius: 10px;
-    border: 2px solid black;
-}
-
 .footer{
     background-color: #d69fd5;
     height: 200px;
@@ -800,12 +673,12 @@ section.main-banner {
     display: inline-block;
     margin: 0px 20px;
     margin-top: 50px;
-  }
-  
+}
+
 .social-icons {
     text-align: center;
-  }
-  
+}
+
 .social-icons li a {
     width: 44px;
     height: 44px;
@@ -816,12 +689,12 @@ section.main-banner {
     color: #dc8cdb;
     border-radius: 50%;
     transition: all .5s;
-  }
-  
+}
+
 .social-icons li a:hover {
     background-color: #dc8cdb;
     color: #fff;
-  }
+}
 
 /*
 ---------------------------------------------
@@ -1642,6 +1515,6 @@ body {
     section.more-info .count-area-content .count-title {
         font-size: 22px;
     }
-    
+
 
 }

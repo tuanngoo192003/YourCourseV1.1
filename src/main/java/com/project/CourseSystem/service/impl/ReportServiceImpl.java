@@ -5,6 +5,8 @@ import com.project.CourseSystem.repository.ReportRepository;
 import com.project.CourseSystem.service.ReportService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ReportServiceImpl implements ReportService {
 
@@ -22,5 +24,10 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public void saveReport(Report report) {
         reportRepository.save(report);
+    }
+
+    @Override
+    public List<Report> getAllReportByUserID(Integer userID) {
+        return reportRepository.findAllByUserID(userID);
     }
 }

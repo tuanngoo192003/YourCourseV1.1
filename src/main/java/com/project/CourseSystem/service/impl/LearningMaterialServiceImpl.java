@@ -22,4 +22,14 @@ public class LearningMaterialServiceImpl implements LearningMaterialService {
         learningMaterialRepository.getLearningMaterialByLessonID(lessonID).forEach(learningMaterials::add);
         return learningMaterials;
     }
+
+    @Override
+    public void saveLearningMaterial(LearningMaterial learningMaterial) {
+        learningMaterialRepository.save(learningMaterial);
+    }
+
+    @Override
+    public void deleteLearningMaterial(Integer learningMaterialID) {
+        learningMaterialRepository.deleteById(learningMaterialID);
+    }
 }

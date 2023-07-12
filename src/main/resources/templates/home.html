@@ -15,6 +15,9 @@
   <!-- Bootstrap core CSS -->
   <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
+  <!-- Additional Boostrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
   <!-- Additional CSS Files -->
   <link rel="stylesheet" th:href="@{assets/css/fontawesome.css}">
@@ -24,10 +27,97 @@
   <!--
 
   -->
+  <style>
+    .offcanvas-title{
+      font-weight: bold;
+      color: black;
+      margin-top: 15px;
+      border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
+      margin-bottom: 10px;
+    }
+    .cartContent{
+      width: 100%;
+      height: 100%;
+      margin-bottom: 10px;
+      border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
+    }
+
+    .cartContent h4{
+      font-size: 15px;
+      text-align: center;
+      font-weight: normal;
+      color: black;
+    }
+
+    .buy-now-cart{;
+      padding: 20px 30px;
+      background: whitesmoke;
+      border: none;
+      color: rgb(58, 58, 58);
+      transition: 2s;
+      border-radius: 10px;
+    }
+
+    .buy-now-cart:hover{
+      background: gray;
+      border: none;
+      color: rgb(58, 58, 58);
+    }
+
+    section.our-courses ul.nacc li .left-image .price h6{
+      width: 110px;
+    }
+  </style>
 </head>
 
 <body>
 <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
+<!-- ***** OffCanvas Start *****-->
+<div class="offcanvas offcanvas-end" id="demo">
+  <div class="offcanvas-header">
+    <h1 class="offcanvas-title">Cart</h1>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div th:if="${session.cart!=null}">
+      <th:block th:each="cart, state: ${session.cart}">
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+          <div class="cartContent" >
+            <div style="display: inline-flex">
+              <input type="text" name="fromPage" value="list" style="display: none">
+              <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
+              <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
+              <div>
+                <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
+              </div>
+              <h4 th:text="${cart.courseName}"></h4>
+              <p th:text="'Price: '+${cart.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+            </div>
+            <div style="display:inline-flex;">
+              <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
+              <input type="submit" value="Remove from cart" class="buy-now-cart" name="paymentButton">
+            </div>
+          </div>
+
+        </form>
+      </th:block>
+      <button><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
+      <button><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
+    </div>
+    <div th:if="${session.cart==null}">
+      <div class="cartContent" style="display: inline-flex">
+        <h4>Cart is empty</h4>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ***** OffCanvas End ***** -->
+
 <!-- ***** Header Area Start ***** -->
 <header class="header-area header-sticky">
   <div class="container">
@@ -58,30 +148,26 @@
                 <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
                 <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
                 <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
+                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Programming</a></li>
               </ul>
             </li>
-            <li class="scroll-to-section"><a href="#services">Services</a></li>
             <li><a th:href="@{/course}">Courses</a></li>
-            <li class="has-sub">
-              <a href="javascript:void(0)">Pages</a>
-              <ul class="sub-menu">
-                <li><a href="about-us.html">About Us</a></li>
-                <li><a href="our-services.html">Our Services</a></li>
-                <li><a href="contact-us.html">Contact Us</a></li>
-              </ul>
+            <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
+                style="color: white; background: none; border: none">
+              <i class="fa-solid fa-shopping-cart"></i>
             </li>
             <li class="scroll-to-section"><a href="#contact-section">Contact Us</a></li>
             <li class="has-sub">
               <i class="fa-solid fa-user" style="color: white">
-              <ul class="sub-menu">
-                <p th:if="${session.CSys}!=null">
+                <ul class="sub-menu">
+                  <p th:if="${session.CSys}!=null">
                   <li><a th:href="@{/profile}">My Account</a></li>
                   <li><a th:href="@{/logout}">Log out</a></li>
-                </p>
-                <p th:if="${session.CSys}==null">
+                  </p>
+                  <p th:if="${session.CSys}==null">
                   <li><a th:href="@{/login}">Log in</a></li>
-                </p>
-              </ul>
+                  </p>
+                </ul>
               </i>
             </li>
           </ul>
@@ -120,119 +206,6 @@
 </section>
 <!-- ***** Main Banner Area End ***** -->
 
-<section class="services" id="services">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <div class="section-heading">
-          <h6>Our Services</h6>
-          <h4>Provided <em>Services</em></h4>
-        </div>
-      </div>
-      <div class="col-lg-12">
-        <div class="owl-service-item owl-carousel">
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img th:src="@{assets/images/service-icon-01.png}" alt="">
-              </div>
-              <h4>Useful Tricks</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img th:src="@{assets/images/service-icon-02.png}" alt="">
-              </div>
-              <h4>Creative Ideas</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img th:src="@{assets/images/service-icon-03.png}" alt="">
-              </div>
-              <h4>Ready Target</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img th:src="@{assets/images/service-icon-04.png}" alt="">
-              </div>
-              <h4>Technology</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img th:src="@{assets/images/service-icon-01.png}" alt="">
-              </div>
-              <h4>Useful Tricks</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img th:src="@{assets/images/service-icon-02.png}" alt="">
-              </div>
-              <h4>Creative Ideas</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img th:src="@{assets/images/service-icon-03.png}" alt="">
-              </div>
-              <h4>Ready Target</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img th:src="@{assets/images/service-icon-04.png}" alt="">
-              </div>
-              <h4>Technology</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img src="assets/images/service-icon-01.png" alt="">
-              </div>
-              <h4>Useful Tricks</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img src="assets/images/service-icon-02.png" alt="">
-              </div>
-              <h4>Creative Ideas</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img src="assets/images/service-icon-03.png" alt="">
-              </div>
-              <h4>Ready Target</h4>
-            </div>
-          </div>
-          <div class="item">
-            <div class="service-item">
-              <div class="icon">
-                <img src="assets/images/service-icon-04.png" alt="">
-              </div>
-              <h4>Technology</h4>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section class="our-courses" id="courses">
   <div class="container">
     <div class="row">
@@ -248,10 +221,12 @@
             <div class="row">
               <div class="col-lg-3">
                 <div class="menu">
-                  <div class="active gradient-border"><span>Web Development</span></div>
-                  <div class="gradient-border"><span>Language</span></div>
+                  <div class="active gradient-border"><span>Language Learning</span></div>
+                  <div class="gradient-border"><span>Web development</span></div>
                   <div class="gradient-border"><span>Web Design</span></div>
                   <div class="gradient-border"><span>IT Fundamental</span></div>
+                  <div class="gradient-border"><span>Mathematics</span></div>
+                  <div class="gradient-border"><span>Fundamental Programming</span></div>
                 </div>
               </div>
               <div class="col-lg-9">
@@ -259,18 +234,23 @@
                   <li class="active">
                     <div>
                       <div class="left-image">
-                        <img src="assets/images/courses-01.jpg" alt="">
-                        <div class="price"><h6>$128</h6></div>
+                        <img th:src="'https://drive.google.com/uc?id='+${course1.courseImage}" alt="" style="width: 300px; height: 363px">
+                        <div class="price"><h6 th:text="${course1.price}+'đ'"></h6></div>
                       </div>
                       <div class="right-content">
-                        <h4>Web Development</h4>
-                        <p>Did you know that you can visit <a rel="nofollow" href="https://www.toocss.com/" target="_blank">TooCSS website</a> for latest listing of HTML templates and a variety of useful templates.
-                          <br><br>You just need to go and visit that website right now. IF you have any suggestion or comment about this template, you can feel free to go to contact page for our email address.</p>
-                        <span>36 Hours</span>
-                        <span>4 Weeks</span>
-                        <span class="last-span">3 Certificates</span>
+                        <h4 th:text="${course1.courseName}">Web Development</h4>
+                        <h6>This course for: </h6>
+                        <div th:each="for: ${forWho1}">
+                          <p th:text="${for}"></p>
+                        </div>
+                        <h6>Requirement to join this course: </h6>
+                        <div th:each="require: ${courseRequirements1}">
+                          <p th:text="${require}"></p>
+                        </div>
+                        <span th:text="${numberOfLesson1}+' lesson'"></span>
+                        <span th:text="${numberOfLesson1}+' quiz test'" class="last-span"></span>
                         <div class="text-button">
-                          <a href="contact-us.html">Subscribe Course</a>
+                          <a th:href="@{/learn(courseID=${course1.courseID})}">Let's learn</a>
                         </div>
                       </div>
                     </div>
@@ -278,17 +258,23 @@
                   <li>
                     <div>
                       <div class="left-image">
-                        <img src="assets/images/courses-02.jpg" alt="">
-                        <div class="price"><h6>$156</h6></div>
+                        <img th:src="'https://drive.google.com/uc?id='+${course2.courseImage}" alt="" style="width: 300px; height: 363px">
+                        <div class="price"><h6 th:text="${course2.price}+'đ'"></h6></div>
                       </div>
                       <div class="right-content">
-                        <h4>Creative Graphic Design</h4>
-                        <p>You are not allowed to redistribute this template ZIP file on any other website without a permission from us.<br><br>There are some unethical people on this world copied and reposted our templates without any permission from us. Their Karma will hit them really hard. Yeah!</p>
-                        <span>48 Hours</span>
-                        <span>6 Weeks</span>
-                        <span class="last-span">1 Certificate</span>
+                        <h4 th:text="${course2.courseName}">Web Development</h4>
+                        <h6>This course for: </h6>
+                        <div th:each="for2: ${forWho2}">
+                          <p th:text="${for2}"></p>
+                        </div>
+                        <h6>Requirement to join this course: </h6>
+                        <div th:each="require2: ${courseRequirements2}">
+                          <p th:text="${require2}"></p>
+                        </div>
+                        <span th:text="${numberOfLesson2}+' lesson'"></span>
+                        <span th:text="${numberOfLesson2}+' quiz test'" class="last-span"></span>
                         <div class="text-button">
-                          <a href="contact-us.html">Subscribe Course</a>
+                          <a th:href="@{/learn(courseID=${course2.courseID})}">Let's learn</a>
                         </div>
                       </div>
                     </div>
@@ -296,17 +282,23 @@
                   <li>
                     <div>
                       <div class="left-image">
-                        <img src="assets/images/courses-03.jpg" alt="">
-                        <div class="price"><h6>$184</h6></div>
+                        <img th:src="'https://drive.google.com/uc?id='+${course3.courseImage}" alt="" style="width: 300px; height: 363px">
+                        <div class="price"><h6 th:text="${course3.price}+'đ'"></h6></div>
                       </div>
                       <div class="right-content">
-                        <h4>Web Design</h4>
-                        <p>Quinoa roof party squid prism sustainable letterpress cray hammock tumeric man bun mixtape tofu subway tile cronut. Deep v ennui subway tile organic seitan.<br><br>Kogi VHS freegan bicycle rights try-hard green juice probably haven't heard of them cliche la croix af chillwave.</p>
-                        <span>28 Hours</span>
-                        <span>4 Weeks</span>
-                        <span class="last-span">1 Certificate</span>
+                        <h4 th:text="${course3.courseName}">Web Development</h4>
+                        <h6>This course for: </h6>
+                        <div th:each="for3: ${forWho3}">
+                          <p th:text="${for3}"></p>
+                        </div>
+                        <h6>Requirement to join this course: </h6>
+                        <div th:each="require3: ${courseRequirements3}">
+                          <p th:text="${require3}"></p>
+                        </div>
+                        <span th:text="${numberOfLesson3}+' lesson'"></span>
+                        <span th:text="${numberOfLesson3}+' quiz test'" class="last-span"></span>
                         <div class="text-button">
-                          <a href="contact-us.html">Subscribe Course</a>
+                          <a th:href="@{/learn(courseID=${course3.courseID})}">Let's learn</a>
                         </div>
                       </div>
                     </div>
@@ -314,17 +306,71 @@
                   <li>
                     <div>
                       <div class="left-image">
-                        <img src="assets/images/courses-04.jpg" alt="">
-                        <div class="price"><h6>$76</h6></div>
+                        <img th:src="'https://drive.google.com/uc?id='+${course4.courseImage}" alt="" style="width: 300px; height: 363px">
+                        <div class="price"><h6 th:text="${course4.price}+'đ'"></h6></div>
                       </div>
                       <div class="right-content">
-                        <h4>WordPress Introduction</h4>
-                        <p>Quinoa roof party squid prism sustainable letterpress cray hammock tumeric man bun mixtape tofu subway tile cronut. Deep v ennui subway tile organic seitan.<br><br>Kogi VHS freegan bicycle rights try-hard green juice probably haven't heard of them cliche la croix af chillwave.</p>
-                        <span>48 Hours</span>
-                        <span>4 Weeks</span>
-                        <span class="last-span">2 Certificates</span>
+                        <h4 th:text="${course4.courseName}">Web Development</h4>
+                        <h6>This course for: </h6>
+                        <div th:each="for4: ${forWho4}">
+                          <p th:text="${for4}"></p>
+                        </div>
+                        <h6>Requirement to join this course: </h6>
+                        <div th:each="require4: ${courseRequirements4}">
+                          <p th:text="${require4}"></p>
+                        </div>
+                        <span th:text="${numberOfLesson4}+' lesson'"></span>
+                        <span th:text="${numberOfLesson4}+' quiz test'" class="last-span"></span>
                         <div class="text-button">
-                          <a href="contact-us.html">Subscribe Course</a>
+                          <a th:href="@{/learn(courseID=${course4.courseID})}">Let's learn</a>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div>
+                      <div class="left-image">
+                        <img th:src="'https://drive.google.com/uc?id='+${course5.courseImage}" alt="" style="width: 300px; height: 363px">
+                        <div class="price"><h6 th:text="${course5.price}+'đ'"></h6></div>
+                      </div>
+                      <div class="right-content">
+                        <h4 th:text="${course5.courseName}">Web Development</h4>
+                        <h6>This course for: </h6>
+                        <div th:each="for5: ${forWho5}">
+                          <p th:text="${for5}"></p>
+                        </div>
+                        <h6>Requirement to join this course: </h6>
+                        <div th:each="require5: ${courseRequirements5}">
+                          <p th:text="${require5}"></p>
+                        </div>
+                        <span th:text="${numberOfLesson5}+' lesson'"></span>
+                        <span th:text="${numberOfLesson5}+' quiz test'" class="last-span"></span>
+                        <div class="text-button">
+                          <a th:href="@{/learn(courseID=${course5.courseID})}">Let's learn</a>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                  <li>
+                    <div>
+                      <div class="left-image">
+                        <img th:src="'https://drive.google.com/uc?id='+${course6.courseImage}" alt="" style="width: 300px; height: 363px">
+                        <div class="price"><h6 th:text="${course6.price}+'đ'"></h6></div>
+                      </div>
+                      <div class="right-content">
+                        <h4 th:text="${course6.courseName}"></h4>
+                        <h6>This course for: </h6>
+                        <div th:each="for6: ${forWho6}">
+                          <p th:text="${for6}"></p>
+                        </div>
+                        <h6>Requirement to join this course: </h6>
+                        <div th:each="require6: ${courseRequirements6}">
+                          <p th:text="${require6}"></p>
+                        </div>
+                        <span th:text="${numberOfLesson6}+' lesson'"></span>
+                        <span th:text="${numberOfLesson6}+' quiz test'" class="last-span"></span>
+                        <div class="text-button">
+                          <a th:href="@{/learn(courseID=${course6.courseID})}">Let's learn</a>
                         </div>
                       </div>
                     </div>
@@ -361,7 +407,7 @@
 <section class="contact-us" id="contact-section">
   <div class="container">
     <div class="row">
-      <div class="col-lg-8">
+      <div class="col-lg-8" style="margin-bottom: 25px">
         <div id="map">
 
           <!-- You just need to go to Google Maps for your own map point, and copy the embed code from Share -> Embed a map section -->
@@ -388,53 +434,34 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
-        <form id="contact" action="" method="post">
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="section-heading">
-                <h6>Contact us</h6>
-                <h4>Say <em>Hello</em></h4>
-                <p>IF you need a working contact form by PHP script, please visit TemplateMo's contact page for more info.</p>
-              </div>
-            </div>
-            <div class="col-lg-12">
-              <fieldset>
-                <input type="name" name="name" id="name" placeholder="Full Name" autocomplete="on" required>
-              </fieldset>
-            </div>
-            <div class="col-lg-12">
-              <fieldset>
-                <input type="text" name="email" id="email" pattern="[^ @]*@[^ @]*" placeholder="Your Email" required="">
-              </fieldset>
-            </div>
-            <div class="col-lg-12">
-              <fieldset>
-                <textarea name="message" id="message" placeholder="Your Message"></textarea>
-              </fieldset>
-            </div>
-            <div class="col-lg-12">
-              <fieldset>
-                <button type="submit" id="form-submit" class="main-gradient-button">Send Message</button>
-              </fieldset>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="col-lg-12">
-        <ul class="social-icons">
+      <div class="col-lg-6">
+        <p style="text-align: center;margin-top: 70px; color: #fff; font-weight: bold">Follow us</p>
+        <ul class="social-icons" style="margin-top: 10px;">
           <li><a href="#"><i class="fa fa-facebook"></i></a></li>
           <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-          <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-          <li><a href="#"><i class="fa fa-rss"></i></a></li>
-          <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
         </ul>
       </div>
-      <div class="col-lg-12">
-        <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
-
-          <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+      <div class="col-lg-3">
+          <p style="text-align: center;margin-top: 70px; color: #fff; font-weight: bold">About us</p>
+          <div style="margin-top: 10px; text-align: center" >
+            <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
+            <a style="color: #fff">Our team: FPT University-SWP391-Group 5</a>
+          </div>
+        </div>
+      <div class="col-lg-3">
+        <p style="text-align: center;margin-top: 70px; color: #fff; font-weight: bold">Further information</p>
+        <div style="margin-top: 10px; text-align: center">
+          <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
+          <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
+        </div>
       </div>
+      </div>
+
+      <div class="col-lg-12">
+        <p class="copyright"> © 2023 YourCourse Web Application</p>
+      </div>
+    <div class="col-lg-12" style="height: 50px">
+
     </div>
   </div>
 </section>

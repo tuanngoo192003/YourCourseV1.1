@@ -7,7 +7,12 @@ import com.project.CourseSystem.repository.SystemAccountRepository;
 import com.project.CourseSystem.repository.UserInfoRepository;
 import com.project.CourseSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -53,6 +58,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public int findUserIDByAccountID(int accountID) {
         return userInfoRepository.findUserIDByAccountID(accountID);
+    }
+
+    @Override
+    public List<UserInfo> findAllUser() {
+        List<UserInfo> userInfoList = userInfoRepository.findAll();
+        return userInfoList;
+    }
+
+    @Override
+    public Page<UserInfo> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
+                Sort.by(sortField).descending();
+        return userInfoRepository.findAll(PageRequest.of(pageNo - 1, pageSize, sort));
     }
 
 

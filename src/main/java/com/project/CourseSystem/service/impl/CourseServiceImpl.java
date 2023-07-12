@@ -5,6 +5,7 @@ import com.project.CourseSystem.converter.CourseDetailsConverter;
 import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.dto.CourseDetailsDTO;
 import com.project.CourseSystem.entity.Course;
+import com.project.CourseSystem.entity.CourseDetails;
 import com.project.CourseSystem.entity.Report;
 import com.project.CourseSystem.repository.CourseDetailsRepository;
 import com.project.CourseSystem.repository.CourseRepository;
@@ -92,8 +93,28 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    public void saveCourse(Course course) {
+        courseRepository.save(course);
+    }
+
+    @Override
+    public void saveCourseDetails(CourseDetails courseDetails) {
+        courseDetailsRepository.save(courseDetails);
+    }
+
+    @Override
+    public void updateCourse(Course course) {
+        courseRepository.save(course);
+    }
+
+    @Override
     public void addReport(Report report) {
         reportRepository.save(report);
+    }
+
+    @Override
+    public Course findFirstCourseByCategoryID(Integer categoryID) {
+        return courseRepository.findFirstCourseByCategory(categoryID);
     }
 
 

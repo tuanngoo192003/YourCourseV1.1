@@ -4,35 +4,71 @@
 <head>
     <title>Add Course</title>
     <link rel="stylesheet" th:href="@{assets/css/add-course.css}">
+    <style>
+        html{
+            height: 100%;
+            background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <h1>Add a Course</h1>
-    <form id="courseForm">
+    <form
+            enctype="multipart/form-data"
+            role="form"
+            method="post"
+            th:action="@{/inputLesson}"
+            th:object="${addCourseForm}"
+            id="courseForm"
+    >
         <label for="category">Category:</label>
-        <select id="category" name="category">
-            <option value="math">Math</option>
-            <option value="science">Science</option>
-            <option value="history">History</option>
+        <select id="category" name="category" th:field="*{category}">
+            <option value="Language Learning">Language Learning</option>
+            <option value="Web development">Web development</option>
+            <option value="Web design">Web design</option>
+            <option value="IT Fundamental">IT Fundamental</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Fundamental Programming">Fundamental Programming</option>
         </select>
 
         <label for="courseName">Course Name:</label>
-        <input type="text" id="courseName" name="courseName">
+        <input type="text" id="courseName" name="courseName" th:field="*{courseName}" th:value="*{courseName}">
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description"></textarea>
+        <label for="description">Short Description:</label>
+        <textarea id="description" name="description" th:field="*{courseDes}" th:value="*{courseDes}"></textarea>
+
+        <label for="file">Image:</label>
+        <input type="file" name="file" id="file"/>
 
         <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" name="startDate">
+        <input type="date" id="startDate" name="startDate" th:field="*{startDate}" th:value="*{courseDes}">
 
         <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate">
+        <input type="date" id="endDate" name="endDate" th:field="*{endDate}" th:value="*{endDate}">
 
-        <button type="button" onclick="goToLessonsPage()">Add Lessons</button>
+        <label for="price">Price(đ):</label>
+        <input type="number" id="price" name="price" th:field="*{price}" th:value="*{price}">
+
+        <h2>Additional information</h2>
+
+        <label for="courseDetailsContent">More description when accessing course:</label>
+        <textarea id="courseDetailsContent" name="courseDetailsContent" th:field="*{courseDescription}" th:value="*{courseDescription}"></textarea>
+
+        <label for="whatCanBeLearnt">What can be learnt after this course:</label>
+        <textarea id="whatCanBeLearnt" name="whatCanBeLearnt" th:field="*{courseDetailsContent}" th:value="*{courseDetailsContent}"></textarea>
+
+        <label for="courseRequirement">Requirement to join in the course:</label>
+        <textarea id="courseRequirement" name="courseRequirement" th:field="*{courseRequirements}" th:value="*{courseRequirements}"></textarea>
+
+        <label for="forWho">For which kind of student:</label>
+        <textarea id="forWho" name="forWho" th:field="*{forWho}" th:value="*{forWho}"></textarea>
+
+        <input type="submit" value="Add Lessons">
     </form>
 </div>
 
-<script th:src="@{/assets/js/add-course.js}"></script>
+
 </body>
 
 </html>

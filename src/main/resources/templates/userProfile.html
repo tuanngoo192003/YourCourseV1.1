@@ -6,20 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" th:href="@{assets/css/profileStyle.css}">
+    <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <!-- Additional CSS Files -->
     <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/courseListStyle.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/owl.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/lightbox.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
     <title>User profile</title>
     <style>
         .header-area {
             background: rgb(219, 138, 222) !important;
             background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+        }
+
+        .py-5{
+            padding-top: 5rem !important;
         }
 
         .displayContent{
@@ -85,53 +90,16 @@
             color: #ffb963;
         }
 
-        .add-to-cart{
-            margin-right: 20px;
-            float: right;
-            background: linear-gradient(to right, #ffb963, #ff88f9);
-            border: none;
-            color: white;
-            transition: 2s;
-            border-radius: 10px;
-        }
-
-        .add-to-cart:hover{
-            background: white;
-            border: none;
-            color: #ffb963;
-        }
-
-        .listTitle{
-            font-weight: bold;
-            color: black;
-            margin-top: 20px;
-            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
-            margin-bottom: 40px;
-        }
-
         .listTitle h1{
             margin-top: 20px;
             padding-bottom: 25px;
             font-weight: 700;
         }
 
-        .filterTitle{
-            font-weight: bold;
-            color: black;
-            margin-top: 5px;
-            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
-            margin-bottom: 10px;
-            padding-bottom: 25px;
-        }
-
         .listTitle h2{
             margin-top: 20px;
 
             font-weight: 600;
-        }
-
-        .accordion{
-            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
         }
 
         .offcanvas-title{
@@ -159,10 +127,28 @@
             color: dimgray;
         }
 
+        .sticky-top{
+            top:25vh;
+            z-index: 990;
+        }
+        .dashboard{
+            margin-top: 110px;
+            margin-right: 20px;
+            float: right;
+            background-color: white;
+            top: 0px;
+            padding: 10px;
+            box-shadow: 0px 0px 5px 0px #ccc;
+            width: 10%;
+            height: 100px;
+            border-radius: 7px;
+            border: #041418 solid 2px;
+        }
+
     </style>
 </head>
 <body>
-<script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
+
 
 <!-- ***** OffCanvas Start *****-->
 <div class="offcanvas offcanvas-end" id="demo">
@@ -183,6 +169,7 @@
                         <div style="display: inline-flex">
                             <input type="text" name="fromPage" value="list" style="display: none">
                             <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
+                            <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
                             <div>
                                 <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
                             </div>
@@ -210,7 +197,7 @@
 <!-- ***** OffCanvas End ***** -->
 
 <!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky">
+<header class="header-area header-sticky" style="z-index: 999;">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -239,9 +226,9 @@
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Programming</a></li>
                             </ul>
                         </li>
-                        <li class="scroll-to-section"><a href="#services">Services</a></li>
                         <li><a th:href="@{/course}">Courses</a></li>
                         <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
                             style="color: white; background: none; border: none">
@@ -262,9 +249,6 @@
                             </i>
                         </li>
                     </ul>
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
                     <!-- ***** Menu End ***** -->
                 </nav>
             </div>
@@ -272,6 +256,14 @@
     </div>
 </header>
 <!-- ***** Header Area End ***** -->
+
+<!-- if user is admin this session appear -->
+<div th:if="${system_account.roleID.roleID==2}" class="dashboard sticky-top">
+    <div>
+        <button><a th:href="@{/dashboard}">Dashboard</a></button>
+    </div>
+</div>
+
 <!-- ***** Error Session *****-->
 <div class="container" style="align-content: center">
     <div th:if="${param.errorGmail}!=null">
@@ -463,7 +455,7 @@
                                       th:action="@{/payment}"
                                       th:object="${courseDTO}"
                                 >
-                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="@{${courseListEntity.courseImage}}"></a>
+                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
                                     <div class="displayContent">
                                         <input type="text" name="fromPage" value="list" style="display: none">
                                         <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
@@ -484,28 +476,42 @@
     </div>
 </section>
 
-<div class="container-fluid" style="background: #d69fd5;">
-    <div class="row">
-        <div class="col-lg-12">
-            <ul class="social-icons">
-                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                <li><a href="#"><i class="fa fa-rss"></i></a></li>
-                <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-            </ul>
-        </div>
-        <div class="col-lg-12">
-            <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
-                <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+<!-- ***** Footer *****-->
+<footer>
+    <div class="container-fluid footer-st" style="background: #d69fd5;">
+        <div class="row">
+            <div class="col-lg-6">
+                <div style="margin-left: 50px">
+                    <p>About us</p>
+                    <div style="margin-top: 30px">
+                        <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
+                        <a style="color: #fff">Our team: FPT University-SWP391-Group 5</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Further information</p>
+                <div style="margin-top: 30px">
+                    <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
+                    <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Follow us</p>
+                <ul class="social-icons">
+                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                </ul>
+            </div>
+            <div class="col-lg-12" style="margin-top: 30px">
+                <p class="copyright"> © 2023 YourCourse Web Application
+            </div>
         </div>
     </div>
-</div>
+</footer>
+<!-- ***** End Footer *****-->
 
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script>
     var password = document.getElementById("newPassword")
         , confirm_password = document.getElementById("confirm");

@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{/assets/css/courseListStyle.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/listStyle.css}">
     <!-- Bootstrap core CSS-->
     <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
@@ -16,9 +16,7 @@
 
     <!-- Additional CSS Files -->
     <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/courseListStyle.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/owl.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/lightbox.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
     <title>Course List</title>
     <style>
         .header-area {
@@ -177,15 +175,16 @@
         <div th:if="${session.cart!=null}">
             <th:block th:each="cart, state: ${session.cart}">
                 <form
-                      role="form"
-                      method="post"
-                      th:action="@{payment}"
-                      th:object="${courseDTO}"
+                        role="form"
+                        method="post"
+                        th:action="@{payment}"
+                        th:object="${courseDTO}"
                 >
                     <div class="cartContent" >
                         <div style="display: inline-flex">
                             <input type="text" name="fromPage" value="list" style="display: none">
                             <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
+                            <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
                             <div>
                                 <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
                             </div>
@@ -242,10 +241,9 @@
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
                                 <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Fundamental Programming</a></li>
+                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Programming</a></li>
                             </ul>
                         </li>
-                        <li class="scroll-to-section"><a href="#services">Services</a></li>
                         <li><a th:href="@{/course}">Courses</a></li>
                         <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
                             style="color: white; background: none; border: none">
@@ -266,9 +264,6 @@
                             </i>
                         </li>
                     </ul>
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
                     <!-- ***** Menu End ***** -->
                 </nav>
             </div>
@@ -276,7 +271,8 @@
     </div>
 </header>
 <!-- ***** Header Area End ***** -->
-    <div class="container-fluid" style="margin-left: 20px;">
+
+<div class="container-fluid" style="margin-left: 20px; margin-top: 120px">
         <div class="listTitle">
             <h1 style="margin-left: 20px">Course List</h1>
         </div>
@@ -370,32 +366,7 @@
             </div>
 
             <div class="col-md-9 courseList" th:if="${courseList}!=null">
-                <div th:if="${totalPages <= 1}">
-                    <div class="container-fluid">
-                        <th:block th:each="courseListEntity: ${courseList}">
-                            <form class="display"
-                                  role="form"
-                                  method="post"
-                                  th:action="@{payment}"
-                                  th:object="${courseDTO}"
-                            >
-                                <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="@{${courseListEntity.courseImage}}"></a>
-                                <div class="displayContent">
-                                    <input type="text" name="fromPage" value="list" style="display: none">
-                                    <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
-                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
-                                    <p th:text="${courseListEntity.courseDes}"></p>
-                                    <input type="submit" value="Buy now" class="buy-now" name="paymentButton">
-                                    <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-
-                                    <p th:text="'Price: '+${courseListEntity.price}+'đ'" style="float: left; margin-left: 15px;"></p>
-                                </div>
-                            </form>
-                        </th:block>
-                    </div>
-                </div>
-
-                <div th:if="${totalPages > 1}">
+                <div>
                     <div class="container-fluid">
                         <th:block th:each="courseListEntity: ${courseList}">
                             <form class="display"
@@ -404,16 +375,31 @@
                                   th:action="@{/payment}"
                                   th:object="${courseDTO}"
                             >
-                                <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="@{${courseListEntity.courseImage}}"></a>
+                                <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
                                 <div class="displayContent">
                                     <input type="text" name="fromPage" value="list" style="display: none">
                                     <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
                                     <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
                                     <p th:text="${courseListEntity.courseDes}"></p>
+                                    <div th:if="${listOfDiscount!=null}">
+                                        <div th:with="messageDisplay=false">
+                                            <div th:if="messageDisplay">
+                                                <p th:text="'Price: '+${courseListEntity.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+                                            </div>
+                                            <div th:each="discounts, count: ${listOfDiscount}">
+                                                <div th:if="${discounts.courseID.courseID==courseListEntity.courseID}">
+                                                    <p th:text="'Discount: '+${courseListEntity.price * (100 - discounts.percentage) / 100}+'đ'" style="float: left; margin-left: 15px; color: red"></p>
+                                                    <input type="number" name="discountPrice" th:value="${courseListEntity.price * (100 - discounts.percentage) / 100}" style="display: none">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <input type="submit" value="Buy now" class="buy-now" name="paymentButton">
                                     <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-
-                                    <p th:text="'Price: '+${courseListEntity.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+                                </div>
+                                <div th:if="${session.role == 2}">
+                                    <button><a th:href="@{/updateCourse(courseID=${courseListEntity.courseID})}">Edit</a></button>
+                                    <button><a th:href="@{/deleteCourse(courseID=${courseListEntity.courseID})}">Delete</a></button>
                                 </div>
                             </form>
                         </th:block>
@@ -442,25 +428,38 @@
         </div>
     </div>
 <!-- ***** Footer *****-->
-<div class="container-fluid" style="background: #d69fd5;">
-    <div class="row">
-        <div class="col-lg-12">
-            <ul class="social-icons">
-                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                <li><a href="#"><i class="fa fa-rss"></i></a></li>
-                <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-            </ul>
-        </div>
-        <div class="col-lg-12">
-            <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
-                <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+<footer>
+    <div class="container-fluid footer-st" style="background: #d69fd5;">
+        <div class="row">
+            <div class="col-lg-6">
+                <div style="margin-left: 50px">
+                    <p>About us</p>
+                    <div style="margin-top: 30px">
+                    <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
+                    <a style="color: #fff">Our team: FPT University-SWP391-Group 5</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Further information</p>
+                <div style="margin-top: 30px">
+                    <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
+                    <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Follow us</p>
+                <ul class="social-icons">
+                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                </ul>
+            </div>
+            <div class="col-lg-12" style="margin-top: 30px">
+                <p class="copyright"> © 2023 YourCourse Web Application</p>
+            </div>
         </div>
     </div>
-</div>
+</footer>
+<!-- ***** End Footer *****-->
 </body>
-<script>
-
-</script>
 </html>

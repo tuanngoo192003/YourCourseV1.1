@@ -7,8 +7,12 @@ import com.project.CourseSystem.repository.SystemAccountCRUDRepository;
 import com.project.CourseSystem.repository.SystemAccountRepository;
 import com.project.CourseSystem.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -65,6 +69,7 @@ public class AccountServiceImpl implements AccountService {
         system_accountEntity.setGmail(system_accountDTO.getGmail());
         system_accountEntity.setVerificationCode("");
         system_accountEntity.setRoleID(system_accountDTO.getRoleID());
+        system_accountEntity.setRegisterDate(system_accountDTO.getRegisterDate());
         system_accountRespository.save(system_accountEntity);
     }
 
@@ -109,6 +114,25 @@ public class AccountServiceImpl implements AccountService {
         SystemAccount system_accountEntity = system_accountRespository.findByAccount_name(accountName);
         system_accountEntity.setVerificationCode(verificationCode);
         system_accountRespository.save(system_accountEntity);
+    }
+
+    @Override
+    public List<SystemAccount> getAllAccount() {
+        List<SystemAccount> systemAccountList = system_accountRespository.findAll();
+        return systemAccountList;
+    }
+
+    @Override
+    public List<SystemAccount> getRecentRegisterAccount(int numberOfWeek) {
+        List<SystemAccount> systemAccountList = system_accountRespository.findRecentRegisterAccount(numberOfWeek);
+        return systemAccountList;
+    }
+
+    @Override
+    public Page<SystemAccount> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
+                Sort.by(sortField).descending();
+        return system_accountRespository.findAll(PageRequest.of(pageNo - 1, pageSize, sort));
     }
 
     public boolean isUsernameExist(String account_name){

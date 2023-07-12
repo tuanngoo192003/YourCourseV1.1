@@ -5,172 +5,173 @@
   <meta charset="UTF-8">
   <title>Add Lesson</title>
   <link rel="stylesheet" th:href="@{assets/css/add-lesson.css}">
+  <style>
+    html{
+      height: 100%;
+      background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f7f7f7;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #submit-btn,
+    #cancel-btn,
+    #back-btn{
+      background-color: rgba(246,191,159,1);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      margin-right: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-<h1>Add Lesson</h1>
+<div class="container">
+  <h1>Add Lesson</h1>
 
-<form id="lesson-form">
-  <div id="lesson-container">
-    <label for="lesson-title">Lesson Title:</label>
-    <input type="text" id="lesson-title" required>
-  </div>
-  <div id="materials-container">
-    <label>Learning Materials:</label>
-    <div class="material-row">
-      <select class="material-type" required>
-        <option value="">Select Type</option>
-        <option value="file">File</option>
-        <option value="url">URL</option>
-      </select>
-      <input type="text" class="material-value" placeholder="File name or URL" required>
-      <button type="button" class="remove-material">Remove</button>
+  <form
+          id="lesson-form"
+          role="form"
+          method="post"
+          th:action="@{/addLesson}"
+          th:object="${addLessonForm}"
+          enctype="multipart/form-data"
+  >
+    <div id="lesson-container">
+      <label for="lesson-title">Lesson Title:</label>
+      <input type="text" id="lesson-title" th:field="*{lessonName}" required>
+
+      <label for="lesson-des">Lesson Short Description:</label>
+      <input type="text" id="lesson-des" th:field="*{lessonDes}" required>
     </div>
-  </div>
+    <div id="materials-container">
+      <label>Learning Materials:</label>
+      <div class="material-row">
+        <select class="material-type" id="createMaterialForm" required>
+          <option value="">Select Type</option>
+          <option value="link" id="link">Link</option>
+          <option value="file" id="uploadFile">File</option>
+        </select>
+      </div>
+      <div>
+        <div id="form-container-forMaterial"></div>
+        <div id="material-type"></div>
+      </div>
+      <input type="text" class="material-value" placeholder="Material name" th:field="*{learningMaterialName}" required>
+    </div>
 
-  <button type="button" id="add-material-btn">Add Material</button>
-<!--  <button type="button" id="add-brain-btn">Add Brain</button>-->
-  <div id="buttons-container">
-    <button type="submit" id="submit-btn">Submit</button>
-    <button type="button" id="cancel-btn">Cancel</button>
-  </div>
-</form>
+    <div id="buttons-container">
+      <button type="submit" id="submit-btn" value="Submit" name="submit">Continue To Add Quiz</button>
+      <button type="button" id="cancel-btn"><a th:href="@{/cancel}" style="color: white; text-decoration: none">Cancel</a></button>
+      <button type="button" id="back-btn"><a th:href="@{/addCourse}" style="color: white; text-decoration: none">Back to course editor</a></button>
+    </div>
+  </form>
+</div>
+
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // Initialize lesson form elements
-    const lessonContainer = document.getElementById("lesson-container");
-    const addLessonBtn = document.getElementById("add-material-btn");
+    // Initialize material  form elements
+    const createMaterialForm = document.getElementById("createMaterialForm");
 
-    // Add event listener to the "Add Lesson" button
-    addLessonBtn.addEventListener("click", function() {
-      createLessonForm();
+    // Add event listener to the "Add Material" option
+    createMaterialForm.addEventListener("change", function () {
+      createMaForm();
     });
 
-    // Function to create a new lesson form
-    function createLessonForm() {
-      const lessonForm = document.createElement("form");
-      lessonForm.classList.add("lesson-form");
+    function createMaForm(){
+      const inputType = document.getElementById("createMaterialForm").value;
+      const formContainer = document.getElementById("form-container-forMaterial");
+      const existingInput = formContainer.querySelector("input");
 
-      const lessonTitleInput = document.createElement("input");
-      lessonTitleInput.classList.add("lesson-title");
-      lessonTitleInput.setAttribute("type", "text");
-      lessonTitleInput.placeholder = "Lesson Title";
-      lessonTitleInput.required = true;
-
-      const materialsContainer = document.createElement("div");
-      materialsContainer.classList.add("materials-container");
-
-      const addMaterialBtn = document.createElement("button");
-      addMaterialBtn.classList.add("add-material-btn");
-      addMaterialBtn.setAttribute("type", "button");
-      addMaterialBtn.textContent = "Add Material";
-
-      const submitBtn = document.createElement("button");
-      submitBtn.classList.add("submit-btn");
-      submitBtn.setAttribute("type", "submit");
-      submitBtn.textContent = "Submit";
-
-      const cancelBtn = document.createElement("button");
-      cancelBtn.classList.add("cancel-btn");
-      cancelBtn.setAttribute("type", "button");
-      cancelBtn.textContent = "Cancel";
-
-      // Add event listener to the "Add Material" button
-      addMaterialBtn.addEventListener("click", function() {
-        createMaterialRow(materialsContainer);
-      });
-
-      // Add event listener to the form submission
-      lessonForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-        const lessonTitle = lessonTitleInput.value;
-        const materialRows = Array.from(materialsContainer.getElementsByClassName("material-row"));
-        const learningMaterials = [];
-
-        for (const row of materialRows) {
-          const materialType = row.querySelector(".material-type").value;
-          const materialValue = row.querySelector(".material-value").value;
-
-          if (materialType && materialValue) {
-            learningMaterials.push({ type: materialType, value: materialValue });
-          }
+      // Remove the existing input element if it exists
+      if (existingInput) {
+        existingInput.parentNode.removeChild(existingInput);
+        if(inputType == "link"){
+          createLinkForm()
+        }else if(inputType == "file"){
+          createFileForm()
         }
-
-        if (learningMaterials.length === 0) {
-          alert("Please add at least one learning material.");
-          return;
+      }else {
+        if(inputType == "link"){
+          createLinkForm()
+        }else if(inputType == "file"){
+          createFileForm()
         }
+        const typeInput = document.createElement("select");
+        typeInput.classList.add("material-type");
+        typeInput.name = "InputType";
+        typeInput.required = true;
 
-        // Perform your desired logic with the lesson title and learning materials
+        const option1 = document.createElement("option");
+        option1.value = "youtube";
+        option1.label = "Youtube link video";
 
-        const lessonData = {
-          title: lessonTitle,
-          materials: learningMaterials
-        };
+        const option2 = document.createElement("option");
+        option2.value = "pdfLink";
+        option2.label = "PDF link";
 
-        console.log("Lesson data:", lessonData);
-        // You can perform further actions like submitting the form or navigating to another page
+        const option3 = document.createElement("option");
+        option3.value = "fileVideo";
+        option3.label = "Video file";
 
-        // Reset the form
-        lessonForm.reset();
-        materialsContainer.innerHTML = "";
-      });
+        const option4 = document.createElement("option");
+        option4.value = "filePdf";
+        option4.label = "PDF file";
 
-      // Add event listener to the "Cancel" button
-      cancelBtn.addEventListener("click", function() {
-        lessonContainer.removeChild(lessonForm);
-      });
+        // Append the link form elements to the container in the page
+        const materialType = document.getElementById("material-type");
+        materialType.appendChild(typeInput);
+        typeInput.appendChild(option1);
+        typeInput.appendChild(option2);
+        typeInput.appendChild(option3);
+        typeInput.appendChild(option4);
 
-      lessonForm.appendChild(lessonTitleInput);
-      lessonForm.appendChild(materialsContainer);
-      lessonForm.appendChild(addMaterialBtn);
-      lessonForm.appendChild(submitBtn);
-      lessonForm.appendChild(cancelBtn);
-
-      lessonContainer.appendChild(lessonForm);
-    }
-
-    // Function to create a new material row
-    function createMaterialRow(materialsContainer) {
-      const materialRow = document.createElement("div");
-      materialRow.classList.add("material-row");
-
-      const materialTypeSelect = document.createElement("select");
-      materialTypeSelect.classList.add("material-type");
-      materialTypeSelect.required = true;
-      const fileOption = document.createElement("option");
-      fileOption.value = "file";
-      fileOption.text = "File";
-      const urlOption = document.createElement("option");
-      urlOption.value = "url";
-      urlOption.text = "URL";
-      materialTypeSelect.appendChild(fileOption);
-      materialTypeSelect.appendChild(urlOption);
-
-      const materialValueInput = document.createElement("input");
-      materialValueInput.classList.add("material-value");
-      materialValueInput.setAttribute("type", "text");
-      materialValueInput.placeholder = "File name or URL";
-      materialValueInput.required = true;
-
-      const removeMaterialBtn = document.createElement("button");
-      removeMaterialBtn.classList.add("remove-material");
-      removeMaterialBtn.setAttribute("type", "button");
-      removeMaterialBtn.textContent = "Remove";
-
-      materialRow.appendChild(materialTypeSelect);
-      materialRow.appendChild(materialValueInput);
-      materialRow.appendChild(removeMaterialBtn);
-
-      materialsContainer.appendChild(materialRow);
-    }
-
-    // Add event listener to the "Remove" buttons in the lesson forms
-    lessonContainer.addEventListener("click", function(event) {
-      if (event.target.classList.contains("remove-lesson")) {
-        lessonContainer.removeChild(event.target.parentNode);
       }
-    });
+    }
+
+    function createLinkForm(){
+      const linkForm = document.createElement("div");
+      linkForm.classList.add("link-form");
+
+        const linkTitleInput = document.createElement("input");
+        linkTitleInput.classList.add("link-title");
+        linkTitleInput.name = "Input";
+        linkTitleInput.setAttribute("type", "text");
+        linkTitleInput.placeholder = "Link Title";
+        linkTitleInput.required = true;
+
+
+      // Append the link form elements to the container in the page
+      const formContainer = document.getElementById("form-container-forMaterial");
+      formContainer.appendChild(linkForm);
+      linkForm.appendChild(linkTitleInput);
+    }
+
+    function createFileForm(){
+      const fileForm = document.createElement("div");
+        fileForm.classList.add("file-form");
+
+        const fileTitleInput = document.createElement("input");
+        fileTitleInput.classList.add("file-title");
+        fileTitleInput.name = "Input";
+        fileTitleInput.setAttribute("type", "file");
+        fileTitleInput.placeholder = "File Title";
+        fileTitleInput.required = true;
+
+      // Append the file form elements to the container in the page
+      const formContainer = document.getElementById("form-container-forMaterial");
+      formContainer.appendChild(fileForm);
+      fileForm.appendChild(fileTitleInput);
+    }
   });
 
 </script>

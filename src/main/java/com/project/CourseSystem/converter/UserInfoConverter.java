@@ -15,6 +15,7 @@ public class UserInfoConverter {
         userInfoDTO.setDob(userInfo.getDob());
         userInfoDTO.setLocation(userInfo.getLocation());
         userInfoDTO.setPhoneNums(userInfo.getPhoneNums());
+        userInfoDTO.setGender(userInfo.getGender());
         userInfoDTO.setAvatar(userInfo.getAvatar());
         userInfoDTO.setAccountID(userInfo.getAccountID());
 
@@ -29,6 +30,7 @@ public class UserInfoConverter {
         userInfo.setDob(userInfoDTO.getDob());
         userInfo.setLocation(userInfoDTO.getLocation());
         userInfo.setPhoneNums(userInfoDTO.getPhoneNums());
+        userInfo.setGender(userInfoDTO.getGender());
         userInfo.setAvatar(userInfoDTO.getAvatar());
         userInfo.setAccountID(userInfoDTO.getAccountID());
         return userInfo;

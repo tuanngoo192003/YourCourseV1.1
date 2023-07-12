@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Lesson</title>
+  <link rel="stylesheet" th:href="@{assets/css/update-lesson.css}">
+  <style>
+    html{
+      height: 100%;
+      background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f7f7f7;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #submit-btn,
+    #edit-btn {
+      background-color: rgba(246, 191, 159, 1);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      margin-right: 10px;
+      border-radius: 4px;
+    }
+
+    #cancel-btn,
+    #back-btn, #delete-btn{
+      padding: 20px 30px;
+      background: rgb(58, 58, 58);
+      border: none;
+      color: whitesmoke;
+      transition: 2s;
+      border-radius: 10px;
+    }
+
+    #delete-btn:hover{
+      background: whitesmoke;
+      border: none;
+      color: rgb(58, 58, 58);
+    }
+
+    #cancel-btn:hover{
+      background: whitesmoke;
+      border: none;
+      color: rgb(58, 58, 58);
+    }
+
+    #back-btn:hover{
+      background: whitesmoke;
+      border: none;
+      color: rgb(58, 58, 58);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Add Lesson</h1>
+  <div th:each="form : ${addLessonFormList}">
+    <form
+            id="lesson-form"
+            role="form"
+            method="post"
+            th:action="@{/updateLessons}"
+    >
+      <div id="lesson-container">
+        <label for="lesson-title">Lesson Title:</label>
+        <input type="text" id="lesson-title" name="lessonTitle" th:value="${form.lessonName}" required>
+        <input type="number" name="lessonID" th:value="${form.lessonID}" style="display: none">
+        <label for="lesson-des">Lesson Short Description:</label>
+        <input type="text" id="lesson-des" name="lessonDes" th:value="${form.lessonDes}" required>
+      </div>
+      <div id="materials-container">
+        <label>Learning Materials:</label>
+        <div class="material-row">
+          <select class="material-type " th:id="'createMaterialForm'+${form.lessonID}">
+            <option value="">Select Type</option>
+            <option value="link" id="link">Link</option>
+            <option value="file" id="uploadFile">File</option>
+          </select>
+        </div>
+        <div>
+          <div th:id="'form-container-forMaterial'+${form.lessonID}"></div>
+          <div th:id="'material-type'+${form.lessonID}"></div>
+        </div>
+        <input type="text" class="material-value" placeholder="Material name" name="learningMaterialName" th:value="${form.learningMaterialName}" required>
+      </div>
+      <div id="buttons-container">
+        <button type="submit" id="submit-btn" value="Update this lesson" name="choice">Update this lesson</button>
+        <button type="submit" id="edit-btn" value="Edit this lesson's quiz" name="choice">Edit this lesson's quiz</button>
+        <button type="submit" id="delete-btn" value="Delete" name="choice" onclick="confirmDelete()">Delete</button>
+      </div>
+    </form>
+  </div>
+  <div>
+    <button type="button" id="cancel-btn"><a th:href="@{/cancel}" style="color: white; text-decoration: none">Cancel</a></button>
+    <button type="button" id="back-btn"><a th:href="@{/updateCourse(courseID=${session.courseIDSession})}" style="color: white; text-decoration: none">Back to course editor</a></button>
+  </div>
+</div>
+
+
+<script th:inline="javascript">
+  /*[# th:each="form : ${addLessonFormList}"]*/
+  document.addEventListener("DOMContentLoaded", function() {
+    // Initialize material  form elements
+    const createMaterialForm = document.getElementById("createMaterialForm[[${form.lessonID}]]");
+
+    // Add event listener to the "Add Material" option
+    createMaterialForm.addEventListener("change", function () {
+      document.getElementById("numberOfNewQuestion").innerHTML = [[${session.numberOfNewQuestion}]] + 1;
+      createMaForm();
+    });
+
+    function createMaForm(){
+      const inputType = document.getElementById("createMaterialForm[[${form.lessonID}]]").value;
+      const formContainer = document.getElementById("form-container-forMaterial[[${form.lessonID}]]");
+      const existingInput = formContainer.querySelector("input");
+
+      // Remove the existing input element if it exists
+      if (existingInput) {
+        existingInput.parentNode.removeChild(existingInput);
+        if(inputType == "link"){
+          createLinkForm()
+        }else if(inputType == "file"){
+          createFileForm()
+        }
+      }else {
+        if(inputType == "link"){
+          createLinkForm()
+        }else if(inputType == "file"){
+          createFileForm()
+        }
+        const typeInput = document.createElement("select");
+        typeInput.classList.add("material-type");
+        typeInput.name = "InputType";
+        typeInput.required = true;
+
+        const option1 = document.createElement("option");
+        option1.value = "youtube";
+        option1.label = "Youtube link video";
+
+        const option2 = document.createElement("option");
+        option2.value = "pdfLink";
+        option2.label = "PDF link";
+
+        const option3 = document.createElement("option");
+        option3.value = "fileVideo";
+        option3.label = "Video file";
+
+        const option4 = document.createElement("option");
+        option4.value = "filePdf";
+        option4.label = "PDF file";
+
+        // Append the link form elements to the container in the page
+        const materialType = document.getElementById("material-type[[${form.lessonID}]]");
+        materialType.appendChild(typeInput);
+        typeInput.appendChild(option1);
+        typeInput.appendChild(option2);
+        typeInput.appendChild(option3);
+        typeInput.appendChild(option4);
+
+      }
+    }
+
+    function createLinkForm(){
+      const linkForm = document.createElement("div");
+      linkForm.classList.add("link-form");
+
+      const linkTitleInput = document.createElement("input");
+      linkTitleInput.classList.add("link-title");
+      linkTitleInput.name = "Input";
+      linkTitleInput.setAttribute("type", "text");
+      linkTitleInput.placeholder = "Link Title";
+
+
+      // Append the link form elements to the container in the page
+      const formContainer = document.getElementById("form-container-forMaterial[[${form.lessonID}]]");
+      formContainer.appendChild(linkForm);
+      linkForm.appendChild(linkTitleInput);
+    }
+
+    function createFileForm(){
+      const fileForm = document.createElement("div");
+      fileForm.classList.add("file-form");
+
+      const fileTitleInput = document.createElement("input");
+      fileTitleInput.classList.add("file-title");
+      fileTitleInput.name = "Input";
+      fileTitleInput.setAttribute("type", "file");
+      fileTitleInput.placeholder = "File Title";
+
+      // Append the file form elements to the container in the page
+      const formContainer = document.getElementById("form-container-forMaterial[[${form.lessonID}]]");
+      formContainer.appendChild(fileForm);
+      fileForm.appendChild(fileTitleInput);
+    }
+  });
+  /*[/]*/
+  function confirmDelete() {
+    if (confirm("Are you sure to delete this lesson? This action will also delete learning material and quiz of this lesson.")) {
+    } else {
+      // If the user cancels the deletion, do nothing
+    }
+  }
+
+</script>
+</body>
+</html>

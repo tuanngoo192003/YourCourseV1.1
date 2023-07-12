@@ -14,6 +14,7 @@ public class System_AccountConverter {
         systemAccountDTO.setAccountPassword(system_account.getAccountPassword());
         systemAccountDTO.setGmail(system_account.getGmail());
         systemAccountDTO.setVerificationCode(system_account.getVerificationCode());
+        systemAccountDTO.setRegisterDate(system_account.getRegisterDate());
         systemAccountDTO.setRoleID(system_account.getRoleID());
         return systemAccountDTO;
     }
@@ -25,6 +26,7 @@ public class System_AccountConverter {
         system_account.setAccountPassword(systemAccountDTO.getAccountPassword());
         system_account.setGmail(systemAccountDTO.getGmail());
         system_account.setVerificationCode(systemAccountDTO.getVerificationCode());
+        system_account.setRegisterDate(systemAccountDTO.getRegisterDate());
         system_account.setRoleID(systemAccountDTO.getRoleID());
         return system_account;
     }

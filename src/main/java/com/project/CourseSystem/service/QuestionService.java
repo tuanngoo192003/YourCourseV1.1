@@ -12,4 +12,8 @@ public interface QuestionService {
     public Question getQuestionByContentAndQuizId(String content, Integer quizId);
 
     public Question getQuestionById(Integer questionId);
+
+    public Question saveQuestion(Question question);
+
+    void deleteQuestion(Question question);
 }

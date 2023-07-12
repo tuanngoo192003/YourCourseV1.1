@@ -1,3 +1,12 @@
+.container {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
 h1 {
     text-align: center;
 }
@@ -15,7 +24,7 @@ label {
 
 input[type="text"],
 select {
-    width: 100%;
+    width: 90%;
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -64,8 +73,9 @@ select {
 }
 
 #submit-btn,
-#cancel-btn {
-    background-color: #4CAF50;
+#cancel-btn,
+#back-btn{
+    background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
     color: white;
     border: none;
     padding: 10px 16px;

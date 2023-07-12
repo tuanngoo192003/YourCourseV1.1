@@ -12,18 +12,18 @@
 <main>
     <!-- creating a modal for when quiz ends -->
     <div class="modal-container" id="score-modal">
-
         <div class="modal-content-container">
+
             <form
                     role="form"
                     method="post"
                     th:action="@{/saveReport}"
                     th:object="${reportDTO}"
             >
-                <input type="number" id="inputMark" th:field="*{mark}">
-                <input type="number" id="inputQuizID" th:field="*{quizID}" th:value="${quiz.quizID}">
-                <input type="text" id="choseAnswers" th:field="*{answers}" placeholder="answers">
-                <input type="text" id="askedQuestion" th:field="*{askedQuestions}">
+                <input type="number" id="inputMark" th:field="*{mark}" style="display: none">
+                <input type="number" id="inputQuizID" name="inputQuizID" th:value="${quiz.quizID}" style="display: none">
+                <input type="text" id="choseAnswers" th:field="*{answers}" placeholder="answers" style="display: none">
+                <input type="text" id="askedQuestion" th:field="*{askedQuestions}" style="display: none">
                 <h1>Congratulations, Quiz Completed.</h1>
 
                 <div class="grade-details">

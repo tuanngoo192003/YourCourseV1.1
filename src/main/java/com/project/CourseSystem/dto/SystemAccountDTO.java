@@ -5,6 +5,8 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
+import java.sql.Date;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -18,6 +20,7 @@ public class SystemAccountDTO {
     @Email
     private String gmail;
     private String verificationCode;
+    private Date registerDate;
     private Role roleID;
 
     public String getVerificationCode() {

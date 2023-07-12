@@ -1,15 +1,23 @@
 package com.project.CourseSystem.service;
 
+import com.project.CourseSystem.entity.Course;
 import com.project.CourseSystem.entity.UserInfo;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface UserService {
-    public UserInfo findUser(int accountID);
+    UserInfo findUser(int accountID);
 
-    public void saveUser(UserInfo userInfo);
+    void saveUser(UserInfo userInfo);
 
-    public void updateUser(UserInfo userInfo);
+    void updateUser(UserInfo userInfo);
 
-    public void saveAvatar(String fileID, int userID);
+    void saveAvatar(String fileID, int userID);
 
-    public int findUserIDByAccountID(int accountID);
+    int findUserIDByAccountID(int accountID);
+
+    List<UserInfo> findAllUser();
+
+    Page<UserInfo> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
 }

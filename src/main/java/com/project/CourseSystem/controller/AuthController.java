@@ -90,6 +90,7 @@ public class AuthController {
         HttpSession session = request.getSession();
         session.removeAttribute("CSys");
         session.removeAttribute("enrolledList");
+        session.removeAttribute("role");
         return "redirect:/home";
     }
 
@@ -107,6 +108,11 @@ public class AuthController {
     @GetMapping("/changePassword")
     public String changePassword(Model model, HttpServletRequest request
             , HttpServletResponse response){
+        CategoryDTO cDto = new CategoryDTO();
+        model.addAttribute("categoryDTO", cDto);
+        CourseDTO courseDTO = new CourseDTO();
+        model.addAttribute("courseDTO", courseDTO);
+        model.addAttribute("category", categoryService.getAllCategories());
         model.addAttribute("system_account", system_AccountDTO);
         return "changePassword";
     }

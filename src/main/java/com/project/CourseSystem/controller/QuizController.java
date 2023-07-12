@@ -1,5 +1,6 @@
 package com.project.CourseSystem.controller;
 
+import com.project.CourseSystem.converter.CourseConverter;
 import com.project.CourseSystem.dto.*;
 import com.project.CourseSystem.entity.*;
 import com.project.CourseSystem.service.*;
@@ -31,9 +32,14 @@ public class QuizController {
 
     ReportService reportService;
 
+    CourseService courseService;
+
+    CourseConverter courseConverter;
+
     public QuizController(QuizService quizService, QuestionService questionService
     , AnswerService answerService, AuthController authController, QuizRevisionService quizRevisionService,
-                          CategoryService categoryService, ReportService reportService){
+                          CategoryService categoryService, ReportService reportService,
+                          CourseService courseService,  CourseConverter courseConverter){
         this.quizService = quizService;
         this.questionService = questionService;
         this.answerService = answerService;
@@ -41,6 +47,8 @@ public class QuizController {
         this.quizRevisionService = quizRevisionService;
         this.categoryService = categoryService;
         this.reportService = reportService;
+        this.courseService = courseService;
+        this.courseConverter = courseConverter;
     }
 
     //Quiz handle
@@ -85,7 +93,7 @@ public class QuizController {
                 Question question = questionService.getQuestionById(quizRevisions.get(i).getQuestionID().getQuestionID());
                 questionList.add(question);
             }
-            model.addAttribute("questions", questionList);
+            model.addAttribute("questionsDid", questionList);
             List<AnswerDTO> answerDTOList = new ArrayList<>();
             for(int i = 0; i < questionList.size(); i++){
                 List<AnswerDTO> answers = answerService.getAllByQuestionId(questionList.get(i).getQuestionID());
@@ -104,7 +112,11 @@ public class QuizController {
             Quiz quiz = new Quiz();
             quiz = quizService.getQuizById(report.getQuizID().getQuizID());
             model.addAttribute("quiz", quiz);
+
+            Course course = courseConverter.convertDtoToEtity(courseService.getCourseByID(quiz.getCourseID().getCourseID()));
+            model.addAttribute("currentCourse", course);
         }
+
 
         CategoryDTO cDto = new CategoryDTO();
         model.addAttribute("categoryDTO", cDto);
@@ -115,6 +127,7 @@ public class QuizController {
         return "quizReview";
     }
 
+    //Quiz review test
     @GetMapping("quizReviewTest")
     public String getQuizReviewTest(Model model, HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
@@ -150,7 +163,11 @@ public class QuizController {
             Quiz quiz = new Quiz();
             quiz = quizService.getQuizById(report.getQuizID().getQuizID());
             model.addAttribute("quiz", quiz);
+
+            Course course = courseConverter.convertDtoToEtity(courseService.getCourseByID(quiz.getCourseID().getCourseID()));
+            model.addAttribute("currentCourse", course);
         }
+
 
         CategoryDTO cDto = new CategoryDTO();
         model.addAttribute("categoryDTO", cDto);
@@ -161,4 +178,12 @@ public class QuizController {
         return "quizReview";
     }
 
+
+    //Add quiz test
+    @GetMapping("addQuizTest")
+    public String addQuizTest(Model model, HttpServletRequest request, HttpServletResponse response){
+        QuizListForm quizListForm = new QuizListForm();
+        model.addAttribute("quizListForm", quizListForm);
+        return "addQuiz";
+    }
 }

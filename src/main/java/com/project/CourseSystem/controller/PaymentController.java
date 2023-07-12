@@ -69,9 +69,14 @@ public class PaymentController {
     public String payment(@ModelAttribute("courseDTO") CourseDTO courseDTO, @RequestParam("paymentButton") String paymentButton,
                           @RequestParam("fromPage") String fromPage, Model model, HttpServletRequest request, HttpServletResponse response) {
         CourseDTO courseDTO1 = courseService.getCourseByID(courseDTO.getCourseID());
-        System.out.println(paymentButton);
+        if(request.getParameter("discountPrice")!=null){
+            float discountPrice = Float.parseFloat(request.getParameter("discountPrice"));
+            if(discountPrice!=0){
+                courseDTO1.setPrice(discountPrice);
+            }
+        }
+        
         HttpSession session = request.getSession();
-        System.out.println(courseDTO.getCourseID());
 
             if(paymentButton.equals("Add To Cart")){
                 if(session.getAttribute("cart")==null){
@@ -83,29 +88,12 @@ public class PaymentController {
                 }
                 else{
                     List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
-                    list.add(courseDTO1);
-                    session.setAttribute("cart", list);
-                    float sum = 0;
-                    for (int i = 0; i < list.size(); i++) {
-                        sum += list.get(i).getPrice();
+                    if(list.contains(courseDTO1)){
+                        return courseController.getCourse(model, request, response);
                     }
-                    session.setAttribute("sum", sum);
-                }
-            }
-            else if(paymentButton.equals("Remove from cart")){
-                List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
-                for(int i = 0; i < list.size(); i++){
-                    if(list.get(i).getCourseID().equals(courseDTO1.getCourseID())){
-                        list.remove(i);
-                    }
-                }
-                if(list.isEmpty()){
-                    session.removeAttribute("cart");
-                    session.removeAttribute("sum");
-                }
-                else{
-                    session.setAttribute("cart", list);
-                    if(list!=null){
+                    else{
+                        list.add(courseDTO1);
+                        session.setAttribute("cart", list);
                         float sum = 0;
                         for (int i = 0; i < list.size(); i++) {
                             sum += list.get(i).getPrice();
@@ -113,6 +101,9 @@ public class PaymentController {
                         session.setAttribute("sum", sum);
                     }
                 }
+            }
+            else if(paymentButton.equals("Remove from cart")){
+                removeFromCart(request, response, courseDTO1);
             }
             else{
                 if(session.getAttribute("CSys")==null){
@@ -141,6 +132,9 @@ public class PaymentController {
                     /* set up enrolled */
                     List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
                     session.setAttribute("enrolledList", enrolledListAccount);
+
+                    /* set up cart */
+                    removeFromCart(request, response, courseDTO1);
                 }
             }
         if(fromPage.equals("list")){
@@ -154,87 +148,7 @@ public class PaymentController {
     @PostMapping("course/page/payment")
     public String paymentForPage(@ModelAttribute("courseDTO") CourseDTO courseDTO, @RequestParam("paymentButton") String paymentButton,
                           @RequestParam("fromPage") String fromPage, Model model, HttpServletRequest request, HttpServletResponse response) {
-        CourseDTO courseDTO1 = courseService.getCourseByID(courseDTO.getCourseID());
-        System.out.println(paymentButton);
-        HttpSession session = request.getSession();
-        System.out.println(courseDTO.getCourseID());
-
-        if(paymentButton.equals("Add To Cart")){
-            if(session.getAttribute("cart")==null){
-                List<CourseDTO> list = new ArrayList<>();
-                list.add(courseDTO1);
-                session.setAttribute("cart", list);
-                float sum = list.get(0).getPrice();
-                session.setAttribute("sum", sum);
-            }
-            else{
-                List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
-                list.add(courseDTO1);
-                session.setAttribute("cart", list);
-                float sum = 0;
-                for (int i = 0; i < list.size(); i++) {
-                    sum += list.get(i).getPrice();
-                }
-                session.setAttribute("sum", sum);
-            }
-        }
-        else if(paymentButton.equals("Remove from cart")){
-            List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
-            for(int i = 0; i < list.size(); i++){
-                if(list.get(i).getCourseID().equals(courseDTO1.getCourseID())){
-                    list.remove(i);
-                }
-            }
-            if(list.isEmpty()){
-                session.removeAttribute("cart");
-                session.removeAttribute("sum");
-            }
-            else{
-                session.setAttribute("cart", list);
-                if(list!=null){
-                    float sum = 0;
-                    for (int i = 0; i < list.size(); i++) {
-                        sum += list.get(i).getPrice();
-                    }
-                    session.setAttribute("sum", sum);
-                }
-            }
-        }
-        else{
-            if(session.getAttribute("CSys")==null){
-                return authController.loginPage(model, request, response);
-            }
-            else{
-                String accountName = (String)session.getAttribute("CSys");
-                SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
-                Integer userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
-                Payment payment = new Payment();
-                payment.setPaymentAmount(courseDTO1.getPrice());
-                payment.setPaymentDate(new java.sql.Date(System.currentTimeMillis()));
-                payment.setUserID(userService.findUser(userID));
-                paymentService.addPaymentForOne(payment);
-
-                //enroll user to course
-                List<Enrolled> enrolledList = new ArrayList<>();
-                Enrolled enrolled = new Enrolled();
-                enrolled.setCourseID(courseConverter.convertDtoToEtity(courseDTO1));
-                enrolled.setEnrolledDate(new java.sql.Date(System.currentTimeMillis()));
-                enrolled.setAccountID(system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName)));
-                enrolled.setPaymentID(payment);
-                enrolledList.add(enrolled);
-                enrolledService.addEnrolled(enrolledList);
-
-                /* set up enrolled */
-                List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
-                session.setAttribute("enrolledList", enrolledListAccount);
-            }
-        }
-        if(fromPage.equals("list")){
-            return courseController.getCourse(model, request, response);
-        }
-        else{
-            return learnController.learnPage(courseDTO1.getCourseID(), model, request, response);
-        }
+        return payment(courseDTO, paymentButton, fromPage, model, request, response);
     }
 
     @GetMapping("/checkout")
@@ -283,5 +197,35 @@ public class PaymentController {
                 session.removeAttribute("cart");
             }
         return courseController.getCourse(model, request, response);
+    }
+
+    public void removeFromCart(HttpServletRequest request, HttpServletResponse response, CourseDTO courseDTO1){
+        HttpSession session = request.getSession();
+        List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
+        if(list==null){
+            session.removeAttribute("cart");
+            session.removeAttribute("sum");
+        }
+        else {
+            for(int i = 0; i < list.size(); i++){
+                if(list.get(i).getCourseID().equals(courseDTO1.getCourseID())){
+                    list.remove(i);
+                }
+            }
+            if(list.isEmpty()){
+                session.removeAttribute("cart");
+                session.removeAttribute("sum");
+            }
+            else{
+                session.setAttribute("cart", list);
+                if(list!=null){
+                    float sum = 0;
+                    for (int i = 0; i < list.size(); i++) {
+                        sum += list.get(i).getPrice();
+                    }
+                    session.setAttribute("sum", sum);
+                }
+            }
+        }
     }
 }
