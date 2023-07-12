@@ -180,21 +180,21 @@
 <div class="center" style=" z-index: 4; overflow-y:scroll;">
     <h1>Registration</h1>
     <div th:if="${param.success}">
-        <p>You have been registered successfully.</p>
+        <p style="margin-right: 30px; color: green">You have been registered successfully.</p>
     </div>
     <div th:if="${param.errorGmail}">
-        <p >
+        <p style="margin-right: 30px; color: red">
             Gmail has been used by another account.
         </p>
     </div>
     <div th:if="${param.errorUsername}">
-        <p >
+        <p style="margin-right: 30px; color: red">
             Username has been used by another account.
         </p>
     </div>
 <!-- Updated upstream-->
     <div th:if="${param.dontExistGmail}">
-        <p>
+        <p style="margin-right: 30px; color: red">
             Gmail does not exist.
         </p>
     </div>
