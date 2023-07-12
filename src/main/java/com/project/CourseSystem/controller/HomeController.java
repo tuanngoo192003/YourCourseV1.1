@@ -218,7 +218,7 @@ public class HomeController {
                     return dashboardController.getDashboard(model, request, response);
                 }
                 else{
-                    return "/home";
+                    return homePage(model, request, response);
                 }
             }
             else{
