@@ -6,7 +6,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" th:href="@{assets/css/register.css}">
+    <link rel="stylesheet" th:href="@{assets/css/loginStyle.css}">
+    <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
     <!-- Bootstrap core CSS -->
     <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
@@ -23,6 +24,11 @@
 
     -->
     <style>
+        .header-area {
+            background: rgb(219, 138, 222) !important;
+            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+        }
+
         .offcanvas-title{
             font-weight: bold;
             color: black;
@@ -62,7 +68,6 @@
     <title>Registration</title>
 </head>
 <body>
-<script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
 <!-- ***** OffCanvas Start *****-->
 <div class="offcanvas offcanvas-end" id="demo">
     <div class="offcanvas-header">
@@ -266,9 +271,9 @@
             <label>Enter your full name<label style="color: red; position: relative; top: 10px;">*</label></label>
         </div>
         <div>
-            <p>Gender</p>
+            <p style="color: #adadad;">Gender</p>
             <input type="radio" name="gender" value="male" required>Male <br>
-            <input type="radio" name="gender" value="female" required>Female <br>
+            <input type="radio" name="gender" value="female" required>Female <br><br>
         </div>
         <!-- Policy -->
         <input type="checkbox" name="policy" id="policy">
@@ -281,46 +286,41 @@
     </form>
 </div>
 
-<section class="contact-us" id="contact-section">
-    <div class="container">
+<!-- ***** Footer *****-->
+<footer style="margin-top: 85vh;">
+    <div class="container-fluid footer-st" style="background: #d69fd5;">
         <div class="row">
-            <div class="col-lg-8">
-                <div id="map">
-
-                    <!-- You just need to go to Google Maps for your own map point, and copy the embed code from Share -> Embed a map section -->
-                    <iframe width="100%" height="420px"  style="border:0; border-radius: 15px; position: relative; z-index: 2;" allowfullscreen=""></iframe>
-
+            <div class="col-lg-6">
+                <div style="margin-left: 50px">
+                    <p>About us</p>
+                    <div style="margin-top: 30px">
+                        <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
+                        <a style="color: #fff">Our team: FPT University-SWP391-Group 5</a>
+                    </div>
                 </div>
             </div>
-            <div class="col-lg-12">
+            <div class="col-lg-3">
+                <p>Further information</p>
+                <div style="margin-top: 30px">
+                    <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
+                    <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Follow us</p>
                 <ul class="social-icons">
                     <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                     <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                    <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                    <li><a href="#"><i class="fa fa-rss"></i></a></li>
-                    <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
                 </ul>
             </div>
-            <div class="col-lg-12">
-                <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
-
-                    <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+            <div class="col-lg-12" style="margin-top: 30px">
+                <p class="copyright"> © 2023 YourCourse Web Application
             </div>
         </div>
     </div>
-</section>
-<!-- Scripts -->
-<!-- Bootstrap core JavaScript -->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</footer>
+<!-- ***** End Footer *****-->
 
-<script src="assets/js/isotope.min.js"></script>
-<script src="assets/js/owl-carousel.js"></script>
-<script src="assets/js/lightbox.js"></script>
-<script src="assets/js/tabs.js"></script>
-<script src="assets/js/video.js"></script>
-<script src="assets/js/slick-slider.js"></script>
-<script src="assets/js/custom.js"></script>
 <script>
     var password = document.getElementById("password")
         , confirm_password = document.getElementById("confirm");

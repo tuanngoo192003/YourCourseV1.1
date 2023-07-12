@@ -15,214 +15,23 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" th:href="@{assets/css/fontawesome.css}">
-    <link rel="stylesheet" th:href="@{assets/css/owl.css}">
-    <link rel="stylesheet" th:href="@{assets/css/lightbox.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
     <title>Learn</title>
     <style>
+        .header-area {
+            background: rgb(219, 138, 222) !important;
+            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+        }
+
         .learn{
+            margin-top: 100px;
             height: 100%;
         }
 
-        .course-details{
-            background: #3B566E;
-            padding: 35px 0px 40px 25px;
-        }
-
-        .course-details h2{
-            color: ghostwhite;
-            font-weight: 700;
-        }
-
-        .course-details h4{
-            color: ghostwhite;
-        }
-
-        .course-details p{
-            color: ghostwhite;
-        }
-
-        .what-you-can-learn{
-            padding: 30px 0px 40px 0px;
-            margin-top: 50px;
-            margin-left: 70px;
-            width: 70%;
-            border-radius: 10px;
-            border: 1px solid gray;
-            box-shadow: rgb(223, 141, 94);
-        }
-
-        .what-you-can-learn h3{
-            margin-left: 40px;
-            font-weight: 700;
-        }
-
-        .what-you-can-learn ul li{
-            list-style: none;
-            margin-left: 10px;
-            font-weight: 400;
-            color: rgb(58, 58, 58);
-        }
-
-        .what-you-can-learn ul li:before{
-            content: '✓';
-        }
-
-
-        .lessonList{
-            padding: 5px 5px;
-            margin: 40px 0px 50px 70px;
-            width: 70%;
-            border: 1px solid gray;
-        }
-
-        .lName h5{
-            font-weight: 700;
-        }
-
-        .lName p{
-            font-weight: lighter;
-            color: rgba(173, 173, 173, 0.99);
-        }
-
-        .course-title{
-            margin: 50px 0px 20px 0px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #adb5bd;
-            font-weight: 700;
-        }
-
-        html{
-            scroll-behavior: smooth;
-            background: whitesmoke;
-        }
-
-        .purchase-session{
-            margin-top: 29px;
-            margin-right: 20px;
-            float: right;
-            background-color: white;
-            top: 0px;
-            padding: 10px;
-            box-shadow: 0px 0px 5px 0px #ccc;
-            width: 25%;
-            height: 350px;
-            border-radius: 7px;
-            border: #041418 solid 2px;
-        }
-
-        .purchase-session h2{
-            margin-left: 10px;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .purchase-session form{
-            align-content: center;
-            text-align: center;
-        }
-
-        .add-to-cart{
-            padding: 20px 30px;
-            background: linear-gradient(to right, #ffb963, #ff88f9);
-            border: none;
-            color: white;
-            transition: 2s;
-            border-radius: 10px;
-            margin-bottom: 7px;
-        }
-
-        .add-to-cart:hover{
-            background: white;
-            border: none;
-            color: #ffb963;
-        }
-
-        .buy-now-cart{;
-            padding: 20px 30px;
-            background: whitesmoke;
-            border: none;
-            color: rgb(58, 58, 58);
-            transition: 2s;
-            border-radius: 10px;
-        }
-
-        .buy-now-cart:hover{
-            background: gray;
-            border: none;
-            color: rgb(58, 58, 58);
-        }
-
-        .requirement ul li{
-            list-style: disc;
-        }
-
-        .whoFor ul li{
-            list-style: disc;
-        }
-
-        .offcanvas-title{
-            font-weight: bold;
-            color: black;
-            margin-top: 15px;
-            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
-            margin-bottom: 10px;
-        }
-        .cartContent{
-            width: 100%;
-            height: 100%;
-            margin-bottom: 10px;
-            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
-        }
-
-        .cartContent h4{
-            font-size: 15px;
-            text-align: center;
-            font-weight: normal;
-            color: black;
-        }
-
-        .star-rating input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .star-rating label {
-            font-size: 2rem;
-            color: gray;
-            cursor: pointer;
-            transition: color 0.2s ease-in-out;
-        }
-
-        .star-rating input[type="radio"]:checked + label {
-            color: gold;
-        }
-
-        .star-rated input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-        }
-
-        .star-rated label {
-            font-size: 2rem;
-            color: gray;
-            cursor: pointer;
-            transition: color 0.2s ease-in-out;
-        }
-
-        .star-rated input[type="radio"]:checked + label {
-            color: gold;
-        }
-
-        .btn-primary{
-            margin-top: 10px;
-            background-color: #ffb963;
-            border-color: #ffb963;
-        }
-
-        .btn-primary:hover{
-            background-color: #ffb963;
-            border-color: #ffb963;
+        .sticky-top{
+            top:25vh;
+            z-index: 990;
         }
 
     </style>
@@ -275,7 +84,7 @@
 <!-- ***** OffCanvas End ***** -->
 
 <!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky">
+<header class="header-area header-sticky" style="z-index: 999;">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -327,9 +136,6 @@
                             </i>
                         </li>
                     </ul>
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
                     <!-- ***** Menu End ***** -->
                 </nav>
             </div>
@@ -419,8 +225,6 @@
         </div>
     </div>
 </div>
-
-<!-- ***** Header Area End ***** -->
 
 <!-- ***** Learn page start ***** -->
 
@@ -617,28 +421,41 @@
 
 <!-- ***** Learn page end ***** -->
 
-<!-- ***** Footer Start ***** -->
-  <div class="container-fluid" style="background: #d69fd5;">
-    <div class="row">
-      <div class="col-lg-12">
-        <ul class="social-icons">
-          <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-          <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-          <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-          <li><a href="#"><i class="fa fa-rss"></i></a></li>
-          <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-        </ul>
-      </div>
-      <div class="col-lg-12">
-        <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
-          <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
-      </div>
+<!-- ***** Footer *****-->
+<footer>
+    <div class="container-fluid footer-st" style="background: #d69fd5;">
+        <div class="row">
+            <div class="col-lg-6">
+                <div style="margin-left: 50px">
+                    <p>About us</p>
+                    <div style="margin-top: 30px">
+                        <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
+                        <a style="color: #fff">Our team: FPT University-SWP391-Group 5</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Further information</p>
+                <div style="margin-top: 30px">
+                    <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
+                    <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Follow us</p>
+                <ul class="social-icons">
+                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                </ul>
+            </div>
+            <div class="col-lg-12" style="margin-top: 30px">
+                <p class="copyright"> © 2023 YourCourse Web Application
+            </div>
+        </div>
     </div>
-  </div>
-<!-- ***** Footer End ***** -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</footer>
+<!-- ***** End Footer *****-->
+
   <script>
       $(document).ready(function() {
           var starRating = $(".star-rating");

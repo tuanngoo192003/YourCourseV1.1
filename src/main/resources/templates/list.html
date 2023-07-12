@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{/assets/css/courseListStyle.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/listStyle.css}">
     <!-- Bootstrap core CSS-->
     <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
@@ -16,9 +16,7 @@
 
     <!-- Additional CSS Files -->
     <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/courseListStyle.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/owl.css}">
-    <link rel="stylesheet" th:href="@{/assets/css/lightbox.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
     <title>Course List</title>
     <style>
         .header-area {
@@ -266,9 +264,6 @@
                             </i>
                         </li>
                     </ul>
-                    <a class='menu-trigger'>
-                        <span>Menu</span>
-                    </a>
                     <!-- ***** Menu End ***** -->
                 </nav>
             </div>
@@ -276,7 +271,8 @@
     </div>
 </header>
 <!-- ***** Header Area End ***** -->
-    <div class="container-fluid" style="margin-left: 20px;">
+
+<div class="container-fluid" style="margin-left: 20px; margin-top: 120px">
         <div class="listTitle">
             <h1 style="margin-left: 20px">Course List</h1>
         </div>
@@ -432,25 +428,38 @@
         </div>
     </div>
 <!-- ***** Footer *****-->
-<div class="container-fluid" style="background: #d69fd5;">
-    <div class="row">
-        <div class="col-lg-12">
-            <ul class="social-icons">
-                <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                <li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-                <li><a href="#"><i class="fa fa-rss"></i></a></li>
-                <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-            </ul>
-        </div>
-        <div class="col-lg-12">
-            <p class="copyright">Copyright © 2022 EduWell Co., Ltd. All Rights Reserved.
-                <br>Design: <a rel="sponsored" href="https://templatemo.com" target="_blank">TemplateMo</a></p>
+<footer>
+    <div class="container-fluid footer-st" style="background: #d69fd5;">
+        <div class="row">
+            <div class="col-lg-6">
+                <div style="margin-left: 50px">
+                    <p>About us</p>
+                    <div style="margin-top: 30px">
+                    <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
+                    <a style="color: #fff">Our team: FPT University-SWP391-Group 5</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Further information</p>
+                <div style="margin-top: 30px">
+                    <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
+                    <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <p>Follow us</p>
+                <ul class="social-icons">
+                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                </ul>
+            </div>
+            <div class="col-lg-12" style="margin-top: 30px">
+                <p class="copyright"> © 2023 YourCourse Web Application
+            </div>
         </div>
     </div>
-</div>
+</footer>
+<!-- ***** End Footer *****-->
 </body>
-<!-- Bootstrap core JavaScript -->
-<script src="assets/js/slick-slider.js"></script>
-<script src="assets/js/custom.js"></script>
 </html>
