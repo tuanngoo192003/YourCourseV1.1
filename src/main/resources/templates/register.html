@@ -204,7 +204,7 @@
           role="form"
           th:action="@{/regisGmailConfirmation}"
           th:object="${system_account}"
-          onsubmit="validate()"
+          onsubmit="return validatePolicy()"
     >
     <div class="txt_field">
         <input
@@ -235,6 +235,7 @@
                 name="password"
                 th:field="*{accountPassword}"
                 required
+
         />
         <span></span>
         <label>Enter password<label style="color: red; position: relative; top: 10px;">*</label></label>
@@ -340,7 +341,7 @@
     confirm_password.onkeyup = validatePassword;
 
     var policy = document.getElementById("policy");
-    function validate(){
+    function validatePolicy(){
         if (policy.checked != true){
             alert("You have to agree with our Private Policy");
             return false;
@@ -348,6 +349,36 @@
             return true;
         }
     }
+
+    function validate() {
+        var passwordInput = document.getElementById("password");
+        var usernameInput = document.getElementById("username");
+        var passwordRegex = /^(?=.*\d)(?=.*[!@#$%^_&*])(?=.*[a-zA-Z]).{6,}$/;
+        var usernameRegex = /^(?=.*\d)[a-zA-Z0-9]{6,}$/;
+        var isValidPassword = passwordRegex.test(passwordInput.value);
+        var isValidUsername = usernameRegex.test(usernameInput.value);
+        if (!isValidPassword) {
+            passwordInput.setCustomValidity("Password must have at least 1 number, 1 special character, and be at least 6 characters long");
+        } else {
+            passwordInput.setCustomValidity("");
+        }
+        if (!isValidUsername) {
+            usernameInput.setCustomValidity("Username must have at least 1 number and be at least 6 characters long");
+        } else {
+            usernameInput.setCustomValidity("");
+        }
+        return isValidPassword && isValidUsername;
+    }
+
+    var passwordInput = document.getElementById("password");
+    passwordInput.addEventListener("input", function() {
+        validate();
+    });
+
+    var usernameInput = document.getElementById("username");
+    usernameInput.addEventListener("input", function() {
+        validate();
+    });
 </script>
 </body>
 </html>
