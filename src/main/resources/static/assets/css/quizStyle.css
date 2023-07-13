@@ -30,8 +30,8 @@ main{
 }
 
 .game-quiz-container{
-    width: 40rem;
-    height: 30rem;
+    width: 80%;
+    height: 93vh;
     background-color: lightgray;
     display: flex;
     flex-direction: column;
@@ -42,7 +42,7 @@ main{
 
 .game-details-container{
     width: 80%;
-    height: 4rem;
+    height: 5vh;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -54,7 +54,7 @@ main{
 
 .game-question-container{
     width: 80%;
-    height: 8rem;
+    height: 30vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -70,7 +70,7 @@ main{
 
 .game-options-container{
     width: 80%;
-    height: 12rem;
+    height: 37vh;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -78,8 +78,8 @@ main{
 }
 
 .game-options-container span{
-    width: 45%;
-    height: 3rem;
+    width: 46%;
+    height: 13vh;
     border: 2px solid darkgray;
     border-radius: 20px;
     overflow: hidden;
