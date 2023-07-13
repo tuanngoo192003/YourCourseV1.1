@@ -21,21 +21,21 @@ import java.util.List;
 @Controller
 public class DashboardController {
 
-    CategoryService categoryService;
+    final private CategoryService categoryService;
 
-    RatingCourseService ratingCourseService;
+    final private RatingCourseService ratingCourseService;
 
-    PaymentService paymentService;
+    final private PaymentService paymentService;
 
-    CourseService courseService;
+    final private CourseService courseService;
 
-    CourseConverter courseConverter;
+    final private CourseConverter courseConverter;
 
-    AccountService accountService;
+    final private AccountService accountService;
 
-    UserService userService;
+    final private UserService userService;
 
-    AuthController authController;
+    final private AuthController authController;
 
     public DashboardController(CategoryService categoryService, RatingCourseService ratingCourseService,
                                PaymentService paymentService, CourseService courseService,

@@ -111,6 +111,10 @@ public class GmailController {
                                            @RequestParam("userfullname") String userfullname, @RequestParam("gender") String gender,
                                            HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
+        if(system_accountDTO!=null){
+            session.setAttribute("systemAccountRegister", system_accountDTO);
+            session.setAttribute("userfullname", userfullname);
+        }
         if(accountService.isGmailExist(system_accountDTO.getGmail())){
             return "redirect:/registration?errorGmail";
         }

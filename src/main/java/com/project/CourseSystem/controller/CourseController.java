@@ -26,23 +26,23 @@ import java.util.List;
 @Controller
 public class CourseController {
 
-    private CourseService courseService;
+    final private CourseService courseService;
 
-    private CategoryService categoryService;
+    final private CategoryService categoryService;
 
-    private GoogleDriveService driveService;
+    final private GoogleDriveService driveService;
 
-    private AuthController authController;
+    final private AuthController authController;
 
-    private AccountService accountService;
+    final private AccountService accountService;
 
-    private CategoryConverter categoryConverter;
+    final private CategoryConverter categoryConverter;
 
-    private EnrolledService enrolledService;
+    final private EnrolledService enrolledService;
 
-    private System_AccountConverter system_accountConverter;
+    final private System_AccountConverter system_accountConverter;
 
-    private LessonController lessonController;
+    final private LessonController lessonController;
 
     private QuizService quizService;
 
@@ -429,21 +429,15 @@ public class CourseController {
             return getMyCoursePaginated(1, "startDate", "desc", model, request, response);
         }
         else if(option.equals("Oldest")){
-            String sortField = "startDate";
-            String sortDir = "asc";
             return getMyCoursePaginated(1, "startDate", "asc", model, request, response);
         }
         else if(option.equals("About to end")){
-            String sortField = "endDate";
-            String sortDir = "asc";
             return getMyCoursePaginated(1, "endDate", "asc", model, request, response);
         }
         else if(option.equals("High to low")){
             return getMyCoursePaginated(1, "price", "desc", model, request, response);
         }
         else if(option.equals("Low to high")){
-            String sortField = "price";
-            String sortDir = "asc";
             return getMyCoursePaginated(1, "price", "asc", model, request, response);
         }
         else if(option.equals("Free")){
@@ -452,8 +446,6 @@ public class CourseController {
             return getMyCoursePaginatedByAttribute(1, sortField, sortDir, "price", "0", model, request, response);
         }
         else{
-            String sortField = "courseID";
-            String sortDir = "asc";
             return getMyCoursePaginated(1, "courseID", "asc", model, request, response);
         }
     }
