@@ -79,13 +79,14 @@ main{
 
 .game-options-container span{
     width: 46%;
-    height: 13vh;
+    height: 16vh;
     border: 2px solid darkgray;
     border-radius: 20px;
     overflow: hidden;
 }
 span label{
-    width: 100%;
+    margin-left: 10px;
+    width: 90%;
     height: 100%;
     display: flex;
     align-items: center;
