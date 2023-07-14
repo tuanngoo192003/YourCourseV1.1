@@ -10,6 +10,8 @@ import com.google.api.services.drive.model.File;
 import com.project.CourseSystem.service.GoogleDriveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +40,8 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
     public Drive getDriveService(){
         Drive service = null;
         try{
-            URL resource = GoogleDriveServiceImpl.class.getResource("/"+this.serviceAccountKey);
-            java.io.File key = Paths.get(resource.toURI()).toFile();
+            Resource resource = new ClassPathResource(this.serviceAccountKey);
+            java.io.File key = resource.getFile();
             HttpTransport httpTransport = new NetHttpTransport();
             JacksonFactory jsonFactory = new JacksonFactory();
 
