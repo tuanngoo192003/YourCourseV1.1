@@ -15,6 +15,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Collections;
@@ -40,17 +41,16 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
     public Drive getDriveService(){
         Drive service = null;
         try{
-            Resource resource = new ClassPathResource("key/"+this.serviceAccountKey);
-            java.io.File key = resource.getFile();
             HttpTransport httpTransport = new NetHttpTransport();
             JacksonFactory jsonFactory = new JacksonFactory();
 
+            InputStream keyFileStream = getClass().getClassLoader().getResourceAsStream("key/yourcourse123-dfd35aee8cc7.p12");
             GoogleCredential credential = new GoogleCredential.Builder()
                     .setTransport(httpTransport)
                     .setJsonFactory(jsonFactory)
                     .setServiceAccountId(this.serviceAccountEmail)
                     .setServiceAccountScopes(Collections.singleton(DriveScopes.DRIVE))
-                    .setServiceAccountPrivateKeyFromP12File(key)
+                    .setServiceAccountPrivateKeyFromP12File(keyFileStream)
                     .build();
             service = new Drive.Builder(httpTransport, jsonFactory, credential).setApplicationName(applicationName)
                     .setHttpRequestInitializer(credential).build();
