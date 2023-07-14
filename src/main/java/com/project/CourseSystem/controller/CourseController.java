@@ -182,7 +182,7 @@ public class CourseController {
             }
         }
         else {
-            courseListTemp.addAll(courseList);
+            return authController.loginPage(model, request, response);
         }
 
         model.addAttribute("currentPage", pageNo);

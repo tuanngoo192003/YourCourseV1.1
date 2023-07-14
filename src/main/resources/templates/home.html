@@ -6,12 +6,11 @@
 
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-
+  <link rel="stylesheet" th:href="@{assets/css/cart.css}">
+  <link rel="stylesheet" th:href="@{assets/css/header.css}">
   <title>YourCourse</title>
-
+  <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
   <!-- Bootstrap core CSS -->
   <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
@@ -22,56 +21,40 @@
   <!-- Additional CSS Files -->
   <link rel="stylesheet" th:href="@{assets/css/fontawesome.css}">
   <link rel="stylesheet" th:href="@{assets/css/your-course.css}">
-  <link rel="stylesheet" th:href="@{assets/css/owl.css}">
-  <link rel="stylesheet" th:href="@{assets/css/lightbox.css}">
-  <!--
-
-  -->
+  <!-- instant style -->
   <style>
-    .offcanvas-title{
-      font-weight: bold;
-      color: black;
-      margin-top: 15px;
-      border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
-      margin-bottom: 10px;
-    }
-    .cartContent{
-      width: 100%;
-      height: 100%;
-      margin-bottom: 10px;
-      border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
-    }
-
-    .cartContent h4{
-      font-size: 15px;
-      text-align: center;
-      font-weight: normal;
-      color: black;
-    }
-
-    .buy-now-cart{;
-      padding: 20px 30px;
-      background: whitesmoke;
-      border: none;
-      color: rgb(58, 58, 58);
-      transition: 2s;
-      border-radius: 10px;
-    }
-
-    .buy-now-cart:hover{
-      background: gray;
-      border: none;
-      color: rgb(58, 58, 58);
-    }
-
     section.our-courses ul.nacc li .left-image .price h6{
       width: 110px;
+    }
+    .cart-container {
+      position: relative;
+      display: inline-block;
+    }
+
+    .fa-rectangle {
+      position: absolute;
+      top: -0.9em;
+      right: -1.2em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2em;
+      height: 1.5em;
+      background-color: #ffb963;
+      border-radius: 50%;
+      color: #ffb963;
+      font-size: 0.8em;
+      line-height: 1.5em;
+    }
+
+    .rectangle-number {
+      display: inline-block;
+      color: white;
     }
   </style>
 </head>
 
 <body>
-<script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
 <!-- ***** OffCanvas Start *****-->
 <div class="offcanvas offcanvas-end" id="demo">
   <div class="offcanvas-header">
@@ -93,25 +76,24 @@
               <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
               <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
               <div>
-                <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
+                <img th:src="'https://drive.google.com/uc?id='+${cart.courseImage}" style="width: 70px; height: 70px;">
               </div>
               <h4 th:text="${cart.courseName}"></h4>
-              <p th:text="'Price: '+${cart.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+              <p th:text="'Price: '+${cart.price}+'đ'" style="float: left; margin-left: 15px; padding-top: 10px; font-weight: 500"></p>
             </div>
-            <div style="display:inline-flex;">
+            <div style="display:inline-flex; margin-top: 10px">
               <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
               <input type="submit" value="Remove from cart" class="buy-now-cart" name="paymentButton">
             </div>
           </div>
-
         </form>
       </th:block>
-      <button><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
-      <button><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
+      <button id="check-out"><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
+      <button id="remove-all"><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
     </div>
     <div th:if="${session.cart==null}">
       <div class="cartContent" style="display: inline-flex">
-        <h4>Cart is empty</h4>
+        <h4 style="margin-bottom: 10px;">Cart is empty</h4>
       </div>
     </div>
   </div>
@@ -127,7 +109,6 @@
           <!-- ***** Logo Start ***** -->
           <a th:href="@{/home}" class="logo">
             <p style="margin-top: 40px; color: white">YourCourse</p>
-            <!--<img src="assets/images/templatemo-eduwell.png" alt="EduWell Template">-->
           </a>
           <!-- ***** Logo End ***** -->
           <!-- ***** Menu Start ***** -->
@@ -154,21 +135,28 @@
             <li><a th:href="@{/course}">Courses</a></li>
             <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
                 style="color: white; background: none; border: none">
-              <i class="fa-solid fa-shopping-cart"></i>
+              <div class="cart-container">
+                <i class="fa-solid fa-shopping-cart"></i>
+                <th:block th:if="${session.cart!=null}">
+                  <i class="fa-solid fa-rectangle"><span class="rectangle-number">[[${session.cartSize}]]</span></i>
+                </th:block>
+                </div>
             </li>
-            <li class="scroll-to-section"><a href="#contact-section">Contact Us</a></li>
+            <p th:if="${session.CSys}!=null">
+            <li><a th:href="@{/myCourse}">My Course</a></li>
+            </p>
             <li class="has-sub">
-              <i class="fa-solid fa-user" style="color: white">
-                <ul class="sub-menu">
-                  <p th:if="${session.CSys}!=null">
-                  <li><a th:href="@{/profile}">My Account</a></li>
-                  <li><a th:href="@{/logout}">Log out</a></li>
-                  </p>
-                  <p th:if="${session.CSys}==null">
-                  <li><a th:href="@{/login}">Log in</a></li>
-                  </p>
-                </ul>
-              </i>
+                <i class="fa-solid fa-user" style="color: white">
+                  <ul class="sub-menu">
+                    <p th:if="${session.CSys}!=null">
+                    <li><a th:href="@{/profile}">My Account</a></li>
+                    <li><a th:href="@{/logout}">Log out</a></li>
+                    </p>
+                    <p th:if="${session.CSys}==null">
+                    <li><a th:href="@{/login}">Log in</a></li>
+                    </p>
+                  </ul>
+                </i>
             </li>
           </ul>
           <a class='menu-trigger'>
@@ -186,19 +174,13 @@
 <section class="main-banner" id="top">
   <div class="container">
     <div class="row">
-      <div class="col-lg-6 align-self-center">
+      <div class="col-lg-12" style="text-align: center">
         <div class="header-text">
           <h6>Welcome to YourCourse</h6>
           <div>
             <h2>Learn <em>Anytime</em> <em>Anywhere</em></h2>
             <h2>From <span><em>Any Device</em></span></h2>
           </div>
-
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <div class="right-image">
-
         </div>
       </div>
     </div>
@@ -434,32 +416,49 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-6">
+    </div>
+    <div class="row">
+      <div class="col-lg-4">
         <p style="text-align: center;margin-top: 70px; color: #fff; font-weight: bold">Follow us</p>
         <ul class="social-icons" style="margin-top: 10px;">
           <li><a href="#"><i class="fa fa-facebook"></i></a></li>
           <li><a href="#"><i class="fa fa-twitter"></i></a></li>
         </ul>
       </div>
-      <div class="col-lg-3">
+      <div class="col-lg-4">
           <p style="text-align: center;margin-top: 70px; color: #fff; font-weight: bold">About us</p>
           <div style="margin-top: 10px; text-align: center" >
             <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
-            <a style="color: #fff">Our team: FPT University-SWP391-Group 5</a>
+            <a style="color: #fff">Our team: FPT University-SWP391-Group 6</a>
           </div>
         </div>
-      <div class="col-lg-3">
+      <div class="col-lg-4">
         <p style="text-align: center;margin-top: 70px; color: #fff; font-weight: bold">Further information</p>
         <div style="margin-top: 10px; text-align: center">
           <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
           <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
         </div>
       </div>
+      <div class="col-lg-6">
+        <a th:href="@{/home}" class="logo">
+          <p style="
+                  text-align: center;
+                  line-height: 100px;
+                  color: #fff;
+                  font-size: 14px;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 2px;"
+          >
+            YourCourse
+          </p>
+        </a>
       </div>
-
-      <div class="col-lg-12">
+      <div class="col-lg-6">
         <p class="copyright"> © 2023 YourCourse Web Application</p>
       </div>
+      </div>
+
     <div class="col-lg-12" style="height: 50px">
 
     </div>
@@ -468,14 +467,10 @@
 
 <!-- Scripts -->
 <!-- Bootstrap core JavaScript -->
-<script src="vendor/jquery/jquery.min.js"></script>
-<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
 <script src="assets/js/isotope.min.js"></script>
 <script src="assets/js/owl-carousel.js"></script>
 <script src="assets/js/lightbox.js"></script>
 <script src="assets/js/tabs.js"></script>
-<script src="assets/js/video.js"></script>
 <script src="assets/js/slick-slider.js"></script>
 <script src="assets/js/custom.js"></script>
 <script>

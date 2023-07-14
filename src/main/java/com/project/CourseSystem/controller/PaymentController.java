@@ -85,6 +85,7 @@ public class PaymentController {
                     session.setAttribute("cart", list);
                     float sum = list.get(0).getPrice();
                     session.setAttribute("sum", sum);
+                    session.setAttribute("cartSize", list.size());
                 }
                 else{
                     List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
@@ -99,13 +100,14 @@ public class PaymentController {
                             sum += list.get(i).getPrice();
                         }
                         session.setAttribute("sum", sum);
+                        session.setAttribute("cartSize", list.size());
                     }
                 }
             }
             else if(paymentButton.equals("Remove from cart")){
                 removeFromCart(request, response, courseDTO1);
             }
-            else{
+            else{ //Buy now
                 if(session.getAttribute("CSys")==null){
                     return authController.loginPage(model, request, response);
                 }
@@ -187,6 +189,8 @@ public class PaymentController {
                     }
                     enrolledService.addEnrolled(enrolledList);
                     session.removeAttribute("cart");
+                    session.removeAttribute("sum");
+                    session.removeAttribute("cartSize");
 
                     /* set up enrolled */
                     List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
@@ -195,6 +199,8 @@ public class PaymentController {
             }
             else{
                 session.removeAttribute("cart");
+                session.removeAttribute("sum");
+                session.removeAttribute("cartSize");
             }
         return courseController.getCourse(model, request, response);
     }
@@ -215,6 +221,7 @@ public class PaymentController {
             if(list.isEmpty()){
                 session.removeAttribute("cart");
                 session.removeAttribute("sum");
+                session.removeAttribute("cartSize");
             }
             else{
                 session.setAttribute("cart", list);
@@ -224,6 +231,7 @@ public class PaymentController {
                         sum += list.get(i).getPrice();
                     }
                     session.setAttribute("sum", sum);
+                    session.setAttribute("cartSize", list.size());
                 }
             }
         }
