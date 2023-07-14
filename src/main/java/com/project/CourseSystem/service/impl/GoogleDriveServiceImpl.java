@@ -40,7 +40,7 @@ public class GoogleDriveServiceImpl implements GoogleDriveService {
     public Drive getDriveService(){
         Drive service = null;
         try{
-            Resource resource = new ClassPathResource(this.serviceAccountKey);
+            Resource resource = new ClassPathResource("key/"+this.serviceAccountKey);
             java.io.File key = resource.getFile();
             HttpTransport httpTransport = new NetHttpTransport();
             JacksonFactory jsonFactory = new JacksonFactory();
