@@ -89,10 +89,12 @@ public class PaymentController {
                 }
                 else{
                     List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
-                    if(list.contains(courseDTO1)){
-                        return courseController.getCourse(model, request, response);
+                    for(int i = 0; i < list.size(); i++){
+                        if(list.get(i).getCourseID().equals(courseDTO1.getCourseID())){
+                            model.addAttribute("message", "This course is already in your cart!");
+                            return courseController.getCourse(model, request, response);
+                        }
                     }
-                    else{
                         list.add(courseDTO1);
                         session.setAttribute("cart", list);
                         float sum = 0;
@@ -101,7 +103,6 @@ public class PaymentController {
                         }
                         session.setAttribute("sum", sum);
                         session.setAttribute("cartSize", list.size());
-                    }
                 }
             }
             else if(paymentButton.equals("Remove from cart")){

@@ -21,26 +21,26 @@
 }
 
 .buy-now-cart{;
-    padding: 5px 20px;
-    background: #dc8cdb;
-    border: none;
-    color: #fff;
-    transition: 2s;
-    border-radius: 10px;
-    font-weight: 700;
-    margin-right: 10px;
-    margin-bottom: 10px;
+    padding: 5px 20px;!important;
+    background: #dc8cdb;!important;
+    border: none;!important;
+    color: #fff;!important;
+    transition: 2s;!important;
+    border-radius: 10px;!important;
+    font-weight: 700;!important;
+    margin-right: 10px;!important;
+    margin-bottom: 10px;!important;
 }
 
 .buy-now-cart:hover{
-    background: #fff;
-    border: none;
-    color: #dc8cdb;
+    background: #fff;!important;
+    border: none;!important;
+    color: #dc8cdb;!important;
 }
 
 #check-out{
     padding: 15px 20px;
-    background: linear-gradient(to right, #ffb963, #ff88f9);
+    background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
     border: none;
     color: #fff;
     transition: 2s;
@@ -60,7 +60,7 @@
 }
 
 #check-out:hover a{
-    background-image: linear-gradient(to right, #ffb963, #ff88f9);
+    background-image: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
