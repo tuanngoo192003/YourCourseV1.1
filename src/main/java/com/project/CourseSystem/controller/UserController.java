@@ -76,8 +76,6 @@ public class UserController {
             List<CourseDTO> courseList = courseService.getAllCourses();
             List<Enrolled> enrolledList = (List<Enrolled>) session.getAttribute("enrolledList");
             List<CourseDTO> courseListTemp = new ArrayList<>();
-            System.out.println("Attention!");
-            System.out.println(enrolledList.size());
             for(int i = 0; i < enrolledList.size(); i++){
                 for(int j = 0; j < courseList.size(); j++){
                     if(courseList.get(j).getCourseID() == enrolledList.get(i).getCourseID().getCourseID()){
@@ -106,6 +104,7 @@ public class UserController {
     @PostMapping("/saveUser")
     public String saveUser(@ModelAttribute UserInfo userInfo, Model model, HttpServletRequest request, HttpServletResponse response){
         userService.updateUser(userInfo);
+        model.addAttribute("success", "Update profile successfully!");
         return userProfile(model, request, response);
     }
 
@@ -125,12 +124,13 @@ public class UserController {
             system_accountDTO.setAccountPassword(encodedPassword);
             accountService.updateUser(system_accountDTO);
             session.removeAttribute("CSys");
+            model.addAttribute("success", "Update password successfully! Please login again!");
             return authController.loginPage(model, request, response);
         }
         else{
             model.addAttribute("system_account", systemAccountDTO);
             model.addAttribute("error", "Old password is incorrect");
-            return "redirect:/profile?error=Old password is incorrect";
+            return userProfile(model, request, response);
         }
     }
 
@@ -151,10 +151,11 @@ public class UserController {
             SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
             UserInfo userInfo = userService.findUser(systemAccountDTO.getAccountID());
             userService.saveAvatar(fileId, userInfo.getUserID());
+            model.addAttribute("success", "Upload avatar successfully");
         }
         catch (IOException e){
             model.addAttribute("error", "Error while uploading file");
-            return "redirect:/profile?error=Error while uploading file";
+            return userProfile(model, request, response);
         }
         return userProfile(model, request, response);
     }

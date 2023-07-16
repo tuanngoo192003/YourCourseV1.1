@@ -66,10 +66,7 @@
         }
 
         .buy-now:hover{
-            background-image: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background: #fff;
+            background: linear-gradient(-145deg, rgb(178, 102, 182) 0%, rgb(213, 154, 125) 100%) !important;
         }
 
         .add-to-cart{
@@ -91,7 +88,6 @@
             background: #fff;
             color: #dc8cdb;
         }
-
     </style>
 </head>
 
@@ -318,11 +314,11 @@
                                   th:action="@{/payment}"
                                   th:object="${courseDTO}"
                             >
-                                <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
+                                <a th:href="@{/courseDetails(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
                                 <div class="displayContent">
                                     <input type="text" name="fromPage" value="list" style="display: none">
                                     <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
-                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
+                                    <a th:href="@{/courseDetails(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
                                     <p th:text="${courseListEntity.courseDes}"></p>
                                     <div th:if="${listOfDiscount!=null}">
                                         <div th:with="messageDisplay=false">

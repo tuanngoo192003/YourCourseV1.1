@@ -99,7 +99,7 @@ public class CourseController {
                                @RequestParam("sortField") String sortField,
                                @RequestParam("sortDir") String sortDir,
                                Model model, HttpServletRequest request, HttpServletResponse response){
-        int pageSize = 2;
+        int pageSize = 18;
         //pagination attribute
         Page<Course> page = courseService.findPaginated(pageNo, pageSize, sortField, sortDir);
         List<Course> courseList = page.getContent();

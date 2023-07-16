@@ -224,7 +224,7 @@ public class AdminController {
             courseService.saveCourse(course);
             courseDetails.setUpdatedDate(new java.sql.Date(new Date().getTime()));
             courseService.saveCourseDetails(courseDetails);
-            return learnController.learnPage(course.getCourseID() ,model, request, response);
+            return learnController.courseDetailsPage(course.getCourseID() ,model, request, response);
         }
     }
 
@@ -281,7 +281,7 @@ public class AdminController {
                     CourseDetails courseDetails = (CourseDetails) session.getAttribute("newCourseDetails");
                     courseDetails.setUpdatedDate(new java.sql.Date(new Date().getTime()));
                     courseService.saveCourseDetails(courseDetails);
-                    return learnController.learnPage(course.getCourseID() ,model, request, response);
+                    return learnController.courseDetailsPage(course.getCourseID() ,model, request, response);
                 }
                 else if (choice.equals("Edit this lesson's quiz")) {
                     AddLessonFormDTO addLessonForm = new AddLessonFormDTO();
@@ -475,7 +475,7 @@ public class AdminController {
         saveNewQuestionAndAnswer(questionContents, answerContents, quiz, request, response);
 
 
-        return learnController.learnPage(courseID, model, request, response);
+        return learnController.courseDetailsPage(courseID, model, request, response);
     }
 
     public void saveNewQuestionAndAnswer(String questionContents, String answerContents, Quiz quiz,

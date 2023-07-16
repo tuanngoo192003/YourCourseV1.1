@@ -75,9 +75,7 @@ public class PaymentController {
                 courseDTO1.setPrice(discountPrice);
             }
         }
-        
         HttpSession session = request.getSession();
-
             if(paymentButton.equals("Add To Cart")){
                 if(session.getAttribute("cart")==null){
                     List<CourseDTO> list = new ArrayList<>();
@@ -113,38 +111,16 @@ public class PaymentController {
                     return authController.loginPage(model, request, response);
                 }
                 else{
-                String accountName = (String)session.getAttribute("CSys");
-                SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
-                Integer userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
-                Payment payment = new Payment();
-                payment.setPaymentAmount(courseDTO1.getPrice());
-                payment.setPaymentDate(new java.sql.Date(System.currentTimeMillis()));
-                payment.setUserID(userService.findUser(userID));
-                paymentService.addPaymentForOne(payment);
-
-                //enroll user to course
-                List<Enrolled> enrolledList = new ArrayList<>();
-                Enrolled enrolled = new Enrolled();
-                enrolled.setCourseID(courseConverter.convertDtoToEtity(courseDTO1));
-                enrolled.setEnrolledDate(new java.sql.Date(System.currentTimeMillis()));
-                enrolled.setAccountID(system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName)));
-                enrolled.setPaymentID(payment);
-                enrolledList.add(enrolled);
-                enrolledService.addEnrolled(enrolledList);
-
-                    /* set up enrolled */
-                    List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
-                    session.setAttribute("enrolledList", enrolledListAccount);
-
-                    /* set up cart */
-                    removeFromCart(request, response, courseDTO1);
+                    model.addAttribute("courseDTO", courseDTO1);
+                    model.addAttribute("forOne", "forOne");
+                    return "payment";
                 }
             }
         if(fromPage.equals("list")){
             return courseController.getCourse(model, request, response);
         }
         else{
-            return learnController.learnPage(courseDTO1.getCourseID(), model, request, response);
+            return learnController.courseDetailsPage(courseDTO1.getCourseID(), model, request, response);
         }
     }
 
@@ -157,45 +133,13 @@ public class PaymentController {
     @GetMapping("/checkout")
     public String checkout(@RequestParam("cartButton") String cartButton, Model model, HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
-
             if(cartButton.equals("checkout")){
                 if(session.getAttribute("CSys")==null){
                     return authController.loginPage(model, request, response);
                 }
                 else {
-                    String accountName = (String) session.getAttribute("CSys");
-                    SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
-                    Integer userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
-                    List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
-                    Payment payment = new Payment();
-                    float price = 0;
-                    for (CourseDTO courseDTO : list) {
-                        price += courseDTO.getPrice();
-                    }
-                    payment.setPaymentAmount(price);
-                    payment.setPaymentDate(new java.sql.Date(System.currentTimeMillis()));
-                    payment.setUserID(userService.findUser(userID));
-                    paymentService.addPaymentForOne(payment);
-
-                    //enroll user to course
-                    List<Enrolled> enrolledList = new ArrayList<>();
-                    for (int i = 0; i < list.size(); i++) {
-                        Enrolled enrolled = new Enrolled();
-                        CourseDTO courseDTO = list.get(i);
-                        enrolled.setCourseID(courseConverter.convertDtoToEtity(courseDTO));
-                        enrolled.setEnrolledDate(new java.sql.Date(System.currentTimeMillis()));
-                        enrolled.setAccountID(system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName)));
-                        enrolled.setPaymentID(payment);
-                        enrolledList.add(enrolled);
-                    }
-                    enrolledService.addEnrolled(enrolledList);
-                    session.removeAttribute("cart");
-                    session.removeAttribute("sum");
-                    session.removeAttribute("cartSize");
-
-                    /* set up enrolled */
-                    List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
-                    session.setAttribute("enrolledList", enrolledListAccount);
+                    model.addAttribute("forMany", "forMany");
+                    return "payment";
                 }
             }
             else{
@@ -204,6 +148,79 @@ public class PaymentController {
                 session.removeAttribute("cartSize");
             }
         return courseController.getCourse(model, request, response);
+    }
+
+    @PostMapping("/checkout/confirmation/forOne")
+    public String checkoutConfirmForOne(@ModelAttribute("courseDTO") CourseDTO courseDTOTemp, Model model, HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession();
+        CourseDTO courseDTO = courseService.getCourseByID(courseDTOTemp.getCourseID());
+        String accountName = (String)session.getAttribute("CSys");
+        SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
+        Integer userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
+        Payment payment = new Payment();
+        payment.setPaymentAmount(courseDTO.getPrice());
+        payment.setPaymentDate(new java.sql.Date(System.currentTimeMillis()));
+        payment.setUserID(userService.findUser(userID));
+        paymentService.addPaymentForOne(payment);
+
+        //enroll user to course
+        List<Enrolled> enrolledList = new ArrayList<>();
+        Enrolled enrolled = new Enrolled();
+        enrolled.setCourseID(courseConverter.convertDtoToEtity(courseDTO));
+        enrolled.setEnrolledDate(new java.sql.Date(System.currentTimeMillis()));
+        enrolled.setAccountID(system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName)));
+        enrolled.setPaymentID(payment);
+        enrolledList.add(enrolled);
+        enrolledService.addEnrolled(enrolledList);
+
+        /* set up enrolled */
+        List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
+        session.setAttribute("enrolledList", enrolledListAccount);
+
+        /* set up cart */
+        removeFromCart(request, response, courseDTO);
+        return "learn";
+    }
+
+    @PostMapping("/checkout/confirmation/forMany")
+    public String checkoutConfirmForMany(Model model, HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession();
+
+        String accountName = (String) session.getAttribute("CSys");
+        SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
+        Integer userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
+        List<CourseDTO> list = (List<CourseDTO>) session.getAttribute("cart");
+        Payment payment = new Payment();
+        float price = 0;
+        for (CourseDTO courseDTO : list) {
+            price += courseDTO.getPrice();
+        }
+        payment.setPaymentAmount(price);
+        payment.setPaymentDate(new java.sql.Date(System.currentTimeMillis()));
+        payment.setUserID(userService.findUser(userID));
+        paymentService.addPaymentForOne(payment);
+
+        //enroll user to course
+        List<Enrolled> enrolledList = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            Enrolled enrolled = new Enrolled();
+            CourseDTO courseDTO = list.get(i);
+            enrolled.setCourseID(courseConverter.convertDtoToEtity(courseDTO));
+            enrolled.setEnrolledDate(new java.sql.Date(System.currentTimeMillis()));
+            enrolled.setAccountID(system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName)));
+            enrolled.setPaymentID(payment);
+            enrolledList.add(enrolled);
+        }
+        enrolledService.addEnrolled(enrolledList);
+        session.removeAttribute("cart");
+        session.removeAttribute("sum");
+        session.removeAttribute("cartSize");
+
+        /* set up enrolled */
+        List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
+        session.setAttribute("enrolledList", enrolledListAccount);
+
+        return courseController.getMyCourse(model, request, response);
     }
 
     public void removeFromCart(HttpServletRequest request, HttpServletResponse response, CourseDTO courseDTO1){

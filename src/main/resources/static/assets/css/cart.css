@@ -56,14 +56,9 @@
 }
 
 #check-out:hover{
-    background: #fff;
+    background: linear-gradient(-145deg, rgb(178, 102, 182) 0%, rgb(213, 154, 125) 100%) !important;
 }
 
-#check-out:hover a{
-    background-image: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
 
 #remove-all{
     padding: 15px 20px;

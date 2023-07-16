@@ -49,10 +49,6 @@
             color: white;
         }
 
-        .py-5{
-            padding-top: 5rem !important;
-        }
-
         .displayContent{
             width: 100%;
             height: 100%;
@@ -78,97 +74,15 @@
 
         .display {
             display: flex;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
             transition: 0.3s;
             border-radius: 10px;
-            border: 2px solid black;
             margin-bottom: 30px;
+            padding: 20px 0px 30px 5px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.05);
         }
 
-        .buy-now-cart{;
-            padding: 20px 30px;
-            background: whitesmoke;
-            border: none;
-            color: rgb(58, 58, 58);
-            transition: 2s;
-            border-radius: 10px;
-        }
-
-        .buy-now-cart:hover{
-            background: gray;
-            border: none;
-            color: rgb(58, 58, 58);
-        }
-
-        .buy-now{
-            margin-right: 20px;
-            float: right;
-            background: whitesmoke;
-            border: none;
-            color: rgba(0, 0, 0, 0.98);
-            transition: 2s;
-            border-radius: 10px;
-        }
-
-        .buy-now:hover{
-            background: gray;
-            border: rgba(0, 0, 0, 0.98) solid 1px;
-            color: #ffb963;
-        }
-
-        .listTitle h1{
-            margin-top: 20px;
-            padding-bottom: 25px;
-            font-weight: 700;
-        }
-
-        .listTitle h2{
-            margin-top: 20px;
-
-            font-weight: 600;
-        }
-
-        .offcanvas-title{
-            font-weight: bold;
-            color: black;
-            margin-top: 15px;
-            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
-            margin-bottom: 10px;
-        }
-        .cartContent{
-            width: 100%;
-            height: 100%;
-            margin-bottom: 10px;
-            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
-        }
-
-        .cartContent h4{
-            font-size: 15px;
-            text-align: center;
-            font-weight: normal;
-            color: black;
-        }
-
-        .displayContent p{
-            color: dimgray;
-        }
-
-        .sticky-top{
-            top:25vh;
-            z-index: 990;
-        }
-        .dashboard{
-            margin-top: 110px;
-            margin-right: 20px;
-            float: right;
-            background-color: white;
-            top: 0px;
-            padding: 10px;
-            box-shadow: 0px 0px 5px 0px #ccc;
-            width: 10%;
-            height: 100px;
-            border-radius: 7px;
-            border: #041418 solid 2px;
+        .display:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
         }
 
     </style>
@@ -222,7 +136,7 @@
 <!-- ***** OffCanvas End ***** -->
 
 <!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky" style="z-index: 999">
+<header class="header-area header-sticky" style="z-index: 1030">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -294,7 +208,7 @@
 <!-- if user is admin this session appear -->
 <div th:if="${system_account.roleID.roleID==2}" class="dashboard sticky-top">
     <div>
-        <button><a th:href="@{/dashboard}">Dashboard</a></button>
+        <button id="dashboard-btn"><a th:href="@{/dashboard}" style="color: #fff">Dashboard</a></button>
     </div>
 </div>
 
@@ -352,6 +266,7 @@
                     <h3 class="mb-4">Account Settings</h3>
                     <form class="row"
                           method="post"
+                          id="form1"
                           th:action="@{saveUser}"
                           th:object="${userInfo}"
                     >
@@ -411,7 +326,7 @@
                             </div>
                         </div>
                         <input type="text" hidden th:field="*{accountID}" th:value="${id}">
-                        <input type="submit" value="update">
+                        <input type="submit" value="update" id="submit-account" class="update">
                     </form>
                 </div>
                 <div class="tab-pane fade" id="gmail" role="tabpanel" aria-labelledby="gmail-tab">
@@ -424,14 +339,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="text" class="form-control" th:value="${currentGmail}"
+                                <input type="email" class="form-control" th:value="${currentGmail}"
                                        th:field="*{gmail}"
                                        name="gmailChange"
                                        id="gmailChange"
                                 >
                             </div>
                         </div>
-                        <input type="submit" value="update">
+                        <input type="submit" value="update" class="update">
                     </form>
                 </div>
                 <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
@@ -475,7 +390,7 @@
 
                             </div>
                         </div>
-                        <input type="submit" value="Change">
+                        <input type="submit" value="Change" class="update">
                     </form>
                 </div>
                 <div class="tab-pane fade" id="notification" role="tabpanel" aria-labelledby="notification-tab">
@@ -489,18 +404,22 @@
                                       th:action="@{/payment}"
                                       th:object="${courseDTO}"
                                 >
-                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
+                                    <a th:href="@{/courseDetails(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
                                     <div class="displayContent">
                                         <input type="text" name="fromPage" value="list" style="display: none">
                                         <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
-                                        <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
+                                        <a th:href="@{/courseDetails(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
                                         <p th:text="${courseListEntity.courseDes}"></p>
                                         <input type="submit" value="You've bought this course" class="buy-now" name="paymentButton" disabled>
                                     </div>
                                 </form>
                             </th:block>
                             <div>
-                                <button><a th:href="@{'/myCourse'+'/page/' + 1 + '?sortField=courseID' + '&sortDir=desc'}">See full purchased course</a></button>
+                                <button
+                                        id="myCourseButton"
+                                ><a th:href="@{'/myCourse'+'/page/' + 1 + '?sortField=courseID' + '&sortDir=desc'}"
+                                    style="color: #fff"
+                                >See full purchased course</a></button>
                             </div>
                         </div>
                     </div>
@@ -512,7 +431,7 @@
 
 <!-- ***** Footer *****-->
 <footer style="margin-top: 30px">
-    <div class="container-fluid footer-st">
+    <div class="container-fluid footer-st" style="padding: 10px 0px 20px 0px;">
         <div class="row">
             <div class="col-lg-4">
                 <p style="text-align: center; margin-bottom: 12px; color: #fff; font-weight: bold">Follow us</p>
@@ -566,25 +485,90 @@
 <script src="assets/js/tabs.js"></script>
 <script src="assets/js/slick-slider.js"></script>
 <script src="assets/js/custom.js"></script>
+<script th:inline="javascript">
 
+    const error = [[${error}]] ;
+    if (error!=null) {
+        alert(error);
+    }
 
-<script>
-    var password = document.getElementById("newPassword")
-        , confirm_password = document.getElementById("confirm");
+    const success = [[${success}]];
+    if (success!=null) {
+        alert(success);
+    }
+
+    var oldPassword = document.getElementById("oldPassword"),
+        password = document.getElementById("newPassword"),
+        confirm_password = document.getElementById("confirm");
 
     function validatePassword(){
+        var passwordRegex = /^(?=.*\d)(?=.*[!@#$%^_&*])(?=.*[a-zA-Z]).{6,}$/;
+        var isValidPassword = passwordRegex.test(password.value);
+        if(oldPassword.value == null) {
+            oldPassword.setCustomValidity("This field should not be empty");
+        }
         if(password.value == null) {
             password.setCustomValidity("This field should not be empty");
         }
-        if(password.value != confirm_password.value ){
-            confirm_password.setCustomValidity("Passwords Don't Match");
+        if(confirm_password.value == null) {
+            confirm_password.setCustomValidity("This field should not be empty");
+        }
+        if(!isValidPassword){
+            password.setCustomValidity("Password must contain at least 6 characters, including UPPER/lowercase and numbers");
         }
         else {
+            password.setCustomValidity('');
+        }
+        if(password.value != confirm_password.value){
+            confirm_password.setCustomValidity("Passwords Don't Match");
+        }
+        if(password.value == confirm_password.value && isValidPassword){
             confirm_password.setCustomValidity('');
         }
     }
     password.onchange = validatePassword;
     confirm_password.onkeyup = validatePassword;
+
+
+    var submitAccount = document.getElementById("submit-account");
+
+
+    // Get the input fields for this form
+    var userName = document.getElementById('userName')
+    var phoneNums = document.getElementById('phoneNums')
+    var dob = document.getElementById('dob')
+
+    function validateAccount(){
+        // Validate the userName field
+        if (userName.value.length < 2) {
+            // Set a custom error message for the input field
+            userName.setCustomValidity('Full name must be at least 2 characters long.');
+        } else {
+            // Clear any previous error message for the input field
+            userName.setCustomValidity('');
+        }
+
+        // Validate the phoneNums field
+        if (!/^\d{7,11}$/.test(phoneNums.value)) {
+            // Set a custom error message for the input field
+            phoneNums.setCustomValidity('Phone number must be between 7 and 11 digits long and contain only numbers.');
+        } else {
+            // Clear any previous error message for the input field
+            phoneNums.setCustomValidity('');
+        }
+
+        // Validate the dob field
+        const dobRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dobRegex.test(dob.value)) {
+            // Set a custom error message for the input field
+            dob.setCustomValidity('Date of birth must be in the format yyyy-mm-dd.');
+        } else {
+            // Clear any previous error message for the input field
+            dob.setCustomValidity('');
+        }
+    }
+
+    submitAccount.onclick = validateAccount;
 </script>
 </body>
 </html>
