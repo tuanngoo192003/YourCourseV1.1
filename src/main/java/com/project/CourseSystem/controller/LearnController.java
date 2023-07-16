@@ -127,6 +127,7 @@ public class LearnController {
                 if(lessonList.get(i).getQuizID().getQuizID() == passedQuiz.get(j)){
                     passedStatusCheck.setCheckStatus(1);
                     passedStatusCheck.setStatusContent("Lesson-"+lessonList.get(i).getLessonName()+": Completed");
+                    passedStatusCheck.setLessonID(lessonList.get(i).getLessonID());
                     learningStatus.add(passedStatusCheck);
                     status = 1;
                     learningStatusCount++;
@@ -136,6 +137,7 @@ public class LearnController {
             if(status == 0){
                 passedStatusCheck.setCheckStatus(0);
                 passedStatusCheck.setStatusContent("Lesson-"+lessonList.get(i).getLessonName()+": Not completed");
+                passedStatusCheck.setLessonID(lessonList.get(i).getLessonID());
                 learningStatus.add(passedStatusCheck);
             }
         }
