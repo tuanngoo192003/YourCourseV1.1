@@ -13,4 +13,7 @@ public interface EnrolledRepository extends JpaRepository<Enrolled, Integer> {
 
     @Query(value = "SELECT * FROM enrolled WHERE accountID = ?1", nativeQuery = true)
     public List<Enrolled> findByAccountId(Integer accountID);
+
+    @Query(value = "SELECT * FROM enrolled WHERE paymentid = ?1", nativeQuery = true)
+    List<Enrolled> findByPaymentID(Integer paymentID);
 }

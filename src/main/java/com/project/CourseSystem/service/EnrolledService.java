@@ -12,4 +12,5 @@ public interface EnrolledService {
 
     void addEnrolled(List<Enrolled> enrolled);
 
+    List<Enrolled> getEnrolledByPaymentID(Integer paymentID);
 }

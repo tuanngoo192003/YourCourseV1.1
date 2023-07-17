@@ -56,7 +56,13 @@ public class QuizController {
     public String getQuiz(@RequestParam("lessonID") Integer lessonID, Model model, HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         if(session.getAttribute("CSys")==null){
-            return authController.loginPage(model, request, response);
+            CategoryDTO cDto = new CategoryDTO();
+            model.addAttribute("categoryDTO", cDto);
+            CourseDTO courseDTO = new CourseDTO();
+            model.addAttribute("courseDTO", courseDTO);
+            model.addAttribute("category", categoryService.getAllCategories());
+            model.addAttribute("system_account", new SystemAccountDTO());
+            return "redirect:/login";
         }
         else{
             QuizDTO quizDTO = quizService.getAllByLessonID(lessonID);

@@ -32,4 +32,9 @@ public class EnrolledServiceImpl implements EnrolledService {
             enrolledRepository.save(enrolled.get(i));
         }
     }
+
+    @Override
+    public List<Enrolled> getEnrolledByPaymentID(Integer paymentID) {
+        return enrolledRepository.findByPaymentID(paymentID);
+    }
 }

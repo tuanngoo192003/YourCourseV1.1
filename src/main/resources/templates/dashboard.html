@@ -87,30 +87,33 @@
             border-radius: 50%;
         }
 
-        .menu{
-            margin-left: 10px;
-        }
-
         .menu button{
-            margin-bottom: 10px;
             border-radius: 5px;
-            background-color: rgba(246, 191, 159, 1);
-            transition: 2s;
+            margin-right: 20px;
+            border: none;
+            font-size: 13px;
+            background-color: #dc8cdb;
+            color: #fff;
+            padding: 15px;
+            display: inline-block;
+            border-radius: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: all .3s;
+            width: 100%;
         }
 
         .menu button a{
-            color: white;
+            color: #fff;
         }
 
         .menu button:hover{
-            margin-bottom: 10px;
-            border-radius: 5px;
-            background-color: #F1ECEBFF;
-            color: rgba(246, 191, 159, 1);
+            background: #fff;
+            color: #dc8cdb;
         }
 
         .menu button a:hover{
-            color: rgba(246, 191, 159, 1);
+            color: #dc8cdb;
         }
     </style>
 </head>
@@ -236,10 +239,10 @@
     </div>
     <div class="row-flex">
         <div class="column-flex-3">
-            <div class="chart-container" style="width: 90%; height: 100%; align-content: center">
+            <div class="chart-container" style="width: 100%; height: 100%; align-content: center">
                 <div class="admin-info" style="margin-bottom: 15px;">
                     <img th:src="'https://drive.google.com/uc?id='+${userInfo.avatar}" alt="Image" class="admin-avt">
-                    <p th:text="'Welcome, '+${userInfo.userName}" style="margin-top: 15px; margin-left: 10px"></p>
+                    <p th:text="'Welcome, '+${userInfo.userName}" style="margin-top: 15px;font-weight: 700;"></p>
                 </div>
                 <div class="menu">
                     <button><a th:href="@{/allCourses}">Go to all course</a></button>
@@ -250,6 +253,57 @@
             </div>
         </div>
         <div class="colum-flex-9">
+            <div class="totalStatistic">
+                <div class="displayTotalStatistic">
+                    <i class="fa-solid fa-cash-register display-i"></i>
+                    <div>
+                        <h2 th:text="${totalPayment}"></h2>
+                        <p>Total payment: </p>
+                        <p th:text="${growthPayment}+'%(30 days)'"></p>
+                        <th:block th:if="${statusOfGrowthPayment=='increase'}">
+                            <i class="fa-solid fa-arrow-up" style="color: green"></i>
+                            <span th:text="'Increase '+${growthPaymentOfOneMonthRecent}+'% compare to previous month'"></span>
+                        </th:block>
+                        <th:block th:if="${statusOfGrowthPayment=='decrease'}">
+                            <i class="fa-solid fa-arrow-down" style="color: red"></i>
+                            <span th:text="'Decrease '+${growthPaymentOfOneMonthRecent}+'% compare to previous month'"></span>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="displayTotalStatistic">
+                    <i class="fa-solid fa-book display-i"></i>
+                    <div>
+                        <h2 th:text="${totalNumberOfCourseBought}"></h2>
+                        <p>Total course bought: </p>
+                        <p th:text="${growthCourseBought}+'%(30 days)'"></p>
+                            <th:block th:if="${statusOfGrowthCourseBought=='increase'}">
+                                <i class="fa-solid fa-arrow-up" style="color: green"></i>
+                                <span th:text="'Increase '+${growthCourseBoughtOfOneMonthRecent}+'% compare to previous month'"></span>
+                            </th:block>
+                        <th:block th:if="${statusOfGrowthCourseBought=='decrease'}">
+                            <i class="fa-solid fa-arrow-down" style="color: red"></i>
+                            <span th:text="'Decrease '+${growthCourseBoughtOfOneMonthRecent}+'% compare to previous month'"></span>
+                        </th:block>
+                    </div>
+                </div>
+                <div class="displayTotalStatistic">
+                    <i class="fa-solid fa-money-bill display-i"></i>
+                    <div>
+                        <h2 th:text="${totalRevenue}+'đ'"></h2>
+                        <p>Total revenue: </p>
+                        <p th:text="${growthRevenue}+'%(30 days)'"></p>
+                        <th:block th:if="${statusOfGrowthRevenue=='increase'}">
+                            <i class="fa-solid fa-arrow-up" style="color: green"></i>
+                            <span th:text="'Increase '+${growthRevenueOfOneMonthRecent}+'% compare to previous month'"></span>
+                        </th:block>
+                        <th:block th:if="${statusOfGrowthRevenue=='decrease'}">
+                            <i class="fa-solid fa-arrow-down" style="color: red"></i>
+                            <span th:text="'Decrease '+${growthRevenueOfOneMonthRecent}+'% compare to previous month'"></span>
+                        </th:block>
+                    </div>
+                </div>
+            </div>
+
             <div class="chart-container">
                 <h2>Category Distribution</h2>
                 <canvas id="pieChart" class="small-chart"></canvas>
@@ -301,27 +355,6 @@
                             </tr>
                         </th:block>
                     </th:block>
-
-                    <tr>
-                        <td>Science</td>
-                        <td><span class="star-rating">⭐⭐⭐</span></td>
-                        <td>About to make bomb to send to China💀.</td>
-                    </tr>
-                    <tr>
-                        <td>English</td>
-                        <td><span class="star-rating">⭐⭐⭐⭐⭐</span></td>
-                        <td>Now i can understand mom joke💀.</td>
-                    </tr>
-                    <tr>
-                        <td>History</td>
-                        <td><span class="star-rating">⭐⭐</span></td>
-                        <td>Hail Hitler💀.</td>
-                    </tr>
-                    <tr>
-                        <td>Geography</td>
-                        <td><span class="star-rating">⭐⭐⭐⭐</span></td>
-                        <td>Discovering new Species around the world💀.</td>
-                    </tr>
                 </table>
             </div>
         </div>

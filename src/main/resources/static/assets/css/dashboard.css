@@ -4,8 +4,8 @@
     width: calc(48% - 20px);
     margin-bottom: 40px;
     vertical-align: top;
-    background-color: whitesmoke;
     border-radius: 7px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.05);
 }
 
 .chart-container h2 {
@@ -60,5 +60,35 @@ canvas {
     flex: 1 1 50%;
     min-width: 300px;
     min-height: 300px;
+}
+
+.totalStatistic{
+    display: flex;
+}
+
+.displayTotalStatistic{
+    width: 30%;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.05);
+    border-radius: 7px;
+    margin: 15px 15px;
+    display: flex;
+    padding-top: 10px;
+    padding-bottom: 15px;
+}
+
+.display-i{
+    padding: 10px;
+    border-radius: 50px 50px;
+    background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+    height: 40px;
+    margin: 10px;
+}
+
+.displayTotalStatistic div{
+    text-align: center;
+}
+
+.displayTotalStatistic div h2{
+    font-weight: 700;
 }
 
