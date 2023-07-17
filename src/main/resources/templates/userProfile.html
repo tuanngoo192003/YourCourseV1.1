@@ -85,6 +85,25 @@
             box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
         }
 
+        .buy-now{
+            margin-right: 20px;
+            float: right;
+            border: none;
+            font-size: 13px;
+            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+            color: #fff;
+            padding: 12px 30px;
+            display: inline-block;
+            border-radius: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: all .3s;
+        }
+
+        .buy-now:hover{
+            background: linear-gradient(-145deg, rgb(178, 102, 182) 0%, rgb(213, 154, 125) 100%) !important;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -404,20 +423,22 @@
                                       th:action="@{/payment}"
                                       th:object="${courseDTO}"
                                 >
-                                    <a th:href="@{/courseDetails(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
+                                    <a th:href="@{/courseDetails/learn(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
                                     <div class="displayContent">
                                         <input type="text" name="fromPage" value="list" style="display: none">
                                         <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
-                                        <a th:href="@{/courseDetails(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
+                                        <a th:href="@{/courseDetails/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
                                         <p th:text="${courseListEntity.courseDes}"></p>
-                                        <input type="submit" value="You've bought this course" class="buy-now" name="paymentButton" disabled>
+                                        <button class="buy-now" name="paymentButton">
+                                            <a th:href="@{/courseDetails/learn(courseID=${courseListEntity.courseID})}" style="color: #fff">You've bought this course</a>
+                                        </button>
                                     </div>
                                 </form>
                             </th:block>
                             <div>
                                 <button
                                         id="myCourseButton"
-                                ><a th:href="@{'/myCourse'+'/page/' + 1 + '?sortField=courseID' + '&sortDir=desc'}"
+                                ><a th:href="@{/myCourse}"
                                     style="color: #fff"
                                 >See full purchased course</a></button>
                             </div>

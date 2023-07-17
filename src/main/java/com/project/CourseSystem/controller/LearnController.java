@@ -87,22 +87,53 @@ public class LearnController {
             /* check if user is enrolled */
         HttpSession session = request.getSession();
         if(session.getAttribute("CSys")!=null){
-            return "redirect:/courseDetails/learn?courseID="+courseID;
+            String accountName = (String) session.getAttribute("CSys");
+            SystemAccountDTO accountDTO = accountService.findUserByAccountName(accountName);
+            Enrolled enrolled = enrolledService.findByAccountIdAndCourseID(accountDTO.getAccountID(), courseID);
+            if(enrolled != null){
+                EnrolledDTO enrolledDTO = enrolledConverter.convertEntityToDTO(enrolled);
+                model.addAttribute("enrolledDTO", enrolledDTO);
+                /* get rating */
+                UserInfo userInfo = userService.findUser(accountDTO.getAccountID());
+                List<Report> reportList = reportService.getAllReportByUserID(userInfo.getUserID());
+                RatingCourse ratingCourse = ratingCourseService.getRatingCourseByCourseIdAndUserId(courseID, userInfo.getUserID());
+                if(ratingCourse != null){
+                    model.addAttribute("rating", ratingCourse.getRating());
+                    model.addAttribute("comment", ratingCourse.getComment());
+                }
+                return "redirect:/courseDetails/learn?courseID="+courseID;
+            }
+            else{
+                setCourseDetailsContentModel(course, model, request, response);
+                /* Get discount */
+                Discount discount = discountService.getDiscountByCourseId(courseID);
+                if(discount != null){
+                    //calculate discount price
+                    float discountPercent = (100 - (float)discount.getPercentage())/100;
+                    float temp = course.getPrice() * discountPercent;
+                    int discountPrice = (int) temp;
+                    DiscountDTO discountDTO = discountConverter.convertToDTO(discount);
+                    model.addAttribute("discountDTO", discountDTO);
+                    model.addAttribute("discountPrice", discountPrice);
+                }
+                return "courseDetails";
+            }
         }
         else{
             setCourseDetailsContentModel(course, model, request, response);
+
                 /* Get discount */
-            Discount discount = discountService.getDiscountByCourseId(courseID);
-            if(discount != null){
+                Discount discount = discountService.getDiscountByCourseId(courseID);
+                if(discount != null){
                     //calculate discount price
-                float discountPercent = (100 - (float)discount.getPercentage())/100;
-                float temp = course.getPrice() * discountPercent;
-                int discountPrice = (int) temp;
-                DiscountDTO discountDTO = discountConverter.convertToDTO(discount);
-                model.addAttribute("discountDTO", discountDTO);
-                model.addAttribute("discountPrice", discountPrice);
-            }
-            return "courseDetails";
+                    float discountPercent = (100 - (float)discount.getPercentage())/100;
+                    float temp = course.getPrice() * discountPercent;
+                    int discountPrice = (int) temp;
+                    DiscountDTO discountDTO = discountConverter.convertToDTO(discount);
+                    model.addAttribute("discountDTO", discountDTO);
+                    model.addAttribute("discountPrice", discountPrice);
+                }
+                return "courseDetails";
         }
     }
 
@@ -119,6 +150,7 @@ public class LearnController {
         List<Integer> passedQuiz = getPassedQuiz(request, response);
         List<PassedStatusCheck> learningStatus = new ArrayList<>();
         int learningStatusCount = 0;
+        int finishedLessonCount = 0;
 
         for(int i = 0; i < lessonList.size(); i++){
             PassedStatusCheck passedStatusCheck = new PassedStatusCheck();
@@ -131,6 +163,7 @@ public class LearnController {
                     learningStatus.add(passedStatusCheck);
                     status = 1;
                     learningStatusCount++;
+                    finishedLessonCount++;
                     break;
                 }
             }
@@ -143,13 +176,14 @@ public class LearnController {
         }
         String totalStatus = "";
         if(learningStatusCount == lessonList.size()){
-            totalStatus="Course: Completed";
+            totalStatus="Status: Completed";
         }
         else{
-            totalStatus="Course: Not completed";
+            totalStatus="Status: Not completed";
         }
         model.addAttribute("totalStatus", totalStatus);
         model.addAttribute("learningStatus", learningStatus);
+        model.addAttribute("finishedLessonCount", finishedLessonCount);
 
         /* get course details */
         CourseDetailsDTO courseDetailsDTO =courseService.getCourseDetailsByID(course.getCourseID());
@@ -208,24 +242,22 @@ public class LearnController {
     @GetMapping("/courseDetails/learn")
     public String learnPage(@RequestParam("courseID") int courseID, Model model, HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
-        CourseDTO course = courseService.getCourseByID(courseID);
-        String accountName = (String) session.getAttribute("CSys");
-        SystemAccountDTO accountDTO = accountService.findUserByAccountName(accountName);
-        Enrolled enrolled = enrolledService.findByAccountIdAndCourseID(accountDTO.getAccountID(), courseID);
-        if(enrolled != null){
-            EnrolledDTO enrolledDTO = enrolledConverter.convertEntityToDTO(enrolled);
-            model.addAttribute("enrolledDTO", enrolledDTO);
-            /* get rating */
-            UserInfo userInfo = userService.findUser(accountDTO.getAccountID());
-            List<Report> reportList = reportService.getAllReportByUserID(userInfo.getUserID());
-            RatingCourse ratingCourse = ratingCourseService.getRatingCourseByCourseIdAndUserId(courseID, userInfo.getUserID());
-            if(ratingCourse != null){
-                model.addAttribute("rating", ratingCourse.getRating());
-                model.addAttribute("comment", ratingCourse.getComment());
+        if(session.getAttribute("CSys")==null){
+            return "redirect:/courseDetails?courseID="+courseID;
+        }
+        else{
+            String accountName = (String) session.getAttribute("CSys");
+            SystemAccountDTO accountDTO = accountService.findUserByAccountName(accountName);
+            Enrolled enrolled = enrolledService.findByAccountIdAndCourseID(accountDTO.getAccountID(), courseID);
+            if(enrolled != null){
+                CourseDTO course = courseService.getCourseByID(courseID);
+                setCourseDetailsContentModel(course, model, request, response);
+                return "learn";
+            }
+            else {
+                return "redirect:/courseDetails?courseID="+courseID;
             }
         }
-        setCourseDetailsContentModel(course, model, request, response);
-        return "learn";
     }
 
     @PostMapping("/learn/feedback")

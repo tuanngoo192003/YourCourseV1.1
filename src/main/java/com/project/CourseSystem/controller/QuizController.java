@@ -52,7 +52,7 @@ public class QuizController {
     }
 
     //Quiz handle
-    @GetMapping("quiz")
+    @GetMapping("/courseDetails/learn/quiz")
     public String getQuiz(@RequestParam("lessonID") Integer lessonID, Model model, HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         if(session.getAttribute("CSys")==null){
@@ -78,7 +78,7 @@ public class QuizController {
     }
 
     //Quiz review
-    @GetMapping("quizReview")
+    @GetMapping("courseDetails/learn/quizReview")
     public String getQuizReview(Report report, Model model, HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         if(session.getAttribute("CSys")==null){

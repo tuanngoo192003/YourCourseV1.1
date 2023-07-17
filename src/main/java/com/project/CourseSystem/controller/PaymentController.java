@@ -179,7 +179,7 @@ public class PaymentController {
 
         /* set up cart */
         removeFromCart(request, response, courseDTO);
-        return "learn";
+        return "redirect:/courseDetails/learn?courseID=" + courseDTO.getCourseID();
     }
 
     @PostMapping("/checkout/confirmation/forMany")
