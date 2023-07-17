@@ -27,4 +27,9 @@ public class DiscountServiceImpl implements DiscountService {
         List<Discount> discounts = discountRepository.findAll();
         return discounts;
     }
+
+    @Override
+    public void deleteDiscount(Integer discountID) {
+        discountRepository.deleteById(discountID);
+    }
 }

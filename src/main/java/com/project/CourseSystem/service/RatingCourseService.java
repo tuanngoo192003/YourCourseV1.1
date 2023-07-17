@@ -11,4 +11,8 @@ public interface RatingCourseService {
     RatingCourse getRatingCourseByCourseIdAndUserId(Integer courseId, Integer userId);
 
     List<RatingCourse> getAllRating();
+
+    List<RatingCourse> getRatingCourseByCourseID(Integer courseID);
+
+    void deleteRatingCourse(Integer ratingCourseID);
 }

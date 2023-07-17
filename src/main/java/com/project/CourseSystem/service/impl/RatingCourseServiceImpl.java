@@ -32,4 +32,15 @@ public class RatingCourseServiceImpl implements RatingCourseService {
         List<RatingCourse> ratingCourseList = ratingCourseRepository.findAll();
         return ratingCourseList;
     }
+
+    @Override
+    public List<RatingCourse> getRatingCourseByCourseID(Integer courseID) {
+        List<RatingCourse> ratingCourseList = ratingCourseRepository.getRatingCourseByCourseId(courseID);
+        return ratingCourseList;
+    }
+
+    @Override
+    public void deleteRatingCourse(Integer ratingCourseID) {
+        ratingCourseRepository.deleteById(ratingCourseID);
+    }
 }

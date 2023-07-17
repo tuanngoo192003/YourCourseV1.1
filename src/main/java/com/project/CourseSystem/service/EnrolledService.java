@@ -13,4 +13,8 @@ public interface EnrolledService {
     void addEnrolled(List<Enrolled> enrolled);
 
     List<Enrolled> getEnrolledByPaymentID(Integer paymentID);
+
+    List<Enrolled> getAllByCourseID(Integer courseID);
+
+    void deleteEnrolled(Integer enrolledID);
 }

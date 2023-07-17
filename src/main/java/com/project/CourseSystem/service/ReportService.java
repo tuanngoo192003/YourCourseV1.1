@@ -11,4 +11,8 @@ public interface ReportService {
     void saveReport(Report report);
 
     List<Report> getAllReportByUserID(Integer userID);
+
+    List<Report> getAllByQuizID(Integer quizID);
+
+    void deleteReport(Integer reportID);
 }

@@ -37,4 +37,14 @@ public class EnrolledServiceImpl implements EnrolledService {
     public List<Enrolled> getEnrolledByPaymentID(Integer paymentID) {
         return enrolledRepository.findByPaymentID(paymentID);
     }
+
+    @Override
+    public List<Enrolled> getAllByCourseID(Integer courseID) {
+        return enrolledRepository.findByCourseID(courseID);
+    }
+
+    @Override
+    public void deleteEnrolled(Integer enrolledID) {
+        enrolledRepository.deleteById(enrolledID);
+    }
 }

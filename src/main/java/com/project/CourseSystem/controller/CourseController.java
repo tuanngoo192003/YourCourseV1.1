@@ -629,6 +629,11 @@ public class CourseController {
                     learningMaterialService.saveLearningMaterial(learningMaterial);
                 }
             }
+            session.removeAttribute("newCourse");
+            session.removeAttribute("newCourseDetails");
+            session.removeAttribute("quizListFormList");
+            session.removeAttribute("addLessonFormDTOList");
+
             return getCourse(model, request, response);
         }
     }

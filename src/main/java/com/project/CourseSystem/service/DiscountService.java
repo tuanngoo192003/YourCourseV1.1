@@ -9,4 +9,6 @@ public interface DiscountService {
     public Discount getDiscountByCourseId(Integer courseID);
 
     public List<Discount> getAllDiscounts();
+
+    void deleteDiscount(Integer discountID);
 }

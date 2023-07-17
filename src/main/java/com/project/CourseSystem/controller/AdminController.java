@@ -62,6 +62,18 @@ public class AdminController {
 
     PaymentService paymentService;
 
+    LessonConverter lessonConverter;
+
+    EnrolledService enrolledService;
+
+    DiscountService discountService;
+
+    RatingCourseService ratingCourseService;
+
+    ReportService reportService;
+
+    QuizRevisionService quizRevisionService;
+
     AdminController(CourseController courseController, AuthController authController,
                     AccountService accountService, CourseService courseService,
                     GoogleDriveService driveService, CategoryConverter categoryConverter,
@@ -70,7 +82,11 @@ public class AdminController {
                     QuizService quizService, QuestionService questionService, AnswerService answerService,
                     AnswerConverter answerConverter, QuestionConverter questionConverter,
                     QuizConverter quizConverter, CourseConverter courseConverter,
-                    UserService userService, PaymentService paymentService){
+                    UserService userService, PaymentService paymentService,
+                    LessonConverter lessonConverter, EnrolledService enrolledService,
+                    DiscountService discountService, DiscountConverter discountConverter,
+                    RatingCourseService ratingCourseService, ReportService reportService,
+                    QuizRevisionService quizRevisionService){
         this.courseController = courseController;
         this.authController = authController;
         this.accountService = accountService;
@@ -90,6 +106,12 @@ public class AdminController {
         this.courseConverter = courseConverter;
         this.userService = userService;
         this.paymentService = paymentService;
+        this.lessonConverter = lessonConverter;
+        this.enrolledService = enrolledService;
+        this.discountService = discountService;
+        this.ratingCourseService = ratingCourseService;
+        this.reportService = reportService;
+        this.quizRevisionService = quizRevisionService;
     }
 
     @GetMapping("/cancel")
@@ -597,6 +619,62 @@ public class AdminController {
                 }
             }
         }
+    }
+
+    @GetMapping("deleteCourse")
+    public String deleteCourse(@RequestParam("courseID") Integer courseID, Model model, HttpServletRequest request, HttpServletResponse response){
+        courseService.deleteCourseDetails(courseID);
+        CourseDTO course = courseService.getCourseByID(courseID);
+        List<LessonDTO> lessons = lessonService.getAllByCourseID(courseID);
+        for (LessonDTO lesson : lessons){
+            List<LearningMaterial> learningMaterial = learningMaterialService.getLearningMaterialByLessonID(lesson.getLessonID());
+            for(LearningMaterial lm : learningMaterial){
+                learningMaterialService.deleteLearningMaterial(lm.getLearningMaterialID());
+            }
+        }
+        for(LessonDTO lesson : lessons){
+            Lesson temp = lessonConverter.convertDtoToEntity(lesson);
+            lessonService.deteteLesson(temp);
+        }
+
+        List<Enrolled> enrolleds = enrolledService.getAllByCourseID(courseID);
+        for(Enrolled enrolled : enrolleds){
+            enrolledService.deleteEnrolled(enrolled.getEnrolledID());
+        }
+
+        Discount discount = discountService.getDiscountByCourseId(courseID);
+        if(discount != null){
+            discountService.deleteDiscount(discount.getDiscountID());
+        }
+
+        List<RatingCourse> ratingCourse = ratingCourseService.getRatingCourseByCourseID(courseID);
+        for(RatingCourse rating : ratingCourse){
+            ratingCourseService.deleteRatingCourse(rating.getRatingID());
+        }
+
+        List<Quiz> quizzes = quizService.getAllByCourseID(courseID);
+        for(Quiz quiz : quizzes){
+            List<QuestionDTO> questions = questionService.getAllByQuizID(quiz.getQuizID());
+            for(QuestionDTO question : questions){
+                List<AnswerDTO> answers = answerService.getAllByQuestionId(question.getQuestionID());
+                for(AnswerDTO answer : answers){
+                    answerService.deleteAnswer(answerConverter.convertDtoToEntity(answer));
+                }
+                questionService.deleteQuestion(questionConverter.convertDtoToEntity(question));
+            }
+            List<Report> reports = reportService.getAllByQuizID(quiz.getQuizID());
+            for(Report report : reports){
+                List<QuizRevision> quizRevisions = quizRevisionService.getQuizRevisionByReportID(report.getReportID());
+                for(QuizRevision quizRevision : quizRevisions){
+                    quizRevisionService.deleteQuizRevision(quizRevision.getQuizRevisionID());
+                }
+                reportService.deleteReport(report.getReportID());
+            }
+            quizService.deleteQuiz(quiz);
+        }
+
+        courseService.deleteCourse(courseID);
+        return "redirect:/allCourses";
     }
 
     @GetMapping("/allUsers")
