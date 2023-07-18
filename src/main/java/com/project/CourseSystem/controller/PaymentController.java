@@ -220,7 +220,7 @@ public class PaymentController {
         List<Enrolled> enrolledListAccount = enrolledService.findByAccountId(systemAccountDTO.getAccountID());
         session.setAttribute("enrolledList", enrolledListAccount);
 
-        return courseController.getMyCourse(model, request, response);
+        return "redirect:/myCourse";
     }
 
     public void removeFromCart(HttpServletRequest request, HttpServletResponse response, CourseDTO courseDTO1){
