@@ -31,7 +31,7 @@
             justify-content: center;
             align-items: center;
             background-color: black;
-            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+            background: linear-gradient(-145deg, rgb(178, 102, 182) 0%, rgb(213, 154, 125) 100%) !important;
             background-color : black;
             background-repeat: no-repeat;
             background-size: cover;
@@ -41,7 +41,7 @@
         .game-quiz-container{
             width: 80%;
             height: 93vh;
-            background-color: lightgray;
+            background-color: #ffffffe0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -68,7 +68,7 @@
             align-items: center;
             justify-content: center;
             border: 2px solid darkgray;
-            border-radius: 25px;
+            border-radius: 15px;
         }
 
         .game-question-container h1{
@@ -90,12 +90,11 @@
             width: 46%;
             height: 16vh;
             border: 2px solid darkgray;
-            border-radius: 20px;
+            border-radius: 10px;
             overflow: hidden;
         }
         span label{
-            margin-left: 10px;
-            width: 90%;
+            width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
@@ -120,7 +119,7 @@
 
 
         input[type=radio]:checked ~ .option {
-            background: paleturquoise;
+            background: rgba(100, 149, 237, 0.99);
         }
 
         .next-button-container{
@@ -472,7 +471,7 @@
         //checking if checked radio button is same as answer
         options.forEach((option) => {
             if (option.checked === true && option.value === currentQuestionAnswer) {
-                document.getElementById(correctOption).style.backgroundColor = "green"
+                document.getElementById(correctOption).style.backgroundColor = "#4a9f4a"
                 playerScore++
                 indexNumber++
                 //set to delay question number till when next question loads
@@ -484,8 +483,8 @@
 
             else if (option.checked && option.value !== currentQuestionAnswer) {
                 const wrongLabelId = option.labels[0].id
-                document.getElementById(wrongLabelId).style.backgroundColor = "red"
-                document.getElementById(correctOption).style.backgroundColor = "green"
+                document.getElementById(wrongLabelId).style.backgroundColor = "#ea0200"
+                document.getElementById(correctOption).style.backgroundColor = "#4a9f4a"
                 wrongAttempt++
                 indexNumber++
                 //set to delay question number till when next question loads

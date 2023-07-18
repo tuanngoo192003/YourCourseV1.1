@@ -180,6 +180,12 @@ public class AdminController {
         model.addAttribute("courseDTO", courseDTO);
         model.addAttribute("categoryDTO", cDto);
         model.addAttribute("category", categoryService.getAllCategories());
+        DiscountDTO discountDTO = new DiscountDTO();
+        model.addAttribute("discountDTO", discountDTO);
+        if(session.getAttribute("errorDiscount")!=null){
+            model.addAttribute("errorDiscount", session.getAttribute("errorDiscount"));
+            session.removeAttribute("errorDiscount");
+        }
 
         //add discount
         List<Discount> discountList = discountService.getAllDiscounts();
@@ -351,6 +357,9 @@ public class AdminController {
                     CourseDetails courseDetails = (CourseDetails) session.getAttribute("newCourseDetails");
                     courseDetails.setUpdatedDate(new java.sql.Date(new Date().getTime()));
                     courseService.saveCourseDetails(courseDetails);
+
+                    session.removeAttribute("newCourse");
+                    session.removeAttribute("newCourseDetails");
                     return learnController.courseDetailsPage(course.getCourseID() ,model, request, response);
                 }
                 else if (choice.equals("Edit this lesson's quiz")) {
@@ -482,8 +491,11 @@ public class AdminController {
                              @RequestParam("answerDTO-content") String answerContents,
                              @RequestParam("submitChange") String submitChange,
                                  Model model, HttpServletRequest request, HttpServletResponse response){
+
+
         HttpSession session = request.getSession();
         Integer courseID = (Integer) session.getAttribute("courseIDSession");
+
         //Update quiz
         String quizID = request.getParameter("quizID");
         String quizName = request.getParameter("quizName");
@@ -498,11 +510,12 @@ public class AdminController {
         quizService.saveQuiz(quiz);
 
         if(submitChange.equals("Save(unchanged)")){
+            session.removeAttribute("courseIDSession");
+            updateLessonAndCourse(request, quiz, courseID);
             return learnController.courseDetailsPage(courseID, model, request, response);
         }
         else{
             //Update question and answer
-
             //Get list of questionID and answerID
             List<Integer> listOfQuestionID = (List<Integer>) session.getAttribute("listOfQuestionID");
             List<Integer> listOfAnswerID = (List<Integer>) session.getAttribute("listOfAnswerID");
@@ -546,8 +559,41 @@ public class AdminController {
             }
 
             saveNewQuestionAndAnswer(questionContents, answerContents, quiz, request, response);
+            updateLessonAndCourse(request, quiz, courseID);
             return learnController.courseDetailsPage(courseID, model, request, response);
         }
+    }
+
+    public void updateLessonAndCourse(HttpServletRequest request, Quiz quiz, Integer courseID){
+        HttpSession session = request.getSession();
+        //update lesson
+        AddLessonFormDTO addLessonFormDTO = (AddLessonFormDTO) session.getAttribute("addLessonForm");
+        Lesson lesson = new Lesson();
+        lesson.setLessonID(addLessonFormDTO.getLessonID());
+        lesson.setLessonName(addLessonFormDTO.getLessonName());
+        lesson.setLessonDes(addLessonFormDTO.getLessonDes());
+        lesson.setCourseID(courseConverter.convertDtoToEtity(courseService.getCourseByID(courseID)));
+        lesson.setQuizID(quizService.getQuizById(quiz.getQuizID()));
+        lessonService.saveLesson(lesson);
+        List<LearningMaterial> list = learningMaterialService.getLearningMaterialByLessonID(lesson.getLessonID());
+        LearningMaterial learningMaterial = list.get(0);
+        learningMaterial.setLearningMaterialName(addLessonFormDTO.getLearningMaterialName());
+        learningMaterial.setLearningMaterialDes(addLessonFormDTO.getLearningMaterialDes());
+        learningMaterial.setLearningMaterialLink(addLessonFormDTO.getLearningMaterialLink());
+        learningMaterialService.saveLearningMaterial(learningMaterial);
+
+        session.removeAttribute("addLessonForm");
+
+        //update course
+        Course course = (Course) session.getAttribute("newCourse");
+        courseService.updateCourse(course);
+        CourseDetails courseDetails = (CourseDetails) session.getAttribute("newCourseDetails");
+        courseDetails.setUpdatedDate(new java.sql.Date(new Date().getTime()));
+        courseService.saveCourseDetails(courseDetails);
+
+        session.removeAttribute("newCourse");
+        session.removeAttribute("newCourseDetails");
+
     }
 
     public void saveNewQuestionAndAnswer(String questionContents, String answerContents, Quiz quiz,
@@ -884,5 +930,20 @@ public class AdminController {
             }
         }
         return temp;
+    }
+
+    @PostMapping("/addDiscount")
+    public String addDiscount(@ModelAttribute("discountDTO") DiscountDTO discountDTO, Model model,
+                              HttpServletRequest request, HttpServletResponse response){
+        // Check if the course already has a discount
+        Discount discount = discountService.getDiscountByCourseId(discountDTO.getCourseID().getCourseID());
+        if(discount == null){
+            discountService.addDiscount(discountDTO);
+        }
+        else{
+            HttpSession session = request.getSession();
+            session.setAttribute("errorDiscount", "This course already has a discount");
+        }
+        return "redirect:/allCourses";
     }
 }

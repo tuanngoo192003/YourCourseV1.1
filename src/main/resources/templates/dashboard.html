@@ -212,6 +212,7 @@
                             <i class="fa-solid fa-user" style="color: white">
                                 <ul class="sub-menu">
                                     <p th:if="${session.CSys}!=null">
+                                    <li th:if="${session.role==2}"><a th:href="@{/dashboard}">Dashboard</a></li>
                                     <li><a th:href="@{/profile}">My Account</a></li>
                                     <li><a th:href="@{/logout}">Log out</a></li>
                                     </p>
