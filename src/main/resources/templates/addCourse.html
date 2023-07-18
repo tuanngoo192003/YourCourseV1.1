@@ -2,18 +2,56 @@
 <html lang="en"
       xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{assets/css/header.css}">
     <title>Add Course</title>
     <link rel="stylesheet" th:href="@{assets/css/add-course.css}">
+    <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap core CSS-->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Additional Boostrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
     <style>
         html{
             height: 100%;
-            background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Add a Course</h1>
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a th:href="@{/home}" class="logo">
+                        <p style="margin-top: 40px; color: white">YourCourse</p>
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li><a th:href="@{/allCourses}">Cancel</a></li>
+                    </ul>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ***** Header Area End ***** -->
+
+<div class="container add-course-form" style="margin-top: 180px">
+    <h1 style="text-align: center;font-weight: 650;margin-bottom: 40px;">Add a Course</h1>
     <form
             enctype="multipart/form-data"
             role="form"
@@ -38,19 +76,19 @@
         <label for="description">Short Description:</label>
         <textarea id="description" name="description" th:field="*{courseDes}" th:value="*{courseDes}"></textarea>
 
-        <label for="file">Image:</label>
+        <label for="file" style="margin: 20px 0px 10px 0px;">Image:</label>
         <input type="file" name="file" id="file"/>
 
-        <label for="startDate">Start Date:</label>
+        <label for="startDate" style="margin: 20px 0px 10px 0px;">Start Date:</label>
         <input type="date" id="startDate" name="startDate" th:field="*{startDate}" th:value="*{courseDes}">
 
-        <label for="endDate">End Date:</label>
+        <label for="endDate" style="margin: 20px 0px 10px 0px;">End Date:</label>
         <input type="date" id="endDate" name="endDate" th:field="*{endDate}" th:value="*{endDate}">
 
         <label for="price">Price(đ):</label>
         <input type="number" id="price" name="price" th:field="*{price}" th:value="*{price}">
 
-        <h2>Additional information</h2>
+        <h2 style="margin-bottom: 20px;">Additional information</h2>
 
         <label for="courseDetailsContent">More description when accessing course:</label>
         <textarea id="courseDetailsContent" name="courseDetailsContent" th:field="*{courseDescription}" th:value="*{courseDescription}"></textarea>
@@ -64,11 +102,99 @@
         <label for="forWho">For which kind of student:</label>
         <textarea id="forWho" name="forWho" th:field="*{forWho}" th:value="*{forWho}"></textarea>
 
-        <input type="submit" value="Add Lessons">
+        <input type="submit" value="Add Lessons" id="submit-course">
     </form>
 </div>
 
+<script>
+    var submitBtn = document.getElementById("submit-course");
 
+    var courseName = document.getElementById("courseName");
+    var description = document.getElementById("description");
+    var file = document.getElementById("file");
+    var startDate = document.getElementById("startDate");
+    var endDate = document.getElementById("endDate");
+    var price = document.getElementById("price");
+    var courseDetailsContent = document.getElementById("courseDetailsContent");
+    var whatCanBeLearnt = document.getElementById("whatCanBeLearnt");
+    var courseRequirement = document.getElementById("courseRequirement");
+
+    function validateInputs() {
+        var isValid = true;
+
+        // Validate courseName
+        var words = courseName.value.trim().split(/\s+/);
+        if (words.length < 3) {
+            alert("Course name must have at least 3 words");
+            isValid = false;
+            return isValid;
+        }
+
+        // Validate description
+        words = description.value.trim().split(/\s+/);
+        if (words.length < 3) {
+            alert("Description must have at least 3 words");
+            isValid = false;
+            return isValid;
+        }
+
+        // Validate file
+        if (file.value && !/\.(jpg|jpeg|png|gif)$/i.test(file.value)) {
+            alert("File must be an image");
+            isValid = false;
+            return isValid;
+        }
+
+        // Validate startDate
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (startDate.value < today) {
+            alert("Start date cannot be in the past");
+            isValid = false;
+            return isValid;
+        }
+
+        // Validate endDate
+        if (endDate.value <= startDate.value) {
+            alert("End date must be after start date");
+            isValid = false;
+            return isValid;
+        } else {
+            var diffDays = Math.round((new Date(endDate.value) - new Date(startDate.value)) / (1000 * 60 * 60 * 24));
+            if (diffDays < 30) {
+                alert("Course must be at least 30 days long");
+                isValid = false;
+                return isValid;
+            }
+        }
+
+        // Validate courseDetailsContent
+        words = courseDetailsContent.value.trim().split(/\s+/);
+        if (words.length < 3 || !/\/$/.test(courseDetailsContent.value.trim())) {
+            alert("Course details content must have at least 3 words and end with '/'");
+            isValid = false;
+            return isValid;
+        }
+
+        // Validate whatCanBeLearnt
+        words = whatCanBeLearnt.value.trim().split(/\s+/);
+        if (words.length < 3 || !/\/$/.test(whatCanBeLearnt.value.trim())) {
+            alert("What can be learnt must have at least 3 words and end with '/'");
+            isValid = false;
+            return isValid;
+        }
+
+        // Validate courseRequirement
+        words = courseRequirement.value.trim().split(/\s+/);
+        if (words.length < 3 || !/\/$/.test(courseRequirement.value.trim())) {
+            alert("Course requirement must have at least 3 words and end with '/'");
+            isValid = false;
+            return isValid;
+        }
+    }
+
+    submitBtn.onclick = validateInputs
+</script>
 </body>
 
 </html>

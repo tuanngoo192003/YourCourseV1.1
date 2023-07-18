@@ -480,7 +480,8 @@ public class AdminController {
     @PostMapping("/updateQuiz")
     public String updateQuiz(@RequestParam("questionDTO-content")String questionContents,
                              @RequestParam("answerDTO-content") String answerContents,
-                             Model model, HttpServletRequest request, HttpServletResponse response){
+                             @RequestParam("submitChange") String submitChange,
+                                 Model model, HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession();
         Integer courseID = (Integer) session.getAttribute("courseIDSession");
         //Update quiz
@@ -496,56 +497,57 @@ public class AdminController {
         quiz.setCourseID(courseConverter.convertDtoToEtity(courseService.getCourseByID(courseID)));
         quizService.saveQuiz(quiz);
 
-        //Update question and answer
+        if(submitChange.equals("Save(unchanged)")){
+            return learnController.courseDetailsPage(courseID, model, request, response);
+        }
+        else{
+            //Update question and answer
 
-        //Get list of questionID and answerID
-        List<Integer> listOfQuestionID = (List<Integer>) session.getAttribute("listOfQuestionID");
-        List<Integer> listOfAnswerID = (List<Integer>) session.getAttribute("listOfAnswerID");
+            //Get list of questionID and answerID
+            List<Integer> listOfQuestionID = (List<Integer>) session.getAttribute("listOfQuestionID");
+            List<Integer> listOfAnswerID = (List<Integer>) session.getAttribute("listOfAnswerID");
 
-        for(int i = 0; i < listOfQuestionID.size(); i++){
-            Question question = new Question();
-            Integer questionID = listOfQuestionID.get(i);
-            String questionContent = request.getParameter("questionDTO-content" + listOfQuestionID.get(i));
-            question.setQuestionID(questionID);
-            question.setContent(questionContent);
-            question.setQuizID(quiz);
-            questionService.saveQuestion(question);
-            List<AnswerDTO> answerDTOList = answerService.getAllByQuestionId(questionID);
-            for (int j = 0; j < answerDTOList.size(); j++) {
-                Integer answerID = answerDTOList.get(j).getAnswerID();
-                Answer answer = answerService.getById(answerID);;
-                String answerContent = request.getParameter("answerDTO-content" + answerDTOList.get(j).getAnswerID());
-                String isCorrect = request.getParameter("isCorrect"+questionID);
-                if(isCorrect.equals(answer.getAnswerOrdinal())){
-                    answer.setIsCorrect("right");
-                } else{
-                    answer.setIsCorrect("wrong");
+            for(int i = 0; i < listOfQuestionID.size(); i++){
+                Question question = new Question();
+                Integer questionID = listOfQuestionID.get(i);
+                String questionContent = request.getParameter("questionDTO-content" + listOfQuestionID.get(i));
+                question.setQuestionID(questionID);
+                question.setContent(questionContent);
+                question.setQuizID(quiz);
+                questionService.saveQuestion(question);
+                List<AnswerDTO> answerDTOList = answerService.getAllByQuestionId(questionID);
+                for (int j = 0; j < answerDTOList.size(); j++) {
+                    Integer answerID = answerDTOList.get(j).getAnswerID();
+                    Answer answer = answerService.getById(answerID);;
+                    String answerContent = request.getParameter("answerDTO-content" + answerDTOList.get(j).getAnswerID());
+                    String isCorrect = request.getParameter("isCorrect"+questionID);
+                    if(isCorrect.equals(answer.getAnswerOrdinal())){
+                        answer.setIsCorrect("right");
+                    } else{
+                        answer.setIsCorrect("wrong");
+                    }
+                    answer.setContent(answerContent);
+
+                    answerService.updateAnswer(answer);
                 }
-                answer.setContent(answerContent);
-
-                answerService.updateAnswer(answer);
             }
-        }
 
-        //Get new question and answer
-        int index = questionContents.indexOf(",");
-        if (index != -1) { // checks if a comma exists in the string
-            questionContents = questionContents.substring(index + 1); // removes the first substring before the first comma
-        }
-        index = -1;
-        for (int i = 0; i < 4; i++) { // iterates four times to skip the first four substrings
-            index = answerContents.indexOf(",");
-            if (index != -1) {
-                answerContents = answerContents.substring(index + 1);
+            //Get new question and answer
+            int index = questionContents.indexOf(",");
+            if (index != -1) { // checks if a comma exists in the string
+                questionContents = questionContents.substring(index + 1); // removes the first substring before the first comma
             }
+            index = -1;
+            for (int i = 0; i < 4; i++) { // iterates four times to skip the first four substrings
+                index = answerContents.indexOf(",");
+                if (index != -1) {
+                    answerContents = answerContents.substring(index + 1);
+                }
+            }
+
+            saveNewQuestionAndAnswer(questionContents, answerContents, quiz, request, response);
+            return learnController.courseDetailsPage(courseID, model, request, response);
         }
-        System.err.println(questionContents);
-        System.err.println(answerContents);
-
-        saveNewQuestionAndAnswer(questionContents, answerContents, quiz, request, response);
-
-
-        return learnController.courseDetailsPage(courseID, model, request, response);
     }
 
     public void saveNewQuestionAndAnswer(String questionContents, String answerContents, Quiz quiz,
@@ -581,7 +583,7 @@ public class AdminController {
                     String isCorrect = request.getParameter(name);
                     System.out.println(name);
                     System.out.println(isCorrect);
-                    System.out.println("iscorrect test---------------");
+
                     if(answerOrdinal.equals(isCorrect)){
                         answerDTO.setIsCorrect("right");
                     }
@@ -744,7 +746,6 @@ public class AdminController {
         List<String> roleList = new ArrayList<>();
         roleList.add("STUDENT");
         roleList.add("ADMIN");
-        roleList.add("SUPPORTER");
         model.addAttribute("roleList", roleList);
 
         int pageSize = 10;
@@ -781,7 +782,6 @@ public class AdminController {
         List<String> roleList = new ArrayList<>();
         roleList.add("STUDENT");
         roleList.add("ADMIN");
-        roleList.add("SUPPORTER");
         model.addAttribute("roleList", roleList);
 
         int pageSize = 10;
