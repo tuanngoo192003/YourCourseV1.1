@@ -215,10 +215,10 @@ public class HomeController {
                 int role = system_accountDTO1.getRoleID().getRoleID();
                 session.setAttribute("role", role);
                 if(role==2){
-                    return dashboardController.getDashboard(model, request, response);
+                    return "redirect:/dashboard";
                 }
                 else{
-                    return homePage(model, request, response);
+                    return "redirect:/home";
                 }
             }
             else{
