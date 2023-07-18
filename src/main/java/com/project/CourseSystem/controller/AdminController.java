@@ -135,10 +135,58 @@ public class AdminController {
                 return authController.loginPage(model, request, response);
             }
             else{
-                return courseController.getCourse(model, request, response);
+                return getPaginated(1, "courseID", "asc", model, request, response);
             }
         }
     }
+
+    @GetMapping("/allCourses/page/{pageNo}")
+    public String getPaginated(@PathVariable (value = "pageNo") int pageNo,
+                               @RequestParam("sortField") String sortField,
+                               @RequestParam("sortDir") String sortDir,
+                               Model model, HttpServletRequest request, HttpServletResponse response){
+        int pageSize = 18;
+        //pagination attribute
+        Page<Course> page = courseService.findPaginated(pageNo, pageSize, sortField, sortDir);
+        List<Course> courseList = page.getContent();
+        List<Course> courseListTemp = new ArrayList<>();
+        HttpSession session = request.getSession();
+
+            courseListTemp.addAll(courseList);
+
+
+
+        model.addAttribute("currentPage", pageNo);
+        int totalPages = page.getTotalPages();
+        int temp = pageSize;
+        for(int i = 0; i < courseListTemp.size(); i++){
+            if(i>temp){
+                totalPages++;
+                temp+=pageSize;
+            }
+        }
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalItems", courseListTemp.size());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc")?"desc":"asc");
+
+        model.addAttribute("courseList", courseListTemp);
+
+        //nav bar attribute
+        CategoryDTO cDto = new CategoryDTO();
+        CourseDTO courseDTO = new CourseDTO();
+        model.addAttribute("courseDTO", courseDTO);
+        model.addAttribute("categoryDTO", cDto);
+        model.addAttribute("category", categoryService.getAllCategories());
+
+        //add discount
+        List<Discount> discountList = discountService.getAllDiscounts();
+        if(!discountList.isEmpty()) model.addAttribute("listOfDiscount", discountList);
+        return "listAll";
+    }
+
 
     @GetMapping("/updateCourse")
     public String updateCourse(@RequestParam("courseID") Integer courseID,Model model, HttpServletRequest request, HttpServletResponse response){
