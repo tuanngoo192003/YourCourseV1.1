@@ -3,25 +3,26 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{assets/css/header.css}">
     <title>AddQuiz</title>
     <link rel="stylesheet" th:href="@{assets/css/add-quiz.css}">
-    <style>
-        .container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f7f7f7;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+    <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap core CSS-->
+    <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
+    <!-- Additional Boostrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!-- Additional CSS Files -->
+    <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
+    <style>
         body{
             padding-bottom: 30px;
-        }
-
-        html{
-            height: 100%;
-            background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
         }
 
         .answer-input{
@@ -29,23 +30,127 @@
         }
 
         .answer-input input[type="text"]{
-            margin-right: 10px;
-            display: inline-block;
             width: 100%;
+            height: 40px;
+            border-radius: 5px;
+            background-color: #f4f7fb;
+            outline: none;
+            border: none;
+            box-shadow: none;
+            font-size: 13px;
+            font-weight: 500;
+            color: #7a7a7a;
+            padding: 0px 15px;
+            margin-bottom: 10px;
         }
 
         .answer-input label{
-            font-weight: normal;
+            margin-bottom: 5px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .answer-group{
+            margin-right: 10px;
         }
 
         #add-quiz-form{
-            width: 80%;
+            width: 100%;
         }
+
+        #create-quiz{
+            border: none;
+            background: #74ce74;
+            color: #fff;
+            font-size: 13px;
+            padding: 12px 30px;
+            display: inline-block;
+            border-radius: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: all .3s;
+            margin-top: 15px;
+        }
+
+        #create-quiz:hover{
+            background: #4d9f4d;
+        }
+
+        #next-btn{
+            margin-right: 20px;
+            float: right;
+            border: none;
+            font-size: 13px;
+            background-color: #dc8cdb;
+            color: #fff;
+            padding: 12px 30px;
+            display: inline-block;
+            border-radius: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: all .3s;
+            max-width: 45%;
+        }
+
+        #next-btn:hover{
+            background: #fff;
+            color: #dc8cdb;
+        }
+
+        #submit-btn{
+            border: none;
+            font-size: 13px;
+            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+            color: #fff;
+            padding: 12px 30px;
+            display: inline-block;
+            border-radius: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: all .3s;
+            margin-top: 10px;
+            max-width: 45%;
+        }
+
+        #submit-btn:hover{
+            background: linear-gradient(-145deg, rgb(178, 102, 182) 0%, rgb(213, 154, 125) 100%) !important;
+        }
+
+        .quiz-group{
+            margin-bottom: 20px;
+            background: #dc8cdb69;
+            padding: 10px;
+            border-radius: 7px;
+        }
+
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>Add Quiz</h1>
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a th:href="@{/home}" class="logo">
+                        <p style="margin-top: 40px; color: white">YourCourse</p>
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li><a th:href="@{/allCourses}">Cancel</a></li>
+                    </ul>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- ***** Header Area End ***** -->
+
+<div class="container add-quiz-container" style="max-width: 70%; margin-top: 180px">
+    <h1 style="text-align: center;font-weight: 650;margin-bottom: 40px;">Add Quiz</h1>
 
     <form
             role="form"
@@ -62,26 +167,41 @@
 
         </div>
         <div id="add-quiz-form">
-            <div>
+            <div class="quiz-group">
                 <label for="question">Question 1:</label>
                 <input type="text" id="question" name="questionDTO-content" placeholder="Question: " required><br>
                 <div class="answer-input">
-                    <input type="text" id="optionA" name="answerDTO-content" placeholder="OptionA: " required>
-                    Is correct:<input type="radio" id="isCorrectA" value="optionA" name="isCorrect"><br>
-
-                    <input type="text" id="optionB" name="answerDTO-content" placeholder="OptionB: " required>
-                    Is correct:<input type="radio" id="isCorrectB" value="optionB" name="isCorrect"><br>
+                    <div class="answer-group">
+                        <label for="optionA">Option A</label>
+                        <input type="text" id="optionA" name="answerDTO-content" placeholder="OptionA: " required>
+                        <label for="isCorrectA">Is Correct</label>
+                        <input type="radio" id="isCorrectA" value="optionA" name="isCorrect"><br>
+                    </div>
+                    <div class="answer-group">
+                        <label for="optionB">Option B</label>
+                        <input type="text" id="optionB" name="answerDTO-content" placeholder="OptionB: " required>
+                        <label for="isCorrectB">Is Correct</label>
+                        <input type="radio" id="isCorrectB" value="optionB" name="isCorrect"><br>
+                    </div>
                 </div>
                 <div class="answer-input">
-                    <input type="text" id="optionC" name="answerDTO-content" placeholder="OptionC: " required>
-                    Is correct:<input type="radio" id="isCorrectC" value="optionC" name="isCorrect"><br>
+                    <div class="answer-group">
+                        <label for="optionC">Option C</label>
+                        <input type="text" id="optionC" name="answerDTO-content" placeholder="OptionC: " required>
+                        <label for="isCorrectC">Is Correct</label>
+                        <input type="radio" id="isCorrectC" value="optionC" name="isCorrect"><br>
+                    </div>
 
-                    <input type="text" id="optionD" name="answerDTO-content" placeholder="OptionD: " required>
-                    Is correct:<input type="radio" id="isCorrectD" value="optionD" name="isCorrect"><br>
+                    <div class="answer-group">
+                        <label for="optionD">Option D</label>
+                        <input type="text" id="optionD" name="answerDTO-content" placeholder="OptionD: " required>
+                        <label for="isCorrectD">Is Correct</label>
+                        <input type="radio" id="isCorrectD" value="optionD" name="isCorrect"><br>
+                    </div>
                 </div>
             </div>
         </div>
-        <button type="button" id="create-quiz" style="margin-bottom: 15px">Create quiz</button><br>
+        <button type="button" id="create-quiz" style="margin-bottom: 15px">Create quiz form</button><br>
         <button type="submit" id="next-btn" value="Add new lesson" name="submit">Add new lesson</button>
         <button type="submit" id="submit-btn" value="Create course" name="submit">Create course</button>
     </form>
@@ -102,12 +222,16 @@
             // Get the parent element for the new form
             const formContainer = document.getElementById("add-quiz-form");
 
+            const quizGroup = document.createElement("div");
+            quizGroup.classList.add("quiz-group");
+            formContainer.appendChild(quizGroup);
+
             // Create a label for the question input
             const questionLabel = document.createElement("label");
             questionLabel.setAttribute("for", "question");
             var count = questionCount+1;
             questionLabel.textContent = "Question:"+count;
-            formContainer.appendChild(questionLabel);
+            quizGroup.appendChild(questionLabel);
 
             // Create the question input
             const questionInput = document.createElement("input");
@@ -115,7 +239,7 @@
             questionInput.setAttribute("id", "question");
             questionInput.setAttribute("name", "questionDTO-content");
             questionInput.setAttribute("required", "");
-            formContainer.appendChild(questionInput);
+            quizGroup.appendChild(questionInput);
 
             // Create a new question group
             const answerInput1 = document.createElement("div");
@@ -141,8 +265,8 @@
             answerInput2.appendChild(answerGroupD);
 
             // Add the new form group to the parent element
-            formContainer.appendChild(answerInput1);
-            formContainer.appendChild(answerInput2);
+            quizGroup.appendChild(answerInput1);
+            quizGroup.appendChild(answerInput2);
         }
 
         function createAnswerInputGroup(answerId, answerLabel, index) {

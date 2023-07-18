@@ -30,4 +30,14 @@ public class ReportServiceImpl implements ReportService {
     public List<Report> getAllReportByUserID(Integer userID) {
         return reportRepository.findAllByUserID(userID);
     }
+
+    @Override
+    public List<Report> getAllByQuizID(Integer quizID) {
+        return reportRepository.findAllByQuizID(quizID);
+    }
+
+    @Override
+    public void deleteReport(Integer reportID) {
+        reportRepository.deleteById(reportID);
+    }
 }

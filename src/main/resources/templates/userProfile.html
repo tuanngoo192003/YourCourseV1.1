@@ -5,7 +5,12 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{assets/css/cart.css}">
+    <link rel="stylesheet" th:href="@{assets/css/header.css}">
+    <link rel="stylesheet" th:href="@{assets/css/footer.css}">
     <link rel="stylesheet" th:href="@{assets/css/profileStyle.css}">
+    <title>User profile</title>
     <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -16,15 +21,32 @@
     <!-- Additional CSS Files -->
     <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
     <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
-    <title>User profile</title>
+
     <style>
-        .header-area {
-            background: rgb(219, 138, 222) !important;
-            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+        .cart-container {
+            position: relative;
+            display: inline-block;
         }
 
-        .py-5{
-            padding-top: 5rem !important;
+        .fa-rectangle {
+            position: absolute;
+            top: -0.9em;
+            right: -1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2em;
+            height: 1.5em;
+            background-color: #ffb963;
+            border-radius: 50%;
+            color: #ffb963;
+            font-size: 0.8em;
+            line-height: 1.5em;
+        }
+
+        .rectangle-number {
+            display: inline-block;
+            color: white;
         }
 
         .displayContent{
@@ -52,99 +74,36 @@
 
         .display {
             display: flex;
-            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
             transition: 0.3s;
             border-radius: 10px;
-            border: 2px solid black;
             margin-bottom: 30px;
+            padding: 20px 0px 30px 5px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.05);
         }
 
-        .buy-now-cart{;
-            padding: 20px 30px;
-            background: whitesmoke;
-            border: none;
-            color: rgb(58, 58, 58);
-            transition: 2s;
-            border-radius: 10px;
-        }
-
-        .buy-now-cart:hover{
-            background: gray;
-            border: none;
-            color: rgb(58, 58, 58);
+        .display:hover {
+            box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
         }
 
         .buy-now{
             margin-right: 20px;
             float: right;
-            background: whitesmoke;
             border: none;
-            color: rgba(0, 0, 0, 0.98);
-            transition: 2s;
-            border-radius: 10px;
+            font-size: 13px;
+            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+            color: #fff;
+            padding: 12px 30px;
+            display: inline-block;
+            border-radius: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: all .3s;
         }
 
         .buy-now:hover{
-            background: gray;
-            border: rgba(0, 0, 0, 0.98) solid 1px;
-            color: #ffb963;
+            background: linear-gradient(-145deg, rgb(178, 102, 182) 0%, rgb(213, 154, 125) 100%) !important;
+            border: none;
         }
-
-        .listTitle h1{
-            margin-top: 20px;
-            padding-bottom: 25px;
-            font-weight: 700;
-        }
-
-        .listTitle h2{
-            margin-top: 20px;
-
-            font-weight: 600;
-        }
-
-        .offcanvas-title{
-            font-weight: bold;
-            color: black;
-            margin-top: 15px;
-            border-bottom: rgba(173, 173, 173, 0.99) 2px solid;
-            margin-bottom: 10px;
-        }
-        .cartContent{
-            width: 100%;
-            height: 100%;
-            margin-bottom: 10px;
-            border-bottom: rgba(173, 173, 173, 0.99) 1px solid;
-        }
-
-        .cartContent h4{
-            font-size: 15px;
-            text-align: center;
-            font-weight: normal;
-            color: black;
-        }
-
-        .displayContent p{
-            color: dimgray;
-        }
-
-        .sticky-top{
-            top:25vh;
-            z-index: 990;
-        }
-        .dashboard{
-            margin-top: 110px;
-            margin-right: 20px;
-            float: right;
-            background-color: white;
-            top: 0px;
-            padding: 10px;
-            box-shadow: 0px 0px 5px 0px #ccc;
-            width: 10%;
-            height: 100px;
-            border-radius: 7px;
-            border: #041418 solid 2px;
-        }
-
     </style>
 </head>
 <body>
@@ -171,25 +130,24 @@
                             <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
                             <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
                             <div>
-                                <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
+                                <img th:src="'https://drive.google.com/uc?id='+${cart.courseImage}" style="width: 70px; height: 70px;">
                             </div>
                             <h4 th:text="${cart.courseName}"></h4>
-                            <p th:text="'Price: '+${cart.price}+'đ'" style="float: left; margin-left: 15px;"></p>
+                            <p th:text="'Price: '+${cart.price}+'đ'" style="float: left; margin-left: 15px; padding-top: 10px; font-weight: 500"></p>
                         </div>
-                        <div style="display:inline-flex;">
+                        <div style="display:inline-flex; margin-top: 10px">
                             <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
                             <input type="submit" value="Remove from cart" class="buy-now-cart" name="paymentButton">
                         </div>
                     </div>
-
                 </form>
             </th:block>
-            <button><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
-            <button><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
+            <button id="check-out"><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
+            <button id="remove-all"><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
         </div>
         <div th:if="${session.cart==null}">
             <div class="cartContent" style="display: inline-flex">
-                <h4>Cart is empty</h4>
+                <h4 style="margin-bottom: 10px;">Cart is empty</h4>
             </div>
         </div>
     </div>
@@ -197,7 +155,7 @@
 <!-- ***** OffCanvas End ***** -->
 
 <!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky" style="z-index: 999;">
+<header class="header-area header-sticky" style="z-index: 1030">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -205,7 +163,6 @@
                     <!-- ***** Logo Start ***** -->
                     <a th:href="@{/home}" class="logo">
                         <p style="margin-top: 40px; color: white">YourCourse</p>
-                        <!--<img src="assets/images/templatemo-eduwell.png" alt="EduWell Template">-->
                     </a>
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Menu Start ***** -->
@@ -232,13 +189,21 @@
                         <li><a th:href="@{/course}">Courses</a></li>
                         <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
                             style="color: white; background: none; border: none">
-                            <i class="fa-solid fa-shopping-cart"></i>
+                            <div class="cart-container">
+                                <i class="fa-solid fa-shopping-cart"></i>
+                                <th:block th:if="${session.cart!=null}">
+                                    <i class="fa-solid fa-rectangle"><span class="rectangle-number">[[${session.cartSize}]]</span></i>
+                                </th:block>
+                            </div>
                         </li>
-                        <li class="scroll-to-section"><a href="#contact-section">Contact Us</a></li>
+                        <p th:if="${session.CSys}!=null">
+                        <li><a th:href="@{/myCourse}">My Course</a></li>
+                        </p>
                         <li class="has-sub">
                             <i class="fa-solid fa-user" style="color: white">
                                 <ul class="sub-menu">
                                     <p th:if="${session.CSys}!=null">
+                                    <li th:if="${session.role==2}"><a th:href="@{/dashboard}">Dashboard</a></li>
                                     <li><a th:href="@{/profile}">My Account</a></li>
                                     <li><a th:href="@{/logout}">Log out</a></li>
                                     </p>
@@ -249,6 +214,9 @@
                             </i>
                         </li>
                     </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
                     <!-- ***** Menu End ***** -->
                 </nav>
             </div>
@@ -256,13 +224,6 @@
     </div>
 </header>
 <!-- ***** Header Area End ***** -->
-
-<!-- if user is admin this session appear -->
-<div th:if="${system_account.roleID.roleID==2}" class="dashboard sticky-top">
-    <div>
-        <button><a th:href="@{/dashboard}">Dashboard</a></button>
-    </div>
-</div>
 
 <!-- ***** Error Session *****-->
 <div class="container" style="align-content: center">
@@ -318,6 +279,7 @@
                     <h3 class="mb-4">Account Settings</h3>
                     <form class="row"
                           method="post"
+                          id="form1"
                           th:action="@{saveUser}"
                           th:object="${userInfo}"
                     >
@@ -377,7 +339,7 @@
                             </div>
                         </div>
                         <input type="text" hidden th:field="*{accountID}" th:value="${id}">
-                        <input type="submit" value="update">
+                        <input type="submit" value="update" id="submit-account" class="update">
                     </form>
                 </div>
                 <div class="tab-pane fade" id="gmail" role="tabpanel" aria-labelledby="gmail-tab">
@@ -390,14 +352,14 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="text" class="form-control" th:value="${currentGmail}"
+                                <input type="email" class="form-control" th:value="${currentGmail}"
                                        th:field="*{gmail}"
                                        name="gmailChange"
                                        id="gmailChange"
                                 >
                             </div>
                         </div>
-                        <input type="submit" value="update">
+                        <input type="submit" value="update" class="update">
                     </form>
                 </div>
                 <div class="tab-pane fade" id="password" role="tabpanel" aria-labelledby="password-tab">
@@ -441,7 +403,7 @@
 
                             </div>
                         </div>
-                        <input type="submit" value="Change">
+                        <input type="submit" value="Change" class="update">
                     </form>
                 </div>
                 <div class="tab-pane fade" id="notification" role="tabpanel" aria-labelledby="notification-tab">
@@ -455,18 +417,24 @@
                                       th:action="@{/payment}"
                                       th:object="${courseDTO}"
                                 >
-                                    <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
+                                    <a th:href="@{/courseDetails/learn(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
                                     <div class="displayContent">
                                         <input type="text" name="fromPage" value="list" style="display: none">
                                         <input type="number" th:value="${courseListEntity.courseID}" th:name="courseID" style="display: none">
-                                        <a th:href="@{/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
+                                        <a th:href="@{/courseDetails/learn(courseID=${courseListEntity.courseID})}"><h4 th:text="${courseListEntity.courseName}"></h4></a>
                                         <p th:text="${courseListEntity.courseDes}"></p>
-                                        <input type="submit" value="You've bought this course" class="buy-now" name="paymentButton" disabled>
+                                        <button class="buy-now" name="paymentButton">
+                                            <a th:href="@{/courseDetails/learn(courseID=${courseListEntity.courseID})}" style="color: #fff">You've bought this course</a>
+                                        </button>
                                     </div>
                                 </form>
                             </th:block>
                             <div>
-                                <button><a th:href="@{'/myCourse'+'/page/' + 1 + '?sortField=courseID' + '&sortDir=desc'}">See full purchased course</a></button>
+                                <button
+                                        id="myCourseButton"
+                                ><a th:href="@{/myCourse}"
+                                    style="color: #fff"
+                                >See full purchased course</a></button>
                             </div>
                         </div>
                     </div>
@@ -477,58 +445,145 @@
 </section>
 
 <!-- ***** Footer *****-->
-<footer>
-    <div class="container-fluid footer-st" style="background: #d69fd5;">
+<footer style="margin-top: 30px">
+    <div class="container-fluid footer-st" style="padding: 10px 0px 20px 0px;">
         <div class="row">
-            <div class="col-lg-6">
-                <div style="margin-left: 50px">
-                    <p>About us</p>
-                    <div style="margin-top: 30px">
-                        <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
-                        <a style="color: #fff">Our team: FPT University-SWP391-Group 5</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <p>Further information</p>
-                <div style="margin-top: 30px">
-                    <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
-                    <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <p>Follow us</p>
-                <ul class="social-icons">
+            <div class="col-lg-4">
+                <p style="text-align: center; margin-bottom: 12px; color: #fff; font-weight: bold">Follow us</p>
+                <ul class="social-icons" style="margin-top: 10px;">
                     <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                     <li><a href="#"><i class="fa fa-twitter"></i></a></li>
                 </ul>
             </div>
-            <div class="col-lg-12" style="margin-top: 30px">
-                <p class="copyright"> © 2023 YourCourse Web Application
+            <div class="col-lg-4">
+                <p style="text-align: center; margin-bottom: 12px; color: #fff; font-weight: bold">About us</p>
+                <div style="margin-top: 10px; text-align: center" >
+                    <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
+                    <a style="color: #fff">Our team: FPT University-SWP391-Group 6</a>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <p style="text-align: center; margin-bottom: 12px; color: #fff; font-weight: bold">Further information</p>
+                <div style="margin-top: 10px; text-align: center">
+                    <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
+                    <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
+                </div>
+            </div>
+            <div class="col-lg-6" style="height: 50px">
+                <a th:href="@{/home}" class="logo">
+                    <p style="
+                  text-align: center;
+                  margin-top: 40px;
+                  color: #fff;
+                  font-size: 14px;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 2px;"
+                    >
+                        YourCourse
+                    </p>
+                </a>
+            </div>
+            <div class="col-lg-6" style="height: 50px">
+                <p class="copyright" style="margin-bottom: 0px"> © 2023 YourCourse Web Application</p>
             </div>
         </div>
     </div>
 </footer>
 <!-- ***** End Footer *****-->
 
+<!-- Scripts -->
+<!-- Bootstrap core JavaScript -->
+<script src="assets/js/isotope.min.js"></script>
+<script src="assets/js/owl-carousel.js"></script>
+<script src="assets/js/lightbox.js"></script>
+<script src="assets/js/tabs.js"></script>
+<script src="assets/js/slick-slider.js"></script>
+<script src="assets/js/custom.js"></script>
+<script th:inline="javascript">
 
-<script>
-    var password = document.getElementById("newPassword")
-        , confirm_password = document.getElementById("confirm");
+    const error = [[${error}]] ;
+    if (error!=null) {
+        alert(error);
+    }
+
+    const success = [[${success}]];
+    if (success!=null) {
+        alert(success);
+    }
+
+    var oldPassword = document.getElementById("oldPassword"),
+        password = document.getElementById("newPassword"),
+        confirm_password = document.getElementById("confirm");
 
     function validatePassword(){
+        var passwordRegex = /^(?=.*\d)(?=.*[!@#$%^_&*])(?=.*[a-zA-Z]).{6,}$/;
+        var isValidPassword = passwordRegex.test(password.value);
+        if(oldPassword.value == null) {
+            oldPassword.setCustomValidity("This field should not be empty");
+        }
         if(password.value == null) {
             password.setCustomValidity("This field should not be empty");
         }
-        if(password.value != confirm_password.value ){
-            confirm_password.setCustomValidity("Passwords Don't Match");
+        if(confirm_password.value == null) {
+            confirm_password.setCustomValidity("This field should not be empty");
+        }
+        if(!isValidPassword){
+            password.setCustomValidity("Password must contain at least 6 characters, including UPPER/lowercase and numbers");
         }
         else {
+            password.setCustomValidity('');
+        }
+        if(password.value != confirm_password.value){
+            confirm_password.setCustomValidity("Passwords Don't Match");
+        }
+        if(password.value == confirm_password.value && isValidPassword){
             confirm_password.setCustomValidity('');
         }
     }
     password.onchange = validatePassword;
     confirm_password.onkeyup = validatePassword;
+
+
+    var submitAccount = document.getElementById("submit-account");
+
+
+    // Get the input fields for this form
+    var userName = document.getElementById('userName')
+    var phoneNums = document.getElementById('phoneNums')
+    var dob = document.getElementById('dob')
+
+    function validateAccount(){
+        // Validate the userName field
+        if (userName.value.length < 2) {
+            // Set a custom error message for the input field
+            userName.setCustomValidity('Full name must be at least 2 characters long.');
+        } else {
+            // Clear any previous error message for the input field
+            userName.setCustomValidity('');
+        }
+
+        // Validate the phoneNums field
+        if (!/^\d{7,11}$/.test(phoneNums.value)) {
+            // Set a custom error message for the input field
+            phoneNums.setCustomValidity('Phone number must be between 7 and 11 digits long and contain only numbers.');
+        } else {
+            // Clear any previous error message for the input field
+            phoneNums.setCustomValidity('');
+        }
+
+        // Validate the dob field
+        const dobRegex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!dobRegex.test(dob.value)) {
+            // Set a custom error message for the input field
+            dob.setCustomValidity('Date of birth must be in the format yyyy-mm-dd.');
+        } else {
+            // Clear any previous error message for the input field
+            dob.setCustomValidity('');
+        }
+    }
+
+    submitAccount.onclick = validateAccount;
 </script>
 </body>
 </html>

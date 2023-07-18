@@ -8,6 +8,8 @@ import com.project.CourseSystem.repository.QuizRepository;
 import com.project.CourseSystem.service.QuizService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class QuizServiceImpl implements QuizService {
 
@@ -50,5 +52,10 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public void deleteQuiz(Quiz quiz) {
         quizRepository.delete(quiz);
+    }
+
+    @Override
+    public List<Quiz> getAllByCourseID(Integer courseID) {
+        return quizRepository.findAllByCourseID(courseID);
     }
 }

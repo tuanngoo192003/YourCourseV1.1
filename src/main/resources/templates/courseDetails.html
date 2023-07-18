@@ -1,20 +1,18 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{assets/css/loginStyle.css}">
     <link rel="stylesheet" th:href="@{assets/css/cart.css}">
     <link rel="stylesheet" th:href="@{assets/css/header.css}">
     <link rel="stylesheet" th:href="@{assets/css/footer.css}">
-
-    <title>Registration</title>
+    <link rel="stylesheet" th:href="@{assets/css/courseDetails.css}">
+    <title>Course Details</title>
     <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
-    <!-- Bootstrap core CSS -->
+    <!-- Bootstrap core CSS-->
     <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
     <!-- Additional Boostrap -->
@@ -22,9 +20,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" th:href="@{assets/css/fontawesome.css}">
-    <link rel="stylesheet" th:href="@{assets/css/your-course.css}">
-
+    <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
     <style>
         .cart-container {
             position: relative;
@@ -52,9 +49,17 @@
             color: white;
         }
 
+        .learn{
+            margin-top: 100px;
+            height: 100%;
+        }
+
+        .sticky-top{
+            top:25vh;
+            z-index: 990;
+        }
 
     </style>
-
 </head>
 <body>
 <!-- ***** OffCanvas Start *****-->
@@ -151,6 +156,7 @@
                             <i class="fa-solid fa-user" style="color: white">
                                 <ul class="sub-menu">
                                     <p th:if="${session.CSys}!=null">
+                                    <li th:if="${session.role==2}"><a th:href="@{/dashboard}">Dashboard</a></li>
                                     <li><a th:href="@{/profile}">My Account</a></li>
                                     <li><a th:href="@{/logout}">Log out</a></li>
                                     </p>
@@ -172,117 +178,183 @@
 </header>
 <!-- ***** Header Area End ***** -->
 
-<div class="center" style=" z-index: 4; overflow-y:scroll;">
-    <h1>Registration</h1>
-    <div th:if="${param.success}">
-        <p style="margin-left:40px; color: green">You have been registered successfully.</p>
-    </div>
-    <div th:if="${param.errorGmail}">
-        <p style="margin-left: 40px; color:red;">
-            Gmail has been used by another account.
-        </p>
-    </div>
-    <div th:if="${param.errorUsername}">
-        <p style="margin-left: 40px; color:red;">
-            Username has been used by another account.
-        </p>
-    </div>
-    <div th:if="${param.dontExistGmail}">
-        <p style="margin-left: 40px; color:red;">
-            Gmail does not exist.
-        </p>
-    </div>
-    <br>
-
-    <form method="post"
-          role="form"
-          th:action="@{/regisGmailConfirmation}"
-          th:object="${system_account}"
-          onsubmit="return validatePolicy()"
-    >
-    <div class="txt_field">
-        <input
-                type="text"
-                id="username"
-                name="username"
-                th:field="*{accountName}"
-                required
-        />
-        <span></span>
-        <label>Enter username<label style="color: red; position: relative; top: 10px;">*</label></label>
-    </div>
-    <div class="txt_field">
-        <input
-                type="email"
-                id="email"
-                name="email"
-                th:field="*{gmail}"
-                required
-        />
-        <span></span>
-        <label>Enter email address<label style="color: red; position: relative; top: 10px;">*</label></label>
-    </div>
-    <div class="txt_field">
-        <input
-                type="password"
-                id="password"
-                name="password"
-                th:field="*{accountPassword}"
-                required
-
-        />
-        <span></span>
-        <label>Enter password<label style="color: red; position: relative; top: 10px;">*</label></label>
-    </div>
-    <div class="txt_field">
-        <input
-                type="password"
-                id="confirm"
-                name="confirm"
-                required
-        />
-        <span></span>
-        <label>Confirm password<label style="color: red; position: relative; top: 10px;">*</label></label>
-    </div>
-    <div style="display: none">
-        <label>Assign as: </label>
-        <select
-                id="role"
-                name="role"
-                th:field="*{roleID}"
-                style="margin-bottom: 20px"
+<!-- if user didn't purchase the course, this session appear -->
+<div class="purchase-session sticky-top">
+    <!-- if the course has discount -->
+    <div th:if="${discountPrice!=null}">
+        <h2>
+            <span>Price: </span>
+            <span th:text="${course.price}+'₫'" style="text-decoration: line-through;"></span>
+            <span th:text="${discountPrice}+'₫'" style="color: red;"></span>
+        </h2>
+        <h4 th:text="'Start from: '+${discountDTO.discountStart}"></h4>
+        <h4 th:text="'End at: '+${discountDTO.discountEnd}"></h4>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
         >
-            <option value=1>STUDENT</option>
-        </select></br>
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="${discountPrice}" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
+        </form>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="${discountPrice}" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
+        </form>
     </div>
-        <!-- Full name -->
-        <div class="txt_field">
-            <input
-                    type="text"
-                    name="userfullname"
-                    required
-            />
-            <span></span>
-            <label>Enter your full name<label style="color: red; position: relative; top: 10px;">*</label></label>
-        </div>
-        <div>
-            <p style="color: #adadad;">Gender</p>
-            <input type="radio" name="gender" value="male" required>Male <br>
-            <input type="radio" name="gender" value="female" required>Female <br><br>
-        </div>
-        <!-- Policy -->
-        <input type="checkbox" name="policy" id="policy">
-        By selecting "Register", you are confirming that you have read and agree
-            with our <a th:href="@{/policy}">Private Policy</a>
-        <input type="submit" value="Register" style="margin-top: 10px; margin-bottom: 10px">
-        <span> Already registered ?
-            <a th:href="@{/login}">Login here</a>
-        </span>
-    </form>
+    <!-- if the course doesn't have discount -->
+    <div th:if="${discountPrice==null}">
+        <h2 th:text="'Price: '+${course.price}+'₫'"></h2>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="0" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
+        </form>
+        <form
+                role="form"
+                method="post"
+                th:action="@{payment}"
+                th:object="${courseDTO}"
+        >
+            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
+            <input type="number" name="discountPrice" th:value="0" style="display: none">
+            <input type="text" name="fromPage" value="learn" style="display: none">
+            <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
+        </form>
+    </div>
 </div>
 
+<!-- ***** CourseDetails page start ***** -->
+<div class="container-fluid">
+    <div class="main-banner-learn">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 learn">
+                    <h2 th:text="${course.courseName}"></h2>
+                    <h4 th:text="${course.courseDes}"></h4>
+                    <h6 th:text="'Create at: '+${course.createdDate}"></h6>
+                    <h6 th:text="'Last update at: '+${course.createdDate}"></h6>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container what-you-can-learn">
+        <div class="row">
+            <h3>What you can learn</h3>
+            <div class="col-md-8">
+                <ul>
+                    <th:block th:each="state: ${whatYouCanLearn}">
+                        <li th:text="'    '+${state}"></li>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <h3 class="course-title">Course content</h3>
+    </div>
+    <div class="container lessonList">
+        <div class="accordion accordion-flush" id="accordionFlushExample">
+            <th:block th:each="lessonListDis: ${lessonList}">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" th:id="'flush-heading'+${lessonListDis.lessonID}">
+                        <button class="accordion-button collapsed lName" type="button" data-bs-toggle="collapse" th:data-bs-target="'#flush-collapse'+${lessonListDis.lessonID}" aria-expanded="false" th:aria-controls="'flush-collapse'+${lessonListDis.lessonID}">
+                            <h5 th:text="${lessonListDis.lessonName}"></h5>
+                        </button>
+                        <p th:text="${lessonListDis.lessonDes}" style="margin-left: 30px"></p>
+                    </h2>
+                    <div th:id="'flush-collapse'+${lessonListDis.lessonID}" class="accordion-collapse collapse" th:aria-labelledby="'flush-heading'+${lessonListDis.lessonID}" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body">
+                                <div th:each="learningMaterialListDis: ${learningMaterialList}">
+                                    <div th:if="${learningMaterialListDis.lessonID.lessonID==lessonListDis.lessonID}">
+                                        <div th:if="${learningMaterialListDis.learningMaterialDes == 'youtube'}">
+                                            <div>
+                                                <i class="fa-brands fa-youtube"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
+                                            </div>
+                                        </div>
+                                        <div th:if="${learningMaterialListDis.learningMaterialDes == 'pdf'}">
+                                            <div style="display: inline-flex">
+                                                <i class="fa-regular fa-file-pdf"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
+                                            </div>
+                                        </div>
+                                        <div th:if="${learningMaterialListDis.learningMaterialDes == 'driveVideo'}">
+                                            <div style="display: inline-flex">
+                                                <i class="fa-solid fa-play"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
+                                            </div>
+                                            <p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="display: inline-flex">
+                                    <i class="fa-solid fa-question">
+                                        <p>Quiz Test</p>
+                                    </i>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </th:block>
+        </div>
+    </div>
+    <div class="container">
+        <h3 class="course-title">Requirement</h3>
+        <div class="row requirement">
+            <div class="col-md-8">
+                <ul>
+                    <th:block th:each="state: ${requirement}">
+                        <li th:text="'    '+${state}"></li>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <h3 class="course-title">Description</h3>
+        <div class="row description">
+            <div class="col-md-8">
+                <ul>
+                    <li th:text="'    '+${courseDes.get(0)}" style="font-weight: 700;"></li>
+                    <th:block th:each="state: ${courseDes}">
+                        <li th:text="'    '+${state}" th:unless="${state == courseDes.get(0)}"></li>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="margin-bottom: 50px;">
+        <h3 class="course-title">Who this course is for</h3>
+        <div class="row whoFor">
+            <div class="col-md-8">
+                <ul>
+                    <th:block th:each="state: ${whoFor}">
+                        <li th:text="'    '+${state}"></li>
+                    </th:block>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ***** Learn page end ***** -->
+
 <!-- ***** Footer *****-->
-<footer style="margin-top: 95vh">
+<footer style="margin-top: 30px">
     <div class="container-fluid footer-st" style="padding: 10px 0px 20px 0px;">
         <div class="row">
             <div class="col-lg-4">
@@ -337,63 +409,5 @@
 <script src="assets/js/tabs.js"></script>
 <script src="assets/js/slick-slider.js"></script>
 <script src="assets/js/custom.js"></script>
-<script>
-    var password = document.getElementById("password")
-        , confirm_password = document.getElementById("confirm");
-
-    function validatePassword(){
-        if(password.value == null) {
-            password.setCustomValidity("This field should not be empty");
-        }
-        if(password.value != confirm_password.value ){
-            confirm_password.setCustomValidity("Passwords Don't Match");
-        }
-        else {
-            confirm_password.setCustomValidity('');
-        }
-    }
-    password.onchange = validatePassword;
-    confirm_password.onkeyup = validatePassword;
-
-    var policy = document.getElementById("policy");
-    function validatePolicy(){
-        if (policy.checked != true){
-            alert("You have to agree with our Private Policy");
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    function validate() {
-        var passwordInput = document.getElementById("password");
-        var usernameInput = document.getElementById("username");
-        var passwordRegex = /^(?=.*\d)(?=.*[!@#$%^_&*])(?=.*[a-zA-Z]).{6,}$/;
-        var usernameRegex = /^(?=.*\d)[a-zA-Z0-9]{6,}$/;
-        var isValidPassword = passwordRegex.test(passwordInput.value);
-        var isValidUsername = usernameRegex.test(usernameInput.value);
-        if (!isValidPassword) {
-            passwordInput.setCustomValidity("Password must have at least 1 number, 1 special character, and be at least 6 characters long");
-        } else {
-            passwordInput.setCustomValidity("");
-        }
-        if (!isValidUsername) {
-            usernameInput.setCustomValidity("Username must have at least 1 number and be at least 6 characters long");
-        } else {
-            usernameInput.setCustomValidity("");
-        }
-        return isValidPassword && isValidUsername;
-    }
-
-    var passwordInput = document.getElementById("password");
-    passwordInput.addEventListener("input", function() {
-        validate();
-    });
-
-    var usernameInput = document.getElementById("username");
-    usernameInput.addEventListener("input", function() {
-        validate();
-    });
-</script>
 </body>
 </html>

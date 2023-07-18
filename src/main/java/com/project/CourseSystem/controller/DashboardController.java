@@ -37,10 +37,13 @@ public class DashboardController {
 
     final private AuthController authController;
 
+    final private EnrolledService enrolledService;
+
     public DashboardController(CategoryService categoryService, RatingCourseService ratingCourseService,
                                PaymentService paymentService, CourseService courseService,
                                CourseConverter courseConverter, AccountService accountService,
-                               UserService userService, AuthController authController){
+                               UserService userService, AuthController authController,
+                               EnrolledService enrolledService){
         this.categoryService = categoryService;
         this.ratingCourseService = ratingCourseService;
         this.paymentService = paymentService;
@@ -49,6 +52,7 @@ public class DashboardController {
         this.accountService = accountService;
         this.userService = userService;
         this.authController = authController;
+        this.enrolledService = enrolledService;
     }
 
 
@@ -63,16 +67,15 @@ public class DashboardController {
             SystemAccountDTO systemAccountDTO = accountService.findUserByAccountName(accountName);
             if(systemAccountDTO.getRoleID().getRoleID()!=2){
                 authController.loginPage(model, request, response);
-                System.err.println("You are not admin");
             }
             else{
                 int userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
                 UserInfo userInfo = userService.findUser(userID);
                 model.addAttribute("userInfo", userInfo);
-                System.err.println("I'm here");
                 //Get rating
                 List<RatingCourse> ratingCourseList = ratingCourseService.getAllRating();
                 model.addAttribute("userRating", ratingCourseList);
+
                 List<Course> courseList = new ArrayList<>();
                 for (int i = 0; i < ratingCourseList.size(); i++){
                     CourseDTO courseDTO = courseService.getCourseByID(ratingCourseList.get(i).getCourseID().getCourseID());
@@ -84,26 +87,96 @@ public class DashboardController {
 
                 //Get total revenue
                 List<Payment> paymentList = paymentService.getAllPayment();
+                //Get course bought
+                List<Enrolled> enrolledList = new ArrayList<>();
+                int totalNumberOfCourseBought = 0;
+                //Set total payment
+                int totalPayment = paymentList.size();
+                model.addAttribute("totalPayment", totalPayment);
                 Float totalRevenue = 0.0F;
                 for(int i = 0; i < paymentList.size(); i++){
+                    List<Enrolled> enrolled = enrolledService.getEnrolledByPaymentID(paymentList.get(i).getPaymentID());
+                    for(int j = 0; j < enrolled.size(); j++){
+                        enrolledList.add(enrolled.get(j));
+                    }
                     totalRevenue += paymentList.get(i).getPaymentAmount();
                 }
+                model.addAttribute("totalRevenue", totalRevenue);
+
+                for(int i = 0; i < enrolledList.size(); i++){
+                    totalNumberOfCourseBought++;
+                }
+                model.addAttribute("totalNumberOfCourseBought", totalNumberOfCourseBought);
+
                 //Get revenue growth
                 paymentList = paymentService.getPaymentByMonth(1,0);
                 Float revenueOfOneMonthRecent = 0.0F;
+                enrolledList.clear();
                 for(int i = 0; i < paymentList.size(); i++){
+                    List<Enrolled> enrolled = enrolledService.getEnrolledByPaymentID(paymentList.get(i).getPaymentID());
+                    for(int j = 0; j < enrolled.size(); j++){
+                        enrolledList.add(enrolled.get(j));
+                    }
                     revenueOfOneMonthRecent += paymentList.get(i).getPaymentAmount();
                 }
                 model.addAttribute("revenueOfOneMonthRecent", revenueOfOneMonthRecent);
-                System.out.println(revenueOfOneMonthRecent);
+                //set growth of payment in 30 day recent
+                double growthPayment = ((totalPayment - paymentList.size())/totalPayment)*100;
+                model.addAttribute("growthPayment", growthPayment);
+                //set growth of course bought in 30 day recent
+                double growthCourseBought = ((totalNumberOfCourseBought - enrolledList.size())/totalNumberOfCourseBought)*100;
+                model.addAttribute("growthCourseBought", growthCourseBought);
+                //set growth of revenue in 30 day recent
+                double growthRevenue = ((totalRevenue - revenueOfOneMonthRecent)/totalRevenue)*100;
+                model.addAttribute("growthRevenue", growthRevenue);
 
+                int totalPaymentOfOneMonthRecent = paymentList.size();
                 paymentList = paymentService.getPaymentByMonth(2,1);
-                Float revenueOfTwoMonthRecent = 0.0F;
+                Float revenueOfTwoMonthRecentToOneMonthRecent = 0.0F;
+                enrolledList.clear();
                 for(int i = 0; i < paymentList.size(); i++){
-                    revenueOfTwoMonthRecent += paymentList.get(i).getPaymentAmount();
+                    List<Enrolled> enrolled = enrolledService.getEnrolledByPaymentID(paymentList.get(i).getPaymentID());
+                    for(int j = 0; j < enrolled.size(); j++){
+                        enrolledList.add(enrolled.get(j));
+                    }
+                    revenueOfTwoMonthRecentToOneMonthRecent += paymentList.get(i).getPaymentAmount();
                 }
-                model.addAttribute("revenueOfTwoMonthRecent", revenueOfTwoMonthRecent);
-                System.out.println(revenueOfTwoMonthRecent);
+                model.addAttribute("revenueOfTwoMonthRecent", revenueOfTwoMonthRecentToOneMonthRecent);
+                //set growth of payment of 2 month recent to 1 month recent
+                double growthPaymentOfOneMonthRecent = ((totalPaymentOfOneMonthRecent - paymentList.size())/totalPaymentOfOneMonthRecent)*100;
+                double tempPayment = growthPayment - growthPaymentOfOneMonthRecent;
+                if(tempPayment < 0){
+                    tempPayment = tempPayment*(-1);
+                    model.addAttribute("statusOfGrowthPayment", "decrease");
+                }
+                else{
+                    model.addAttribute("statusOfGrowthPayment", "increase");
+                }
+                model.addAttribute("growthPaymentOfOneMonthRecent", tempPayment);
+                //set growth of course bought of 2 month recent to 1 month recent
+                int totalNumberOfCourseBoughtOfOneMonthRecent = enrolledList.size();
+                double growthCourseBoughtOfOneMonthRecent = ((totalNumberOfCourseBoughtOfOneMonthRecent - enrolledList.size())/totalNumberOfCourseBoughtOfOneMonthRecent)*100;
+                double tempCourseBought = growthCourseBought - growthCourseBoughtOfOneMonthRecent;
+                if(tempCourseBought < 0){
+                    tempCourseBought = tempCourseBought*(-1);
+                    model.addAttribute("statusOfGrowthCourseBought", "decrease");
+                }
+                else{
+                    model.addAttribute("statusOfGrowthCourseBought", "increase");
+                }
+                model.addAttribute("growthCourseBoughtOfOneMonthRecent", tempCourseBought);
+                //set growth of revenue of 2 month recent to 1 month recent
+                double growthRevenueOfOneMonthRecent = ((revenueOfOneMonthRecent - revenueOfTwoMonthRecentToOneMonthRecent)/revenueOfOneMonthRecent)*100;
+                double tempRevenue = growthRevenue - growthRevenueOfOneMonthRecent;
+                if(tempRevenue < 0){
+                    tempRevenue = tempRevenue*(-1);
+                    model.addAttribute("statusOfGrowthRevenue", "decrease");
+                }
+                else{
+                    model.addAttribute("statusOfGrowthRevenue", "increase");
+                }
+                model.addAttribute("growthRevenueOfOneMonthRecent", tempRevenue);
+
 
                 paymentList = paymentService.getPaymentByMonth(3,2);
                 Float revenueOfThreeMonthRecent = 0.0F;
@@ -176,7 +249,6 @@ public class DashboardController {
                 model.addAttribute("week4", recentAccountList.size());
                 recentAccountList = accountService.getRecentRegisterAccount(5);
                 model.addAttribute("week5", recentAccountList.size());
-
 
                 //task bar model
                 CategoryDTO cDto = new CategoryDTO();

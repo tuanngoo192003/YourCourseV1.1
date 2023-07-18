@@ -9,5 +9,6 @@ import lombok.*;
 @Builder
 public class PassedStatusCheck {
     Integer checkStatus;
+    Integer lessonID;
     String statusContent;
 }

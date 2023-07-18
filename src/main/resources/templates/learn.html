@@ -1,12 +1,15 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <title>Learn</title>
+    <link rel="stylesheet" th:href="@{/assets/css/header.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/footer.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/learn.css}">
+
     <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" th:href="@{assets/css/learn.css}">
     <!-- Bootstrap core CSS-->
     <link th:href="@{vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 
@@ -17,74 +20,49 @@
     <!-- Additional CSS Files -->
     <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
     <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
-    <title>Learn</title>
+
     <style>
-        .header-area {
-            background: rgb(219, 138, 222) !important;
-            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
-        }
-
-        .learn{
-            margin-top: 100px;
-            height: 100%;
-        }
-
         .sticky-top{
             top:25vh;
             z-index: 990;
         }
 
+        .show-button{
+            width: 100%;
+            border: none;
+            background-color: #fff;
+            border-bottom: rgb(173, 173, 173, 0.93) solid 1px;
+            padding: 10px;
+        }
+
+        .quiz-button{
+            background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+            border-radius: 7px;
+            margin-top: 10px;
+            height: 5vh;
+            border: none;
+            width: 100%;
+        }
+
+        .quiz-button:hover{
+            background: linear-gradient(-145deg, rgb(178, 102, 182) 0%, rgb(213, 154, 125) 100%) !important;
+        }
+
+        .quiz-button i{
+            color: #fff;
+        }
+
+        .quiz-button a{
+            color: #fff;
+            margin-left: 5px;
+            font-weight: 700;
+            font-size: 17px;
+        }
     </style>
 </head>
 <body>
-<!-- ***** OffCanvas Start *****-->
-<div class="offcanvas offcanvas-end" id="demo">
-    <div class="offcanvas-header">
-        <h1 class="offcanvas-title">Cart</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-    </div>
-    <div class="offcanvas-body">
-        <div th:if="${session.cart!=null}">
-            <th:block th:each="cart, state: ${session.cart}">
-                <form
-                        role="form"
-                        method="post"
-                        th:action="@{payment}"
-                        th:object="${courseDTO}"
-                >
-                    <div class="cartContent" >
-                        <div style="display: inline-flex">
-                            <input type="text" name="fromPage" value="list" style="display: none">
-                            <input type="number" th:value="${cart.courseID}" th:name="courseID" style="display: none">
-                            <input type="number" name="discountPrice" th:value="${cart.price}" style="display: none">
-                            <div>
-                                <img th:src="@{${cart.courseImage}}" style="width: 50px; height: 50px;">
-                            </div>
-                            <h4 th:text="${cart.courseName}"></h4>
-                            <p th:text="'Price: '+${cart.price}+'đ'" style="float: left; margin-left: 15px;"></p>
-                        </div>
-                        <div style="display:inline-flex;">
-                            <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
-                            <input type="submit" value="Remove from cart" class="buy-now-cart" name="paymentButton">
-                        </div>
-                    </div>
-
-                </form>
-            </th:block>
-            <button><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
-            <button><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
-        </div>
-        <div th:if="${session.cart==null}">
-            <div class="cartContent" style="display: inline-flex">
-                <h4>Cart is empty</h4>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- ***** OffCanvas End ***** -->
-
-<!-- ***** Header Area Start ***** -->
-<header class="header-area header-sticky" style="z-index: 999;">
+    <!-- ***** Header Area Start ***** -->
+    <header class="header-area header-sticky" style="z-index: 2000">
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -92,36 +70,20 @@
                     <!-- ***** Logo Start ***** -->
                     <a th:href="@{/home}" class="logo">
                         <p style="margin-top: 40px; color: white">YourCourse</p>
-                        <!--<img src="assets/images/templatemo-eduwell.png" alt="EduWell Template">-->
                     </a>
                     <!-- ***** Logo End ***** -->
+
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <form
-                                role="form"
-                                method="post"
-                                th:action="@{/search}"
-                                th:object="${courseDTO}"
-                        >
-                            <input type="text" th:field="*{courseName}" placeholder="Search.." style="opacity: 0.5; border-radius: 7px">
-                        </form>
+                        <li>
+                            <a th:href="@{/courseDetails(courseID=${course.courseID})}" th:text="${course.courseName}"></a>
+                        </li>
                         <li class="has-sub">
-                            <a>Category</a>
+                            <a>Your Progress</a>
                             <ul class="sub-menu">
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=1)}">Language Learning</a></li>
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=2)}">Web development</a></li>
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=3)}">Web design</a></li>
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=4)}">IT Fundamental</a></li>
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=5)}">Mathematics</a></li>
-                                <li><a th:href="@{/getCourseByCategoryID(categoryID=6)}">Programming</a></li>
+                                <li th:text="${finishedLessonCount}+' of '+${lessonList.size()}+' complete.'"></li>
                             </ul>
                         </li>
-                        <li><a th:href="@{/course}">Courses</a></li>
-                        <li class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#demo"
-                            style="color: white; background: none; border: none">
-                            <i class="fa-solid fa-shopping-cart"></i>
-                        </li>
-                        <li class="scroll-to-section"><a href="#contact-section">Contact Us</a></li>
                         <li class="has-sub">
                             <i class="fa-solid fa-user" style="color: white">
                                 <ul class="sub-menu">
@@ -142,247 +104,150 @@
         </div>
     </div>
 </header>
-<!-- ***** Header Area End ***** -->
+    <!-- ***** Header Area End ***** -->
 
-<!-- if user didn't purchase the course, this session appear -->
-<div th:if="${enrolledDTO}==null" class="purchase-session sticky-top">
-    <!-- if the course has discount -->
-    <div th:if="${discountPrice!=null}">
-        <h2>
-            <span>Price: </span>
-            <span th:text="${course.price}+'₫'" style="text-decoration: line-through;"></span>
-            <span th:text="${discountPrice}+'₫'" style="color: red;"></span>
-        </h2>
-        <h4 th:text="'Start from: '+${discountDTO.discountStart}"></h4>
-        <h4 th:text="'End at: '+${discountDTO.discountEnd}"></h4>
-        <form
-                role="form"
-                method="post"
-                th:action="@{payment}"
-                th:object="${courseDTO}"
-        >
-            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
-            <input type="number" name="discountPrice" th:value="${discountPrice}" style="display: none">
-            <input type="text" name="fromPage" value="learn" style="display: none">
-            <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-        </form>
-        <form
-                role="form"
-                method="post"
-                th:action="@{payment}"
-                th:object="${courseDTO}"
-        >
-            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
-            <input type="number" name="discountPrice" th:value="${discountPrice}" style="display: none">
-            <input type="text" name="fromPage" value="learn" style="display: none">
-            <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
-        </form>
-    </div>
-    <!-- if the course doesn't have discount -->
-    <div th:if="${discountPrice==null}">
-        <h2 th:text="'Price: '+${course.price}+'₫'"></h2>
-        <form
-                role="form"
-                method="post"
-                th:action="@{payment}"
-                th:object="${courseDTO}"
-        >
-            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
-            <input type="number" name="discountPrice" th:value="0" style="display: none">
-            <input type="text" name="fromPage" value="learn" style="display: none">
-            <input type="submit" value="Add To Cart" class="add-to-cart" name="paymentButton">
-        </form>
-        <form
-                role="form"
-                method="post"
-                th:action="@{payment}"
-                th:object="${courseDTO}"
-        >
-            <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
-            <input type="number" name="discountPrice" th:value="0" style="display: none">
-            <input type="text" name="fromPage" value="learn" style="display: none">
-            <input type="submit" value="Buy now" class="buy-now-cart" name="paymentButton">
-        </form>
-    </div>
-
-
-</div>
-<!-- if user purchased the course, this session appear -->
-<div th:if="${enrolledDTO}!=null" class="purchase-session sticky-top" style="height: 400px; overflow-y: scroll">
-    <h2 th:text="'You have enrolled to this course'"></h2>
-    <div th:if="${totalStatus == 'Course: Completed'}">
-        <p th:text="${totalStatus}" style="color: green"></p>
-    </div>
-    <div th:if="${totalStatus == 'Course: Not completed'}">
-        <p th:text="${totalStatus}" style="color: #b0b038"></p>
-    </div>
-    <div th:each="learningStatusDis : ${learningStatus}">
-        <div th:if="${learningStatusDis.checkStatus==1}">
-            <i class="fa-solid fa-circle-check" style="color: green"><p th:text="${learningStatusDis.statusContent}" style="color:black;"></p></i>
+    <!-- if user purchased the course, this session appear -->
+    <div class="purchase-session sticky-top" style="height: 100vh; overflow-y: scroll">
+        <h2 th:text="'Course content'"></h2>
+        <div th:if="${totalStatus == 'Status: Completed'}" style="padding-bottom: 20px; border-bottom: rgb(173, 173, 173, 0.93) solid 1px">
+            <p th:text="${totalStatus}" style="color: green; margin-left: 20px"></p>
         </div>
-        <div th:if="${learningStatusDis.checkStatus==0}">
-            <i class="fa-solid fa-circle-xmark" style="color: red"><p th:text="${learningStatusDis.statusContent}" style="color: black"></p></i>
+        <div th:if="${totalStatus == 'Status: Not completed'}" style="padding-bottom: 20px; border-bottom: rgb(173, 173, 173, 0.93) solid 1px">
+            <p th:text="${totalStatus}" style="color: #b0b038; margin-left: 20px"></p>
         </div>
-    </div>
-</div>
-
-<!-- ***** Learn page start ***** -->
-
-<div class="learn">
-    <div class="course-details" >
-        <h2 th:text="${course.courseName}"></h2>
-        <h4 th:text="${course.courseDes}"></h4>
-        <p th:text="'Create at: '+${course.createdDate}"></p>
-        <p th:text="'Last update at: '+${course.createdDate}"></p>
-    </div>
-</div>
-<div class="container what-you-can-learn">
-    <div class="row">
-        <h3>What you can learn</h3>
-        <div class="col-md-8">
-            <ul>
-                <th:block th:each="state: ${whatYouCanLearn}">
-                    <li th:text="'    '+${state}"></li>
-                </th:block>
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="container">
-    <h3 class="course-title">Course content</h3>
-</div>
-<div class="container lessonList">
-    <div class="accordion accordion-flush" id="accordionFlushExample">
-        <th:block th:each="lessonListDis: ${lessonList}">
-            <div class="accordion-item">
-                <h2 class="accordion-header" th:id="'flush-heading'+${lessonListDis.lessonID}">
-                    <button class="accordion-button collapsed lName" type="button" data-bs-toggle="collapse" th:data-bs-target="'#flush-collapse'+${lessonListDis.lessonID}" aria-expanded="false" th:aria-controls="'flush-collapse'+${lessonListDis.lessonID}">
-                        <h5 th:text="${lessonListDis.lessonName}"></h5>
-                    </button>
-                    <p th:text="${lessonListDis.lessonDes}" style="margin-left: 30px"></p>
-                </h2>
-                <div th:if="${enrolledDTO}!=null">
-                    <div th:id="'flush-collapse'+${lessonListDis.lessonID}" class="accordion-collapse collapse" th:aria-labelledby="'flush-heading'+${lessonListDis.lessonID}" data-bs-parent="#accordionFlushExample">
-                    <div class="accordion-body">
-                        <div th:each="learningMaterialListDis: ${learningMaterialList}">
-                            <div th:if="${learningMaterialListDis.lessonID.lessonID==lessonListDis.lessonID}">
-                                <div th:if="${learningMaterialListDis.learningMaterialDes == 'youtube'}">
-                                    <div>
-                                        <i class="fa-brands fa-youtube"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
-                                    </div>
-                                    <iframe th:src="${learningMaterialListDis.learningMaterialLink}" width="100%" height="420px" allowfullscreen></iframe>
-                                </div>
-                                <div th:if="${learningMaterialListDis.learningMaterialDes == 'pdf'}">
-                                    <div style="display: inline-flex">
-                                        <i class="fa-regular fa-file-pdf"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
-                                    </div>
-                                    <iframe th:src="${learningMaterialListDis.learningMaterialLink}" width="100%" height="420px"></iframe>
-                                </div>
-                                <div th:if="${learningMaterialListDis.learningMaterialDes == 'driveVideo'}">
-                                    <div style="display: inline-flex">
-                                        <i class="fa-solid fa-play"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
-                                    </div>
-                                    <p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p>
-                                    <iframe th:src="${'https://drive.google.com/file/d/'+learningMaterialListDis.learningMaterialLink+'/preview'}" width="100%" height="420px"></iframe>
-                                </div>
-                                <div th:if="${learningMaterialListDis.learningMaterialDes == 'filePDF'}">
-                                    <div style="display: inline-flex">
-                                        <i class="fa-solid fa-book"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
-                                    </div>
-                                    <p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p>
-                                    <iframe th:src="${'https://drive.google.com/file/d/'+learningMaterialListDis.learningMaterialLink+'/preview'}" width="100%" height="420px"></iframe>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <i class="fa-solid fa-question">
-                                <a th:href="@{quiz(lessonID=${lessonListDis.lessonID})}">Quiz Test</a>
-                            </i>
-                        </div>
-                    </div>
-                </div>
-                </div>
-                <div th:if="${enrolledDTO}==null">
-                    <div th:id="'flush-collapse'+${lessonListDis.lessonID}" class="accordion-collapse collapse" th:aria-labelledby="'flush-heading'+${lessonListDis.lessonID}" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">
+    <div class="lesson-buttons">
+        <th:block th:each="learningStatusDis : ${learningStatus}">
+            <th:block th:each="learningStatusContent: ${lessonList}">
+                <th:block th:if="${learningStatusDis.lessonID == learningStatusContent.lessonID}">
+                    <th:block th:if="${learningStatusDis.checkStatus==1}">
+                        <button th:data-lesson-id="${learningStatusContent.lessonID}" class="show-button">
+                            <p><span th:text="${learningStatusDis.statusContent}" style="color:black; font-weight: 700;"></span>
+                            <span><i class="fa-solid fa-circle-check" style="color: green"></i></span></p>
                             <div th:each="learningMaterialListDis: ${learningMaterialList}">
-                                <div th:if="${learningMaterialListDis.lessonID.lessonID==lessonListDis.lessonID}">
+                                <div th:if="${learningMaterialListDis.lessonID.lessonID==learningStatusContent.lessonID}">
                                     <div th:if="${learningMaterialListDis.learningMaterialDes == 'youtube'}">
                                         <div>
-                                            <i class="fa-brands fa-youtube"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
+                                            <span><i class="fa-brands fa-youtube"></i></span>
+                                            <span th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></span>
                                         </div>
                                     </div>
                                     <div th:if="${learningMaterialListDis.learningMaterialDes == 'pdf'}">
                                         <div style="display: inline-flex">
-                                            <i class="fa-regular fa-file-pdf"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
+                                            <span><i class="fa-regular fa-file-pdf"></i></span>
+                                            <span th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></span>
                                         </div>
                                     </div>
                                     <div th:if="${learningMaterialListDis.learningMaterialDes == 'driveVideo'}">
                                         <div style="display: inline-flex">
-                                            <i class="fa-solid fa-play"><p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p></i>
+                                            <span><i class="fa-solid fa-play"></i></span>
+                                            <span th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></span>
                                         </div>
-                                        <p th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></p>
+                                    </div>
+                                    <div th:if="${learningMaterialListDis.learningMaterialDes == 'filePDF'}">
+                                        <div style="display: inline-flex">
+                                            <span><i class="fa-solid fa-book"></i></span>
+                                            <span th:text="${learningMaterialListDis.learningMaterialName}" style="margin-bottom: 15px"></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div style="display: inline-flex">
-                                <i class="fa-solid fa-question">
-                                    <p>Quiz Test</p>
-                                </i>
+                        </button>
+                    </th:block>
+                    <th:block th:if="${learningStatusDis.checkStatus==0}" >
+                        <button th:data-lesson-id="${learningStatusContent.lessonID}" class="show-button">
+                            <p><span th:text="${learningStatusDis.statusContent}" style="color: black; font-weight: 700;"></span>
+                            <span><i class="fa-solid fa-circle-xmark" style="color: red"></i></span></p>
+                            <p></p>
+                        </button>
+                    </th:block>
+                </th:block>
+            </th:block>
+        </th:block>
+    </div>
+    </div>
+
+    <div class="main-banner-learn" style="margin-top: 10vh;">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12 learn">
+                    <div class="learning-materials-container">
+                        <div th:each="lessonListDis: ${lessonList}" th:data-lesson-id="${lessonListDis.lessonID}"
+                        class="lesson-content-container">
+                            <div th:each="learningMaterialListDis: ${learningMaterialList}">
+                                <div th:if="${learningMaterialListDis.lessonID.lessonID==lessonListDis.lessonID}">
+                                    <div th:if="${learningMaterialListDis.learningMaterialDes == 'youtube'}">
+                                        <iframe th:src="${learningMaterialListDis.learningMaterialLink}" width="100%" height="500px" allowfullscreen></iframe>
+                                    </div>
+                                    <div th:if="${learningMaterialListDis.learningMaterialDes == 'pdf'}">
+                                        <iframe th:src="${learningMaterialListDis.learningMaterialLink}" width="100%" height="500px"></iframe>
+                                    </div>
+                                    <div th:if="${learningMaterialListDis.learningMaterialDes == 'driveVideo'}">
+                                        <iframe th:src="${'https://drive.google.com/file/d/'+learningMaterialListDis.learningMaterialLink+'/preview'}" width="100%" height="500px"></iframe>
+                                    </div>
+                                    <div th:if="${learningMaterialListDis.learningMaterialDes == 'filePDF'}">
+                                        <iframe th:src="${'https://drive.google.com/file/d/'+learningMaterialListDis.learningMaterialLink+'/preview'}" width="100%" height="500px"></iframe>
+                                    </div>
+
+                                    <button class="quiz-button">
+                                        <i class="fa-solid fa-question"></i><a th:href="@{learn/quiz(lessonID=${lessonListDis.lessonID})}">Quiz Test</a>
+
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </th:block>
-    </div>
-</div>
-
-<div class="container" th:if="${totalStatus=='Course: Completed'}" style="border: rgba(173, 173, 173, 0.99) 1px solid">
-    <h3>Thanks for rating!</h3>
-    <div th:if="${rating!=null}">
-        <div class="star-rated">
-            <input type="radio" id="star1" name="rating" value="1" th:checked="${rating == 1}" disabled/>
-            <label for="star1" title="1 star">&#9733;</label>
-            <input type="radio" id="star2" name="rating" value="2" th:checked="${rating == 2}" disabled/>
-            <label for="star2" title="2 stars">&#9733;</label>
-            <input type="radio" id="star3" name="rating" value="3" th:checked="${rating == 3}" disabled/>
-            <label for="star3" title="3 stars">&#9733;</label>
-            <input type="radio" id="star4" name="rating" value="4" th:checked="${rating == 4}" disabled/>
-            <label for="star4" title="4 stars">&#9733;</label>
-            <input type="radio" id="star5" name="rating" value="5" th:checked="${rating == 5}" disabled/>
-            <label for="star5" title="5 stars">&#9733;</label>
         </div>
-        <h5 th:text="'Your comment: '+${comment}"></h5>
     </div>
-    <div th:if="${rating==null}">
-        <form
-                role="form"
-                method="post"
-                th:action="@{/feedback}"
-                th:object="${ratingCourseDTO}"
-        >
-            <div class="star-rating">
-                <input type="radio" id="star1-" name="rating" value="1" required/>
-                <label for="star1-" title="1 star">&#9733;</label>
-                <input type="radio" id="star2-" name="rating" value="2" required/>
-                <label for="star2-" title="2 stars">&#9733;</label>
-                <input type="radio" id="star3-" name="rating" value="3" required/>
-                <label for="star3-" title="3 stars">&#9733;</label>
-                <input type="radio" id="star4-" name="rating" value="4" required/>
-                <label for="star4-" title="4 stars">&#9733;</label>
-                <input type="radio" id="star5-" name="rating" value="5" required/>
-                <label for="star5-" title="5 stars">&#9733;</label>
+
+
+    <div class="container" th:if="${totalStatus=='Course: Completed'}" style="border: rgba(173, 173, 173, 0.99) 1px solid">
+        <div th:if="${rating!=null}">
+            <h3>Thanks for rating!</h3>
+            <div class="star-rated">
+                <input type="radio" id="star1" name="rating" value="1" th:checked="${rating == 1}" disabled/>
+                <label for="star1" title="1 star">&#9733;</label>
+                <input type="radio" id="star2" name="rating" value="2" th:checked="${rating == 2}" disabled/>
+                <label for="star2" title="2 stars">&#9733;</label>
+                <input type="radio" id="star3" name="rating" value="3" th:checked="${rating == 3}" disabled/>
+                <label for="star3" title="3 stars">&#9733;</label>
+                <input type="radio" id="star4" name="rating" value="4" th:checked="${rating == 4}" disabled/>
+                <label for="star4" title="4 stars">&#9733;</label>
+                <input type="radio" id="star5" name="rating" value="5" th:checked="${rating == 5}" disabled/>
+                <label for="star5" title="5 stars">&#9733;</label>
             </div>
-            <label for="comment">Comment:</label>
-            <textarea class="form-control" rows="5" id="comment" name="comment" th:field="*{comment}" required></textarea>
-            <input type="number" th:value="${course.courseID}" name="currentCourseID" style="display: none"/>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+            <h5 th:text="'Your comment: '+${comment}"></h5>
+        </div>
+        <div th:if="${rating==null}">
+            <form
+                    role="form"
+                    method="post"
+                    th:action="@{/learn/feedback}"
+                    th:object="${ratingCourseDTO}"
+            >
+                <div class="star-rating">
+                    <input type="radio" id="star1-" name="rating" value="1" required/>
+                    <label for="star1-" title="1 star">&#9733;</label>
+                    <input type="radio" id="star2-" name="rating" value="2" required/>
+                    <label for="star2-" title="2 stars">&#9733;</label>
+                    <input type="radio" id="star3-" name="rating" value="3" required/>
+                    <label for="star3-" title="3 stars">&#9733;</label>
+                    <input type="radio" id="star4-" name="rating" value="4" required/>
+                    <label for="star4-" title="4 stars">&#9733;</label>
+                    <input type="radio" id="star5-" name="rating" value="5" required/>
+                    <label for="star5-" title="5 stars">&#9733;</label>
+                </div>
+                <label for="comment">Comment:</label>
+                <textarea class="form-control" rows="5" id="comment" name="comment" th:field="*{comment}" required></textarea>
+                <input type="number" th:value="${course.courseID}" name="currentCourseID" style="display: none"/>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
     </div>
-</div>
-<div class="container">
-    <h3 class="course-title">Requirement</h3>
+
+    <div class="container">
+        <h3 class="course-title">Requirement</h3>
         <div class="row requirement">
             <div class="col-md-8">
                 <ul>
@@ -392,9 +257,9 @@
                 </ul>
             </div>
         </div>
-</div>
-<div class="container">
-    <h3 class="course-title">Description</h3>
+    </div>
+    <div class="container">
+        <h3 class="course-title">Description</h3>
         <div class="row description">
             <div class="col-md-8">
                 <ul>
@@ -405,9 +270,9 @@
                 </ul>
             </div>
         </div>
-</div>
-<div class="container" style="margin-bottom: 50px;">
-    <h3 class="course-title">Who this course is for</h3>
+    </div>
+    <div class="container" style="margin-bottom: 50px;">
+        <h3 class="course-title">Who this course is for</h3>
         <div class="row whoFor">
             <div class="col-md-8">
                 <ul>
@@ -417,72 +282,118 @@
                 </ul>
             </div>
         </div>
-</div>
+    </div>
 
-<!-- ***** Learn page end ***** -->
 
-<!-- ***** Footer *****-->
-<footer>
-    <div class="container-fluid footer-st" style="background: #d69fd5;">
-        <div class="row">
-            <div class="col-lg-6">
-                <div style="margin-left: 50px">
-                    <p>About us</p>
-                    <div style="margin-top: 30px">
-                        <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
-                        <a style="color: #fff">Our team: FPT University-SWP391-Group 5</a>
+    <!-- ***** Footer *****-->
+    <div class="container-fluid ">
+            <div class="row footer-st" style="padding: 10px 0px 20px 0px; margin-top: 30px">
+                    <div class="col-lg-3">
+                        <p style="text-align: center; margin-bottom: 12px; color: #fff; font-weight: bold">Follow us</p>
+                        <ul class="social-icons" style="margin-top: 10px;">
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        </ul>
                     </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <p>Further information</p>
-                <div style="margin-top: 30px">
-                    <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
-                    <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <p>Follow us</p>
-                <ul class="social-icons">
-                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                </ul>
-            </div>
-            <div class="col-lg-12" style="margin-top: 30px">
-                <p class="copyright"> © 2023 YourCourse Web Application
+                    <div class="col-lg-3">
+                        <p style="text-align: center; margin-bottom: 12px; color: #fff; font-weight: bold">About us</p>
+                        <div style="margin-top: 10px; text-align: center" >
+                            <a style="color: #fff">Our mission is to bring service to help people study better</a><br>
+                            <a style="color: #fff">Our team: FPT University-SWP391-Group 6</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <p style="text-align: center; margin-bottom: 12px; color: #fff; font-weight: bold">Further information</p>
+                        <div style="margin-top: 10px; text-align: center">
+                            <a th:href="@{/policy}" style="color: #fff;">Policy</a><br>
+                            <i class="fa-solid fa-phone" style="color: #fff;"></i><a style="color: #fff">Phone: 0393910645</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4" style="height: 50px">
+                        <a th:href="@{/home}" class="logo">
+                            <p style="
+                  text-align: center;
+                  margin-top: 40px;
+                  color: #fff;
+                  font-size: 14px;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  letter-spacing: 2px;"
+                            >
+                                YourCourse
+                            </p>
+                        </a>
+                    </div>
+                    <div class="col-lg-4" style="height: 50px">
+                        <p class="copyright" style="margin-bottom: 0px"> © 2023 YourCourse Web Application</p>
+                    </div>
             </div>
         </div>
-    </div>
-</footer>
-<!-- ***** End Footer *****-->
+    <!-- ***** End Footer *****-->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the learning materials containers
+            const containers = Array.from(document.getElementsByClassName('lesson-content-container'));
 
-  <script>
-      $(document).ready(function() {
-          var starRating = $(".star-rating");
+            // Hide all learning materials containers except the first one
+            for (let i = 1; i < containers.length; i++) {
+                containers[i].style.display = 'none';
+            }
 
-          starRating.on("click", "input[type='radio']", function() {
-              var selected = $(this).val();
+            // Add event listeners to the lesson buttons
+            const displayButtons = Array.from(document.getElementsByClassName('show-button'));
+            displayButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Get the lesson ID associated with the clicked button
+                    const lessonId = button.getAttribute('data-lesson-id');
 
-              starRating.find("label").css("color", "gray");
+                    // Set the background color of all buttons to white except for the clicked button
+                    displayButtons.forEach(otherButton => {
+                        if (otherButton !== button) {
+                            otherButton.style.backgroundColor = '#fff';
+                        }
+                    });
 
-              // Add gold color to selected and preceding labels
-              $(this).prevAll("input[type='radio']").addBack().each(function() {
-                  starRating.find("label[for='" + $(this).attr("id") + "']").css("color", "gold");
-              });
-          });
-      });
-      $(document).ready(function() {
-          var starRating = $(".star-rated");
+                    // Toggle the visibility of the learning materials based on their associated lesson ID
+                    containers.forEach(container => {
+                        if (container.getAttribute('data-lesson-id') === lessonId) {
+                            container.style.display = 'block';
+                            button.style.backgroundColor = 'rgb(226 226 226)';
+                        } else {
+                            container.style.display = 'none';
+                        }
+                    });
+                });
+            });
 
-          // Get the rating value from the input element
-          var selected = starRating.find("input[type='radio']:checked").val();
+            var starRating = $(".star-rated");
 
-          // Set the colors of the stars based on the rating value
-          starRating.find("label").css("color", "gray");
-          starRating.find("input[type='radio'][value='" + selected + "']").prevAll("input[type='radio']").addBack().each(function() {
-              starRating.find("label[for='" + $(this).attr("id") + "']").css("color", "gold");
-          });
-      });
-  </script>
+            // Get the rating value from the input element
+            var selected = starRating.find("input[type='radio']:checked").val();
+
+            // Set the colors of the stars based on the rating value
+            starRating.find("label").css("color", "gray");
+            starRating.find("input[type='radio'][value='" + selected + "']").prevAll("input[type='radio']").addBack().each(function() {
+                starRating.find("label[for='" + $(this).attr("id") + "']").css("color", "gold");
+            });
+        });
+
+
+        $(document).ready(function() {
+            var starRating = $(".star-rating");
+
+            starRating.on("click", "input[type='radio']", function() {
+                var selected = $(this).val();
+
+                starRating.find("label").css("color", "gray");
+
+                // Add gold color to selected and preceding labels
+                $(this).prevAll("input[type='radio']").addBack().each(function() {
+                    starRating.find("label[for='" + $(this).attr("id") + "']").css("color", "gold");
+                });
+            });
+        });
+
+    </script>
 </body>
 </html>

@@ -117,5 +117,15 @@ public class CourseServiceImpl implements CourseService {
         return courseRepository.findFirstCourseByCategory(categoryID);
     }
 
+    @Override
+    public void deleteCourseDetails(Integer courseID) {
+        courseDetailsRepository.deleteCourseDetailsByCourseID(courseID);
+    }
+
+    @Override
+    public void deleteCourse(Integer courseID) {
+        courseRepository.deleteById(courseID);
+    }
+
 
 }

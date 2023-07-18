@@ -25,4 +25,9 @@ public class QuizRevisionServiceImpl implements QuizRevisionService {
     public List<QuizRevision> getQuizRevisionByReportID(Integer reportID) {
         return quizRevisionRepository.getAllByReportID(reportID);
     }
+
+    @Override
+    public void deleteQuizRevision(Integer quizRevisionID) {
+        quizRevisionRepository.deleteById(quizRevisionID);
+    }
 }

@@ -3,39 +3,76 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{assets/css/header.css}">
   <title>Add Lesson</title>
   <link rel="stylesheet" th:href="@{assets/css/add-lesson.css}">
+  <script src="https://kit.fontawesome.com/acf74393da.js" crossorigin="anonymous"></script>
+  <!-- Bootstrap core CSS-->
+  <link th:href="@{/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+
+  <!-- Additional Boostrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  <!-- Additional CSS Files -->
+  <link rel="stylesheet" th:href="@{/assets/css/fontawesome.css}">
+  <link rel="stylesheet" th:href="@{/assets/css/your-course.css}">
   <style>
     html{
       height: 100%;
-      background: linear-gradient(to right, rgba(219,138,222,1), rgba(246,191,159,1));
     }
-
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f7f7f7;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
     #submit-btn,
     #cancel-btn,
-    #back-btn{
-      background-color: rgba(246,191,159,1);
-      color: white;
+    #back-btn {
       border: none;
-      padding: 10px 16px;
-      margin-right: 10px;
-      border-radius: 4px;
-      cursor: pointer;
+      font-size: 13px;
+      background: linear-gradient(-145deg, rgba(219, 138, 222, 1) 0%, rgba(246, 191, 159, 1) 100%) !important;
+      color: #fff;
+      padding: 12px 30px;
+      display: inline-block;
+      border-radius: 5px;
+      font-weight: 500;
+      text-transform: uppercase;
+      transition: all .3s;
+      margin-top: 30px;
+    }
+
+    #submit-btn:hover,
+    #cancel-btn:hover,
+    #back-btn:hover{
+      background: linear-gradient(-145deg, rgb(178, 102, 182) 0%, rgb(213, 154, 125) 100%) !important;
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <h1>Add Lesson</h1>
+<!-- ***** Header Area Start ***** -->
+<header class="header-area header-sticky">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <nav class="main-nav">
+          <!-- ***** Logo Start ***** -->
+          <a th:href="@{/home}" class="logo">
+            <p style="margin-top: 40px; color: white">YourCourse</p>
+          </a>
+          <!-- ***** Logo End ***** -->
+          <!-- ***** Menu Start ***** -->
+          <ul class="nav">
+            <li><a th:href="@{/allCourses}">Cancel</a></li>
+          </ul>
+          <!-- ***** Menu End ***** -->
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- ***** Header Area End ***** -->
+
+<div class="container add-lesson-form" style="margin-top: 180px">
+  <h1 style="text-align: center;font-weight: 650;margin-bottom: 40px;">Add Lesson</h1>
 
   <form
           id="lesson-form"
@@ -65,12 +102,11 @@
         <div id="form-container-forMaterial"></div>
         <div id="material-type"></div>
       </div>
-      <input type="text" class="material-value" placeholder="Material name" th:field="*{learningMaterialName}" required>
+      <input type="text" id="material-name" class="material-value" placeholder="Material name" th:field="*{learningMaterialName}" required>
     </div>
 
     <div id="buttons-container">
       <button type="submit" id="submit-btn" value="Submit" name="submit">Continue To Add Quiz</button>
-      <button type="button" id="cancel-btn"><a th:href="@{/cancel}" style="color: white; text-decoration: none">Cancel</a></button>
       <button type="button" id="back-btn"><a th:href="@{/addCourse}" style="color: white; text-decoration: none">Back to course editor</a></button>
     </div>
   </form>
@@ -142,12 +178,13 @@
       const linkForm = document.createElement("div");
       linkForm.classList.add("link-form");
 
-        const linkTitleInput = document.createElement("input");
-        linkTitleInput.classList.add("link-title");
-        linkTitleInput.name = "Input";
-        linkTitleInput.setAttribute("type", "text");
-        linkTitleInput.placeholder = "Link Title";
-        linkTitleInput.required = true;
+      const linkTitleInput = document.createElement("input");
+      linkTitleInput.classList.add("link-title");
+      linkTitleInput.name = "Input";
+      linkTitleInput.id = "type-link";
+      linkTitleInput.setAttribute("type", "text");
+      linkTitleInput.placeholder = "Link Title";
+      linkTitleInput.required = true;
 
 
       // Append the link form elements to the container in the page
@@ -158,14 +195,15 @@
 
     function createFileForm(){
       const fileForm = document.createElement("div");
-        fileForm.classList.add("file-form");
+      fileForm.classList.add("file-form");
 
-        const fileTitleInput = document.createElement("input");
-        fileTitleInput.classList.add("file-title");
-        fileTitleInput.name = "Input";
-        fileTitleInput.setAttribute("type", "file");
-        fileTitleInput.placeholder = "File Title";
-        fileTitleInput.required = true;
+      const fileTitleInput = document.createElement("input");
+      fileTitleInput.classList.add("file-title");
+      fileTitleInput.id = "type-file";
+      fileTitleInput.name = "Input";
+      fileTitleInput.setAttribute("type", "file");
+      fileTitleInput.placeholder = "File Title";
+      fileTitleInput.required = true;
 
       // Append the file form elements to the container in the page
       const formContainer = document.getElementById("form-container-forMaterial");
@@ -173,6 +211,77 @@
       fileForm.appendChild(fileTitleInput);
     }
   });
+
+  var submitBtn = document.getElementById("submit-btn");
+
+  var lessonTitle = document.getElementById("lesson-title");
+  var lessonDes = document.getElementById("lesson-des");
+  var materialName = document.getElementById("material-name");
+  var materialFile = document.getElementById("type-link");
+  var materialType = document.getElementById("createMaterialForm");
+
+  function validateInputs() {
+    var isValid = true;
+
+    // Validate lessonTitle
+    var words = lessonTitle.value.trim().split(/\s+/);
+    if (words.length < 3) {
+      alert("Lesson title must have at least 3 words");
+      isValid = false;
+      return isValid;
+    }
+
+    // Validate lessonDes
+    words = lessonDes.value.trim().split(/\s+/);
+    if (words.length < 3) {
+      alert("Lesson description must have at least 3 words");
+      isValid = false;
+      return isValid;
+    }
+
+    // Validate materialName
+    words = materialName.value.trim().split(/\s+/);
+    if (words.length < 3) {
+      alert("Material name must have at least 3 words");
+      isValid = false;
+      return isValid;
+    }
+
+    // Validate materialFile
+    if (materialFile.value) {
+      var materialTypeValue = materialType.value;
+      if (materialTypeValue === "youtube") {
+        if (!materialFile.value.includes("youtube")) {
+          alert("The YouTube video link is invalid. Please enter a valid YouTube video link.");
+          isValid = false;
+          return isValid;
+        }
+      } else if (materialTypeValue === "pdfLink") {
+        if (!isValidURL(materialFile.value)) {
+          alert("The material file must be a valid link.");
+          isValid = false;
+          return isValid;
+        }
+      } else if (materialTypeValue === "fileVideo" || materialTypeValue === "filePdf") {
+        if (isValidURL(materialFile.value)) {
+          alert("The material file must be a valid Google Drive file ID.");
+          isValid = false;
+          return isValid;
+        }
+      }
+    }
+  }
+
+  function isValidURL(url) {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  submitBtn.onclick = validateInputs
 
 </script>
 </body>

@@ -33,4 +33,8 @@ public interface CourseService {
     void addReport(Report report);
 
     Course findFirstCourseByCategoryID(Integer categoryID);
+
+    void deleteCourseDetails(Integer courseID);
+
+    void deleteCourse(Integer courseID);
 }

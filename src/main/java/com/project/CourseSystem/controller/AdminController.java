@@ -62,6 +62,18 @@ public class AdminController {
 
     PaymentService paymentService;
 
+    LessonConverter lessonConverter;
+
+    EnrolledService enrolledService;
+
+    DiscountService discountService;
+
+    RatingCourseService ratingCourseService;
+
+    ReportService reportService;
+
+    QuizRevisionService quizRevisionService;
+
     AdminController(CourseController courseController, AuthController authController,
                     AccountService accountService, CourseService courseService,
                     GoogleDriveService driveService, CategoryConverter categoryConverter,
@@ -70,7 +82,11 @@ public class AdminController {
                     QuizService quizService, QuestionService questionService, AnswerService answerService,
                     AnswerConverter answerConverter, QuestionConverter questionConverter,
                     QuizConverter quizConverter, CourseConverter courseConverter,
-                    UserService userService, PaymentService paymentService){
+                    UserService userService, PaymentService paymentService,
+                    LessonConverter lessonConverter, EnrolledService enrolledService,
+                    DiscountService discountService, DiscountConverter discountConverter,
+                    RatingCourseService ratingCourseService, ReportService reportService,
+                    QuizRevisionService quizRevisionService){
         this.courseController = courseController;
         this.authController = authController;
         this.accountService = accountService;
@@ -90,6 +106,12 @@ public class AdminController {
         this.courseConverter = courseConverter;
         this.userService = userService;
         this.paymentService = paymentService;
+        this.lessonConverter = lessonConverter;
+        this.enrolledService = enrolledService;
+        this.discountService = discountService;
+        this.ratingCourseService = ratingCourseService;
+        this.reportService = reportService;
+        this.quizRevisionService = quizRevisionService;
     }
 
     @GetMapping("/cancel")
@@ -113,10 +135,64 @@ public class AdminController {
                 return authController.loginPage(model, request, response);
             }
             else{
-                return courseController.getCourse(model, request, response);
+                return getPaginated(1, "courseID", "asc", model, request, response);
             }
         }
     }
+
+    @GetMapping("/allCourses/page/{pageNo}")
+    public String getPaginated(@PathVariable (value = "pageNo") int pageNo,
+                               @RequestParam("sortField") String sortField,
+                               @RequestParam("sortDir") String sortDir,
+                               Model model, HttpServletRequest request, HttpServletResponse response){
+        int pageSize = 18;
+        //pagination attribute
+        Page<Course> page = courseService.findPaginated(pageNo, pageSize, sortField, sortDir);
+        List<Course> courseList = page.getContent();
+        List<Course> courseListTemp = new ArrayList<>();
+        HttpSession session = request.getSession();
+
+            courseListTemp.addAll(courseList);
+
+
+
+        model.addAttribute("currentPage", pageNo);
+        int totalPages = page.getTotalPages();
+        int temp = pageSize;
+        for(int i = 0; i < courseListTemp.size(); i++){
+            if(i>temp){
+                totalPages++;
+                temp+=pageSize;
+            }
+        }
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalItems", courseListTemp.size());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc")?"desc":"asc");
+
+        model.addAttribute("courseList", courseListTemp);
+
+        //nav bar attribute
+        CategoryDTO cDto = new CategoryDTO();
+        CourseDTO courseDTO = new CourseDTO();
+        model.addAttribute("courseDTO", courseDTO);
+        model.addAttribute("categoryDTO", cDto);
+        model.addAttribute("category", categoryService.getAllCategories());
+        DiscountDTO discountDTO = new DiscountDTO();
+        model.addAttribute("discountDTO", discountDTO);
+        if(session.getAttribute("errorDiscount")!=null){
+            model.addAttribute("errorDiscount", session.getAttribute("errorDiscount"));
+            session.removeAttribute("errorDiscount");
+        }
+
+        //add discount
+        List<Discount> discountList = discountService.getAllDiscounts();
+        if(!discountList.isEmpty()) model.addAttribute("listOfDiscount", discountList);
+        return "listAll";
+    }
+
 
     @GetMapping("/updateCourse")
     public String updateCourse(@RequestParam("courseID") Integer courseID,Model model, HttpServletRequest request, HttpServletResponse response){
@@ -224,7 +300,7 @@ public class AdminController {
             courseService.saveCourse(course);
             courseDetails.setUpdatedDate(new java.sql.Date(new Date().getTime()));
             courseService.saveCourseDetails(courseDetails);
-            return learnController.learnPage(course.getCourseID() ,model, request, response);
+            return learnController.courseDetailsPage(course.getCourseID() ,model, request, response);
         }
     }
 
@@ -281,7 +357,10 @@ public class AdminController {
                     CourseDetails courseDetails = (CourseDetails) session.getAttribute("newCourseDetails");
                     courseDetails.setUpdatedDate(new java.sql.Date(new Date().getTime()));
                     courseService.saveCourseDetails(courseDetails);
-                    return learnController.learnPage(course.getCourseID() ,model, request, response);
+
+                    session.removeAttribute("newCourse");
+                    session.removeAttribute("newCourseDetails");
+                    return learnController.courseDetailsPage(course.getCourseID() ,model, request, response);
                 }
                 else if (choice.equals("Edit this lesson's quiz")) {
                     AddLessonFormDTO addLessonForm = new AddLessonFormDTO();
@@ -410,9 +489,13 @@ public class AdminController {
     @PostMapping("/updateQuiz")
     public String updateQuiz(@RequestParam("questionDTO-content")String questionContents,
                              @RequestParam("answerDTO-content") String answerContents,
-                             Model model, HttpServletRequest request, HttpServletResponse response){
+                             @RequestParam("submitChange") String submitChange,
+                                 Model model, HttpServletRequest request, HttpServletResponse response){
+
+
         HttpSession session = request.getSession();
         Integer courseID = (Integer) session.getAttribute("courseIDSession");
+
         //Update quiz
         String quizID = request.getParameter("quizID");
         String quizName = request.getParameter("quizName");
@@ -426,56 +509,91 @@ public class AdminController {
         quiz.setCourseID(courseConverter.convertDtoToEtity(courseService.getCourseByID(courseID)));
         quizService.saveQuiz(quiz);
 
-        //Update question and answer
+        if(submitChange.equals("Save(unchanged)")){
+            session.removeAttribute("courseIDSession");
+            updateLessonAndCourse(request, quiz, courseID);
+            return learnController.courseDetailsPage(courseID, model, request, response);
+        }
+        else{
+            //Update question and answer
+            //Get list of questionID and answerID
+            List<Integer> listOfQuestionID = (List<Integer>) session.getAttribute("listOfQuestionID");
+            List<Integer> listOfAnswerID = (List<Integer>) session.getAttribute("listOfAnswerID");
 
-        //Get list of questionID and answerID
-        List<Integer> listOfQuestionID = (List<Integer>) session.getAttribute("listOfQuestionID");
-        List<Integer> listOfAnswerID = (List<Integer>) session.getAttribute("listOfAnswerID");
+            for(int i = 0; i < listOfQuestionID.size(); i++){
+                Question question = new Question();
+                Integer questionID = listOfQuestionID.get(i);
+                String questionContent = request.getParameter("questionDTO-content" + listOfQuestionID.get(i));
+                question.setQuestionID(questionID);
+                question.setContent(questionContent);
+                question.setQuizID(quiz);
+                questionService.saveQuestion(question);
+                List<AnswerDTO> answerDTOList = answerService.getAllByQuestionId(questionID);
+                for (int j = 0; j < answerDTOList.size(); j++) {
+                    Integer answerID = answerDTOList.get(j).getAnswerID();
+                    Answer answer = answerService.getById(answerID);;
+                    String answerContent = request.getParameter("answerDTO-content" + answerDTOList.get(j).getAnswerID());
+                    String isCorrect = request.getParameter("isCorrect"+questionID);
+                    if(isCorrect.equals(answer.getAnswerOrdinal())){
+                        answer.setIsCorrect("right");
+                    } else{
+                        answer.setIsCorrect("wrong");
+                    }
+                    answer.setContent(answerContent);
 
-        for(int i = 0; i < listOfQuestionID.size(); i++){
-            Question question = new Question();
-            Integer questionID = listOfQuestionID.get(i);
-            String questionContent = request.getParameter("questionDTO-content" + listOfQuestionID.get(i));
-            question.setQuestionID(questionID);
-            question.setContent(questionContent);
-            question.setQuizID(quiz);
-            questionService.saveQuestion(question);
-            List<AnswerDTO> answerDTOList = answerService.getAllByQuestionId(questionID);
-            for (int j = 0; j < answerDTOList.size(); j++) {
-                Integer answerID = answerDTOList.get(j).getAnswerID();
-                Answer answer = answerService.getById(answerID);;
-                String answerContent = request.getParameter("answerDTO-content" + answerDTOList.get(j).getAnswerID());
-                String isCorrect = request.getParameter("isCorrect"+questionID);
-                if(isCorrect.equals(answer.getAnswerOrdinal())){
-                    answer.setIsCorrect("right");
-                } else{
-                    answer.setIsCorrect("wrong");
+                    answerService.updateAnswer(answer);
                 }
-                answer.setContent(answerContent);
-
-                answerService.updateAnswer(answer);
             }
-        }
 
-        //Get new question and answer
-        int index = questionContents.indexOf(",");
-        if (index != -1) { // checks if a comma exists in the string
-            questionContents = questionContents.substring(index + 1); // removes the first substring before the first comma
-        }
-        index = -1;
-        for (int i = 0; i < 4; i++) { // iterates four times to skip the first four substrings
-            index = answerContents.indexOf(",");
-            if (index != -1) {
-                answerContents = answerContents.substring(index + 1);
+            //Get new question and answer
+            int index = questionContents.indexOf(",");
+            if (index != -1) { // checks if a comma exists in the string
+                questionContents = questionContents.substring(index + 1); // removes the first substring before the first comma
             }
+            index = -1;
+            for (int i = 0; i < 4; i++) { // iterates four times to skip the first four substrings
+                index = answerContents.indexOf(",");
+                if (index != -1) {
+                    answerContents = answerContents.substring(index + 1);
+                }
+            }
+
+            saveNewQuestionAndAnswer(questionContents, answerContents, quiz, request, response);
+            updateLessonAndCourse(request, quiz, courseID);
+            return learnController.courseDetailsPage(courseID, model, request, response);
         }
-        System.err.println(questionContents);
-        System.err.println(answerContents);
+    }
 
-        saveNewQuestionAndAnswer(questionContents, answerContents, quiz, request, response);
+    public void updateLessonAndCourse(HttpServletRequest request, Quiz quiz, Integer courseID){
+        HttpSession session = request.getSession();
+        //update lesson
+        AddLessonFormDTO addLessonFormDTO = (AddLessonFormDTO) session.getAttribute("addLessonForm");
+        Lesson lesson = new Lesson();
+        lesson.setLessonID(addLessonFormDTO.getLessonID());
+        lesson.setLessonName(addLessonFormDTO.getLessonName());
+        lesson.setLessonDes(addLessonFormDTO.getLessonDes());
+        lesson.setCourseID(courseConverter.convertDtoToEtity(courseService.getCourseByID(courseID)));
+        lesson.setQuizID(quizService.getQuizById(quiz.getQuizID()));
+        lessonService.saveLesson(lesson);
+        List<LearningMaterial> list = learningMaterialService.getLearningMaterialByLessonID(lesson.getLessonID());
+        LearningMaterial learningMaterial = list.get(0);
+        learningMaterial.setLearningMaterialName(addLessonFormDTO.getLearningMaterialName());
+        learningMaterial.setLearningMaterialDes(addLessonFormDTO.getLearningMaterialDes());
+        learningMaterial.setLearningMaterialLink(addLessonFormDTO.getLearningMaterialLink());
+        learningMaterialService.saveLearningMaterial(learningMaterial);
 
+        session.removeAttribute("addLessonForm");
 
-        return learnController.learnPage(courseID, model, request, response);
+        //update course
+        Course course = (Course) session.getAttribute("newCourse");
+        courseService.updateCourse(course);
+        CourseDetails courseDetails = (CourseDetails) session.getAttribute("newCourseDetails");
+        courseDetails.setUpdatedDate(new java.sql.Date(new Date().getTime()));
+        courseService.saveCourseDetails(courseDetails);
+
+        session.removeAttribute("newCourse");
+        session.removeAttribute("newCourseDetails");
+
     }
 
     public void saveNewQuestionAndAnswer(String questionContents, String answerContents, Quiz quiz,
@@ -511,7 +629,7 @@ public class AdminController {
                     String isCorrect = request.getParameter(name);
                     System.out.println(name);
                     System.out.println(isCorrect);
-                    System.out.println("iscorrect test---------------");
+
                     if(answerOrdinal.equals(isCorrect)){
                         answerDTO.setIsCorrect("right");
                     }
@@ -599,6 +717,62 @@ public class AdminController {
         }
     }
 
+    @GetMapping("deleteCourse")
+    public String deleteCourse(@RequestParam("courseID") Integer courseID, Model model, HttpServletRequest request, HttpServletResponse response){
+        courseService.deleteCourseDetails(courseID);
+        CourseDTO course = courseService.getCourseByID(courseID);
+        List<LessonDTO> lessons = lessonService.getAllByCourseID(courseID);
+        for (LessonDTO lesson : lessons){
+            List<LearningMaterial> learningMaterial = learningMaterialService.getLearningMaterialByLessonID(lesson.getLessonID());
+            for(LearningMaterial lm : learningMaterial){
+                learningMaterialService.deleteLearningMaterial(lm.getLearningMaterialID());
+            }
+        }
+        for(LessonDTO lesson : lessons){
+            Lesson temp = lessonConverter.convertDtoToEntity(lesson);
+            lessonService.deteteLesson(temp);
+        }
+
+        List<Enrolled> enrolleds = enrolledService.getAllByCourseID(courseID);
+        for(Enrolled enrolled : enrolleds){
+            enrolledService.deleteEnrolled(enrolled.getEnrolledID());
+        }
+
+        Discount discount = discountService.getDiscountByCourseId(courseID);
+        if(discount != null){
+            discountService.deleteDiscount(discount.getDiscountID());
+        }
+
+        List<RatingCourse> ratingCourse = ratingCourseService.getRatingCourseByCourseID(courseID);
+        for(RatingCourse rating : ratingCourse){
+            ratingCourseService.deleteRatingCourse(rating.getRatingID());
+        }
+
+        List<Quiz> quizzes = quizService.getAllByCourseID(courseID);
+        for(Quiz quiz : quizzes){
+            List<QuestionDTO> questions = questionService.getAllByQuizID(quiz.getQuizID());
+            for(QuestionDTO question : questions){
+                List<AnswerDTO> answers = answerService.getAllByQuestionId(question.getQuestionID());
+                for(AnswerDTO answer : answers){
+                    answerService.deleteAnswer(answerConverter.convertDtoToEntity(answer));
+                }
+                questionService.deleteQuestion(questionConverter.convertDtoToEntity(question));
+            }
+            List<Report> reports = reportService.getAllByQuizID(quiz.getQuizID());
+            for(Report report : reports){
+                List<QuizRevision> quizRevisions = quizRevisionService.getQuizRevisionByReportID(report.getReportID());
+                for(QuizRevision quizRevision : quizRevisions){
+                    quizRevisionService.deleteQuizRevision(quizRevision.getQuizRevisionID());
+                }
+                reportService.deleteReport(report.getReportID());
+            }
+            quizService.deleteQuiz(quiz);
+        }
+
+        courseService.deleteCourse(courseID);
+        return "redirect:/allCourses";
+    }
+
     @GetMapping("/allUsers")
     public String userList(Model model, HttpServletRequest request, HttpServletResponse response){
         return userListPage(1, "accountID", "asc", model, request, response);
@@ -618,7 +792,6 @@ public class AdminController {
         List<String> roleList = new ArrayList<>();
         roleList.add("STUDENT");
         roleList.add("ADMIN");
-        roleList.add("SUPPORTER");
         model.addAttribute("roleList", roleList);
 
         int pageSize = 10;
@@ -655,7 +828,6 @@ public class AdminController {
         List<String> roleList = new ArrayList<>();
         roleList.add("STUDENT");
         roleList.add("ADMIN");
-        roleList.add("SUPPORTER");
         model.addAttribute("roleList", roleList);
 
         int pageSize = 10;
@@ -758,5 +930,20 @@ public class AdminController {
             }
         }
         return temp;
+    }
+
+    @PostMapping("/addDiscount")
+    public String addDiscount(@ModelAttribute("discountDTO") DiscountDTO discountDTO, Model model,
+                              HttpServletRequest request, HttpServletResponse response){
+        // Check if the course already has a discount
+        Discount discount = discountService.getDiscountByCourseId(discountDTO.getCourseID().getCourseID());
+        if(discount == null){
+            discountService.addDiscount(discountDTO);
+        }
+        else{
+            HttpSession session = request.getSession();
+            session.setAttribute("errorDiscount", "This course already has a discount");
+        }
+        return "redirect:/allCourses";
     }
 }

@@ -1,0 +1,51 @@
+/* footer css */
+.footer-st{
+    background: url('../images/bg-footer-other-page.png') no-repeat;
+}
+
+.social-icons{
+    text-align: center;
+    align-content: center;
+}
+
+.social-icons li {
+    display: inline-block;
+    margin: 0px 5px;
+}
+
+.social-icons {
+    padding-left: 25px;
+}
+
+.social-icons li a {
+    width: 44px;
+    height: 44px;
+    display: inline-block;
+    text-align: center;
+    line-height: 44px;
+    background-color: #fff;
+    color: #dc8cdb;
+    border-radius: 50%;
+    transition: all .5s;
+}
+
+.social-icons li a:hover {
+    background-color: #dc8cdb;
+    color: #fff;
+}
+
+.col-lg-3 p,
+.col-lg-4 p,
+.col-lg-5 p,
+.col-lg-6 p,
+.col-lg-2 p{
+    color: #fff;
+}
+
+.col-lg-3 div p,
+.col-lg-4 div p,
+.col-lg-5 div p,
+.col-lg-6 div p,
+.col-lg-2 div p{
+    color: #fff;
+}

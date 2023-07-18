@@ -99,7 +99,7 @@ public class CourseController {
                                @RequestParam("sortField") String sortField,
                                @RequestParam("sortDir") String sortDir,
                                Model model, HttpServletRequest request, HttpServletResponse response){
-        int pageSize = 2;
+        int pageSize = 18;
         //pagination attribute
         Page<Course> page = courseService.findPaginated(pageNo, pageSize, sortField, sortDir);
         List<Course> courseList = page.getContent();
@@ -182,7 +182,7 @@ public class CourseController {
             }
         }
         else {
-            courseListTemp.addAll(courseList);
+            return authController.loginPage(model, request, response);
         }
 
         model.addAttribute("currentPage", pageNo);
@@ -357,21 +357,26 @@ public class CourseController {
         temp = categoryService.getCategoryByName(categoryDTO.getCategoryName());
         int categoryID = temp.getCategoryID();
         model.addAttribute("courseList", courseService.getAllCoursesByCategoryID(categoryID));
-        return getMyCoursePaginatedByAttribute(1, "courseID", "asc", "categoryID", String.valueOf(categoryID), model, request, response);
+        return getMyCoursePaginatedByAttribute(1, "courseID", "desc", "categoryID", String.valueOf(categoryID), model, request, response);
     }
 
     @PostMapping("/filter")
     public String filter(@ModelAttribute("category") CategoryDTO categoryDTO, Model model,
                          HttpServletRequest request, HttpServletResponse response) {
-        CourseDTO courseDTO = new CourseDTO();
-        model.addAttribute("courseDTO", courseDTO);
-        CategoryDTO temp = new CategoryDTO();
-        model.addAttribute("categoryDTO", temp);
-        model.addAttribute("category", categoryService.getAllCategories());
-        temp = categoryService.getCategoryByName(categoryDTO.getCategoryName());
-        int categoryID = temp.getCategoryID();
-        model.addAttribute("courseList", courseService.getAllCoursesByCategoryID(categoryID));
-        return getPaginatedByAttribute(1, "courseID", "asc", "categoryID", String.valueOf(categoryID), model, request, response);
+        if(categoryDTO.getCategoryName().equals("All")){
+            return getPaginated(1, "courseID", "asc", model, request, response);
+        }
+        else{
+            CourseDTO courseDTO = new CourseDTO();
+            model.addAttribute("courseDTO", courseDTO);
+            CategoryDTO temp = new CategoryDTO();
+            model.addAttribute("categoryDTO", temp);
+            model.addAttribute("category", categoryService.getAllCategories());
+            temp = categoryService.getCategoryByName(categoryDTO.getCategoryName());
+            int categoryID = temp.getCategoryID();
+            model.addAttribute("courseList", courseService.getAllCoursesByCategoryID(categoryID));
+            return getPaginatedByAttribute(1, "courseID", "desc", "categoryID", String.valueOf(categoryID), model, request, response);
+        }
     }
 
     @GetMapping("/getCourseByCategoryID")
@@ -383,7 +388,7 @@ public class CourseController {
         model.addAttribute("categoryDTO", temp);
         model.addAttribute("category", categoryService.getAllCategories());
         model.addAttribute("courseList", courseService.getAllCoursesByCategoryID(categoryID));
-        return getPaginated(1, "courseID", "asc", model, request, response);
+        return getPaginatedByAttribute(1, "courseID", "desc", "categoryID", String.valueOf(categoryID), model, request, response);
     }
 
     @PostMapping("/sort")
@@ -624,6 +629,11 @@ public class CourseController {
                     learningMaterialService.saveLearningMaterial(learningMaterial);
                 }
             }
+            session.removeAttribute("newCourse");
+            session.removeAttribute("newCourseDetails");
+            session.removeAttribute("quizListFormList");
+            session.removeAttribute("addLessonFormDTOList");
+
             return getCourse(model, request, response);
         }
     }

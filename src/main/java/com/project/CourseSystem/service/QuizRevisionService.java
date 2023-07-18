@@ -9,4 +9,6 @@ public interface QuizRevisionService {
     void saveQuizRevision(QuizRevision quizRevision);
 
     List<QuizRevision> getQuizRevisionByReportID(Integer reportID);
+
+    void deleteQuizRevision(Integer quizRevisionID);
 }
