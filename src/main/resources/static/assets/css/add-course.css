@@ -7,51 +7,75 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+body {
+    padding-bottom: 30px;
+}
+
 h1 {
     text-align: center;
-    margin-bottom: 20px;
 }
 
 form {
-    display: flex;
-    flex-direction: column;
+    max-width: 500px;
+    margin: 0 auto;
 }
 
 label {
-    margin-bottom: 5px;
+    display: block;
+    margin-bottom: 10px;
     font-weight: bold;
 }
 
 input[type="text"],
-textarea,
 select {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
+    padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
-input[type="date"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.material-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4CAF50;
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
+.material-row .material-type {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.material-row .material-value {
+    flex: 2;
+    margin-right: 10px;
+}
+
+.remove-material {
+    background-color: #f44336;
+    color: white;
     border: none;
+    padding: 6px 12px;
     border-radius: 4px;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #45a049;
+#add-material-btn,
+#submit-btn,
+#create-quiz,
+#next-btn {
+    background-color: rgba(246, 191, 159, 1);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    margin-top: 10px;
+    margin-right: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#quiz-container {
+    margin-top: 20px;
+    text-align: center;
 }
