@@ -424,7 +424,7 @@
                 <a th:href="@{/updateCourse(courseID=${courseListEntity.courseID})}" id="updateButton">
                   Edit
                 </a>
-                <a th:href="@{/deleteCourse(courseID=${courseListEntity.courseID})}" id="del-a">
+                <a th:href="@{/deleteCourse(courseID=${courseListEntity.courseID})}" id="del-a" onclick="return confirmDel()">
                   Delete
                 </a>
               </div>
@@ -513,21 +513,14 @@
 <script src="assets/js/slick-slider.js"></script>
 <script src="assets/js/custom.js"></script>
 <script th:inline="javascript">
-  var deleteLink = document.getElementById('del-a');
 
-  deleteLink.addEventListener('click', function(event) {
-    event.preventDefault(); // chặn sự kiện mặc định của thẻ <a>
-
-    // Lấy URL được chỉ định trong thẻ <a>
-    var url = deleteLink.getAttribute('href');
-
-    // Xác nhận xóa
+  function confirmDel(){
     if (confirm('Are you sure you want to delete this course?')) {
-      window.location.href = url; // chuyển hướng trang bằng URL
+      return true;
     }
-  });
-
-
+    return false;
+  }
+  
   const error = [[${errorDiscount}]] ;
   if (error!=null) {
     alert(error);

@@ -750,14 +750,6 @@ public class AdminController {
 
         List<Quiz> quizzes = quizService.getAllByCourseID(courseID);
         for(Quiz quiz : quizzes){
-            List<QuestionDTO> questions = questionService.getAllByQuizID(quiz.getQuizID());
-            for(QuestionDTO question : questions){
-                List<AnswerDTO> answers = answerService.getAllByQuestionId(question.getQuestionID());
-                for(AnswerDTO answer : answers){
-                    answerService.deleteAnswer(answerConverter.convertDtoToEntity(answer));
-                }
-                questionService.deleteQuestion(questionConverter.convertDtoToEntity(question));
-            }
             List<Report> reports = reportService.getAllByQuizID(quiz.getQuizID());
             for(Report report : reports){
                 List<QuizRevision> quizRevisions = quizRevisionService.getQuizRevisionByReportID(report.getReportID());
@@ -765,6 +757,14 @@ public class AdminController {
                     quizRevisionService.deleteQuizRevision(quizRevision.getQuizRevisionID());
                 }
                 reportService.deleteReport(report.getReportID());
+            }
+            List<QuestionDTO> questions = questionService.getAllByQuizID(quiz.getQuizID());
+            for(QuestionDTO question : questions){
+                List<AnswerDTO> answers = answerService.getAllByQuestionId(question.getQuestionID());
+                for(AnswerDTO answer : answers){
+                    answerService.deleteAnswer(answerConverter.convertDtoToEntity(answer));
+                }
+                questionService.deleteQuestion(questionConverter.convertDtoToEntity(question));
             }
             quizService.deleteQuiz(quiz);
         }
