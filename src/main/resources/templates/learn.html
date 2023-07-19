@@ -58,9 +58,67 @@
             font-weight: 700;
             font-size: 17px;
         }
+
+        #rating-container{
+            border: none;
+            margin-top: 40px;
+            padding: 20px;
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            border-radius: 7px;
+        }
+
+        .star-rating input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .star-rating label {
+            font-size: 2rem;
+            color: gray;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .star-rating input[type="radio"]:checked + label {
+            color: gold;
+        }
+
+        .star-rated input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .star-rated label {
+            font-size: 2rem;
+            color: gray;
+            cursor: pointer;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .star-rated input[type="radio"]:checked + label {
+            color: gold;
+        }
+
+        .btn-primary{
+            border: none;
+            font-size: 13px;
+            background-color: #dc8cdb;
+            color: #fff;
+            padding: 12px 30px;
+            display: inline-block;
+            border-radius: 5px;
+            font-weight: 500;
+            text-transform: uppercase;
+            transition: all .3s;
+        }
+
+        .btn-primary:hover{
+            background: #fff;
+            color: #dc8cdb;
+        }
     </style>
 </head>
-<body>
+<body onload="updateStarStyles()">
     <!-- ***** Header Area Start ***** -->
     <header class="header-area header-sticky" style="z-index: 2000">
     <div class="container">
@@ -201,8 +259,8 @@
         </div>
     </div>
 
-
-    <div class="container" th:if="${totalStatus=='Status: Completed'}" style="border: rgba(173, 173, 173, 0.99) 1px solid">
+  <!-- -->
+    <div class="container" th:if="${totalStatus=='Status: Completed'}" id="rating-container">
         <div th:if="${rating!=null}">
             <h3>Thanks for rating!</h3>
             <div class="star-rated">
@@ -239,7 +297,22 @@
                     <label for="star5-" title="5 stars">&#9733;</label>
                 </div>
                 <label for="comment">Comment:</label>
-                <textarea class="form-control" rows="5" id="comment" name="comment" th:field="*{comment}" required></textarea>
+                <textarea class="form-control" rows="5" id="comment" name="comment" th:field="*{comment}" required
+                style="width: 100%;
+                        min-height: 140px;
+                        max-height: 180px;
+                        border-radius: 5px;
+                        background-color: #f4f7fb;
+                        outline: none;
+                        border: none;
+                        box-shadow: none;
+                        font-size: 13px;
+                        font-weight: 500;
+                        color: #7a7a7a;
+                        padding: 15px;
+                        margin-top: 20px;
+                        margin-bottom: 20px;"
+                ></textarea>
                 <input type="number" th:value="${course.courseID}" name="currentCourseID" style="display: none"/>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
@@ -378,22 +451,38 @@
             });
         });
 
+        var starRadios = document.querySelectorAll('.star-rating input[type="radio"]');
 
-        $(document).ready(function() {
-            var starRating = $(".star-rating");
-
-            starRating.on("click", "input[type='radio']", function() {
-                var selected = $(this).val();
-
-                starRating.find("label").css("color", "gray");
-
-                // Add gold color to selected and preceding labels
-                $(this).prevAll("input[type='radio']").addBack().each(function() {
-                    starRating.find("label[for='" + $(this).attr("id") + "']").css("color", "gold");
-                });
+        for (var i = 0; i < starRadios.length; i++) {
+            starRadios[i].addEventListener('click', function(event) {
+                // Cập nhật style của các nút radio bên trái
+                var clickedRadio = event.target;
+                var sibling = clickedRadio.previousSibling;
+                while (sibling) {
+                    if (sibling.nodeName === 'LABEL') {
+                        sibling.style.color = 'gold';
+                    }
+                    sibling = sibling.previousSibling;
+                }
             });
-        });
+        }
 
+        function updateStarStyles() {
+            var ratedStarRadios = document.querySelectorAll('.star-rated input[type="radio"]');
+
+            for (var i = 0; i < ratedStarRadios.length; i++) {
+                if (ratedStarRadios[i].checked) {
+                    // Cập nhật style của các nút radio bên trái
+                    var sibling = ratedStarRadios[i].previousSibling;
+                    while (sibling) {
+                        if (sibling.nodeName === 'LABEL') {
+                            sibling.style.color = 'gold';
+                        }
+                        sibling = sibling.previousSibling;
+                    }
+                }
+            }
+        }
     </script>
 </body>
 </html>

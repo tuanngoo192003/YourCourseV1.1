@@ -202,46 +202,4 @@ html{
     color: black;
 }
 
-.star-rating input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-}
-
-.star-rating label {
-    font-size: 2rem;
-    color: gray;
-    cursor: pointer;
-    transition: color 0.2s ease-in-out;
-}
-
-.star-rating input[type="radio"]:checked + label {
-    color: gold;
-}
-
-.star-rated input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-}
-
-.star-rated label {
-    font-size: 2rem;
-    color: gray;
-    cursor: pointer;
-    transition: color 0.2s ease-in-out;
-}
-
-.star-rated input[type="radio"]:checked + label {
-    color: gold;
-}
-
-.btn-primary{
-    margin-top: 10px;
-    background-color: #ffb963;
-    border-color: #ffb963;
-}
-
-.btn-primary:hover{
-    background-color: #ffb963;
-    border-color: #ffb963;
-}
 /* end learn css*/
