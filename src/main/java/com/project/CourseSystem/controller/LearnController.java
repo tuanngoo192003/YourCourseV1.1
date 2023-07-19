@@ -91,16 +91,6 @@ public class LearnController {
             SystemAccountDTO accountDTO = accountService.findUserByAccountName(accountName);
             Enrolled enrolled = enrolledService.findByAccountIdAndCourseID(accountDTO.getAccountID(), courseID);
             if(enrolled != null){
-                EnrolledDTO enrolledDTO = enrolledConverter.convertEntityToDTO(enrolled);
-                model.addAttribute("enrolledDTO", enrolledDTO);
-                /* get rating */
-                UserInfo userInfo = userService.findUser(accountDTO.getAccountID());
-                List<Report> reportList = reportService.getAllReportByUserID(userInfo.getUserID());
-                RatingCourse ratingCourse = ratingCourseService.getRatingCourseByCourseIdAndUserId(courseID, userInfo.getUserID());
-                if(ratingCourse != null){
-                    model.addAttribute("rating", ratingCourse.getRating());
-                    model.addAttribute("comment", ratingCourse.getComment());
-                }
                 return "redirect:/courseDetails/learn?courseID="+courseID;
             }
             else{
@@ -252,6 +242,16 @@ public class LearnController {
             if(enrolled != null){
                 CourseDTO course = courseService.getCourseByID(courseID);
                 setCourseDetailsContentModel(course, model, request, response);
+                EnrolledDTO enrolledDTO = enrolledConverter.convertEntityToDTO(enrolled);
+                model.addAttribute("enrolledDTO", enrolledDTO);
+                /* get rating */
+                UserInfo userInfo = userService.findUser(accountDTO.getAccountID());
+                List<Report> reportList = reportService.getAllReportByUserID(userInfo.getUserID());
+                RatingCourse ratingCourse = ratingCourseService.getRatingCourseByCourseIdAndUserId(courseID, userInfo.getUserID());
+                if(ratingCourse != null){
+                    model.addAttribute("rating", ratingCourse.getRating());
+                    model.addAttribute("comment", ratingCourse.getComment());
+                }
                 return "learn";
             }
             else {
