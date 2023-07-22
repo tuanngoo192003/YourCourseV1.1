@@ -37,4 +37,7 @@ public interface SystemAccountRepository extends JpaRepository<SystemAccount, In
 
     @Query(value = "SELECT * FROM system_account WHERE register_date >= DATE_SUB(NOW(), INTERVAL ?1 WEEK)", nativeQuery = true)
     List<SystemAccount> findRecentRegisterAccount(int numberOfWeek);
+
+    @Query(value = "SELECT * FROM system_account WHERE accountid = ?1", nativeQuery = true)
+    SystemAccount findByAccountId(Integer accountID);
 }

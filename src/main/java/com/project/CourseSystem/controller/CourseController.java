@@ -56,6 +56,12 @@ public class CourseController {
 
     private DiscountService discountService;
 
+    private PaymentDetailsService paymentDetailsService;
+
+    private UserService userService;
+
+    private PaymentService paymentService;
+
     @Autowired
     public CourseController(CourseService courseService,  CategoryService categoryService,
                             AuthController authController, AccountService accountService,
@@ -64,7 +70,8 @@ public class CourseController {
                             LessonController lessonController, QuizService quizService,
                             LessonService lessonService, QuestionService questionService,
                             AnswerService answerService, LearningMaterialService learningMaterialService,
-                            DiscountService discountService){
+                            DiscountService discountService, PaymentDetailsService paymentDetailsService,
+                            UserService userService, PaymentService paymentService){
         this.courseService = courseService;
         this.categoryService = categoryService;
         this.authController = authController;
@@ -80,6 +87,9 @@ public class CourseController {
         this.answerService = answerService;
         this.learningMaterialService = learningMaterialService;
         this.discountService = discountService;
+        this.paymentDetailsService = paymentDetailsService;
+        this.userService = userService;
+        this.paymentService = paymentService;
     }
 
     @GetMapping("/course")
@@ -125,6 +135,25 @@ public class CourseController {
             courseListTemp.addAll(courseList);
         }
 
+        if(session.getAttribute("CSys")!=null){
+            List<PaymentDetails> paymentDetailsList = paymentDetailsService.getAllPaymentDetails();
+            String accountName = session.getAttribute("CSys").toString();
+            SystemAccount account = system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName));
+            int userID = userService.findUserIDByAccountID(account.getAccountID());
+            UserInfo userInfo = userService.findByUserID(userID);
+            List<Payment> payments = paymentService.findPaymentByUserID(userID);
+            for(int i = 0; i < payments.size(); i++){
+                for(int j = 0; j < paymentDetailsList.size(); j++){
+                    if(payments.get(i).getPaymentID() == paymentDetailsList.get(j).getPaymentID().getPaymentID()){
+                        for(int k = 0; k < courseListTemp.size(); k++){
+                            if(courseListTemp.get(k).getCourseID() == paymentDetailsList.get(j).getCourseID().getCourseID()){
+                                courseListTemp.remove(k);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         model.addAttribute("currentPage", pageNo);
         int totalPages = page.getTotalPages();
@@ -154,6 +183,13 @@ public class CourseController {
         //add discount
         List<Discount> discountList = discountService.getAllDiscounts();
         if(!discountList.isEmpty()) model.addAttribute("listOfDiscount", discountList);
+
+        String msg =(String)session.getAttribute("successMsg");
+        if (msg!=null){
+            model.addAttribute("successMsg", msg);
+            session.removeAttribute("successMsg");
+        }
+
         return "list";
     }
 

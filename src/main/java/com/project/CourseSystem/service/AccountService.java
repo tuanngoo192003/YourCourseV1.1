@@ -35,4 +35,6 @@ public interface AccountService {
     List<SystemAccount> getRecentRegisterAccount(int numberOfWeek);
 
     Page<SystemAccount> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
+
+    SystemAccount findAccountByID(Integer accountID);
 }

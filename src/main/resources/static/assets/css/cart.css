@@ -69,17 +69,11 @@
     font-weight: 700;
     margin-right: 10px;
     margin-bottom: 10px;
+    color: #fff;
 }
 
 #remove-all:hover{
     background: #fff;
-}
-
-#remove-all a{
-    color: #fff;
-}
-
-#remove-all:hover a{
     color: rgb(159, 150, 149);
 }
 

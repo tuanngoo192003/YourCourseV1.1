@@ -73,5 +73,10 @@ public class UserServiceImpl implements UserService {
         return userInfoRepository.findAll(PageRequest.of(pageNo - 1, pageSize, sort));
     }
 
+    @Override
+    public UserInfo findByUserID(Integer userID) {
+        return userInfoRepository.findByUserID(userID);
+    }
+
 
 }

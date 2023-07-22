@@ -74,6 +74,8 @@ public class AdminController {
 
     QuizRevisionService quizRevisionService;
 
+    PaymentDetailsService paymentDetailsService;
+
     AdminController(CourseController courseController, AuthController authController,
                     AccountService accountService, CourseService courseService,
                     GoogleDriveService driveService, CategoryConverter categoryConverter,
@@ -86,7 +88,7 @@ public class AdminController {
                     LessonConverter lessonConverter, EnrolledService enrolledService,
                     DiscountService discountService, DiscountConverter discountConverter,
                     RatingCourseService ratingCourseService, ReportService reportService,
-                    QuizRevisionService quizRevisionService){
+                    QuizRevisionService quizRevisionService, PaymentDetailsService paymentDetailsService){
         this.courseController = courseController;
         this.authController = authController;
         this.accountService = accountService;
@@ -112,6 +114,7 @@ public class AdminController {
         this.ratingCourseService = ratingCourseService;
         this.reportService = reportService;
         this.quizRevisionService = quizRevisionService;
+        this.paymentDetailsService = paymentDetailsService;
     }
 
     @GetMapping("/cancel")
@@ -736,6 +739,11 @@ public class AdminController {
         List<Enrolled> enrolleds = enrolledService.getAllByCourseID(courseID);
         for(Enrolled enrolled : enrolleds){
             enrolledService.deleteEnrolled(enrolled.getEnrolledID());
+        }
+
+        List<PaymentDetails> paymentDetails = paymentDetailsService.getAllByCourseID(courseID);
+        for(PaymentDetails payment : paymentDetails){
+            paymentDetailsService.deletePaymentDetails(payment.getPaymentDetailsID());
         }
 
         Discount discount = discountService.getDiscountByCourseId(courseID);

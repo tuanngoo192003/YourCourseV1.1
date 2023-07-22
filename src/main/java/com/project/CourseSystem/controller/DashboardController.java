@@ -39,11 +39,13 @@ public class DashboardController {
 
     final private EnrolledService enrolledService;
 
+    final private PaymentDetailsService paymentDetailsService;
+
     public DashboardController(CategoryService categoryService, RatingCourseService ratingCourseService,
                                PaymentService paymentService, CourseService courseService,
                                CourseConverter courseConverter, AccountService accountService,
                                UserService userService, AuthController authController,
-                               EnrolledService enrolledService){
+                               EnrolledService enrolledService, PaymentDetailsService paymentDetailsService){
         this.categoryService = categoryService;
         this.ratingCourseService = ratingCourseService;
         this.paymentService = paymentService;
@@ -53,6 +55,7 @@ public class DashboardController {
         this.userService = userService;
         this.authController = authController;
         this.enrolledService = enrolledService;
+        this.paymentDetailsService = paymentDetailsService;
     }
 
 
@@ -87,6 +90,7 @@ public class DashboardController {
 
                 //Get total revenue
                 List<Payment> paymentList = paymentService.getAllPayment();
+                model.addAttribute("paymentList", paymentList);
                 //Get course bought
                 List<Enrolled> enrolledList = new ArrayList<>();
                 int totalNumberOfCourseBought = 0;
@@ -213,6 +217,7 @@ public class DashboardController {
 
                 //Get total course by category
                 List<CourseDTO> allCourses = courseService.getAllCourses();
+                model.addAttribute("allCourses", allCourses);
                 List<CourseDTO> courseOfCate1 = courseService.getAllCoursesByCategoryID(1);
                 List<CourseDTO> courseOfCate2 = courseService.getAllCoursesByCategoryID(2);
                 List<CourseDTO> courseOfCate3 = courseService.getAllCoursesByCategoryID(3);
@@ -257,6 +262,22 @@ public class DashboardController {
                 model.addAttribute("courseDTO", courseDTO);
                 model.addAttribute("category", categoryService.getAllCategories());
                 model.addAttribute("system_account", new SystemAccountDTO());
+                //getAllUser
+                List<UserInfo> userList = userService.findAllUser();
+                model.addAttribute("userList", userList);
+                List<PaymentDetails> paymentDetailsList = paymentDetailsService.getAllPaymentDetails();
+                model.addAttribute("paymentDetailsList", paymentDetailsList);
+            }
+
+            String msg = (String) session.getAttribute("successMessage");
+            if(msg != null){
+                model.addAttribute("successMessage", msg);
+                session.removeAttribute("successMessage");
+            }
+            String errorMsg = (String) session.getAttribute("errorMsg");
+            if(errorMsg != null){
+                model.addAttribute("errorMsg", errorMsg);
+                session.removeAttribute("errorMsg");
             }
             return "dashboard";
         }

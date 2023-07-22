@@ -13,6 +13,7 @@ import lombok.*;
 public class PaymentDetails {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="paymentDetailsID", nullable = false)
     private Integer paymentDetailsID;
 

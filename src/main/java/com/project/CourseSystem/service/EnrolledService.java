@@ -17,4 +17,6 @@ public interface EnrolledService {
     List<Enrolled> getAllByCourseID(Integer courseID);
 
     void deleteEnrolled(Integer enrolledID);
+
+    void saveEnrolled(Enrolled enrolled);
 }

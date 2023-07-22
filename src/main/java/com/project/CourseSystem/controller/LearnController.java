@@ -52,12 +52,17 @@ public class LearnController {
 
     private AuthController authController;
 
+    private PaymentDetailsService paymentDetailsService;
+
+    private PaymentService paymentService;
+
     private LearnController(LessonService lessonService, QuizService quizService, CourseService courseService
     , CategoryService categoryService, EnrolledService enrolledService, EnrolledConverter enrolledConverter,
                             AccountService accountService, LearningMaterialService learningMaterialService,
                             ReportService reportService, UserService userService, CourseConverter courseConverter,
                             RatingCourseService ratingCourseService, DiscountService discountService,
-                            DiscountConverter discountConverter, AuthController authController) {
+                            DiscountConverter discountConverter, AuthController authController,
+                            PaymentDetailsService paymentDetailsService, PaymentService paymentService) {
         this.lessonService = lessonService;
         this.quizService = quizService;
         this.courseService = courseService;
@@ -73,6 +78,8 @@ public class LearnController {
         this.discountService = discountService;
         this.discountConverter = discountConverter;
         this.authController = authController;
+        this.paymentDetailsService = paymentDetailsService;
+        this.paymentService = paymentService;
     }
 
     @GetMapping("/courseDetails")
@@ -105,6 +112,20 @@ public class LearnController {
                     DiscountDTO discountDTO = discountConverter.convertToDTO(discount);
                     model.addAttribute("discountDTO", discountDTO);
                     model.addAttribute("discountPrice", discountPrice);
+                }
+                /* get paid */
+                int userID = userService.findUserIDByAccountID(accountDTO.getAccountID());
+                UserInfo userInfo = userService.findByUserID(userID);
+                List<Payment> paymentList = paymentService.findPaymentByUserID(userID);
+                List<PaymentDetails> paymentDetailsList = paymentDetailsService.getAllByCourseID(courseID);
+                for(PaymentDetails paymentDetails : paymentDetailsList){
+                    for(Payment payment : paymentList){
+                        if(paymentDetails.getPaymentID().getPaymentID() == payment.getPaymentID()){
+                            if(paymentDetails.getCourseID().getCourseID() == courseID){
+                                model.addAttribute("paid", "paid");
+                            }
+                        }
+                    }
                 }
                 return "courseDetails";
             }

@@ -91,7 +91,7 @@
     </style>
 </head>
 
-<body>
+<body onload="showMessage()">
 <!-- ***** OffCanvas Start *****-->
 <div class="offcanvas offcanvas-end" id="demo">
     <div class="offcanvas-header">
@@ -104,7 +104,7 @@
                 <form
                         role="form"
                         method="post"
-                        th:action="@{payment}"
+                        th:action="@{/cart}"
                         th:object="${courseDTO}"
                 >
                     <div class="cartContent" >
@@ -126,7 +126,15 @@
                 </form>
             </th:block>
             <button id="check-out"><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
-            <button id="remove-all"><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
+            <form
+                    role="form"
+                    method="post"
+                    th:action="@{/cart}"
+                    th:object="${courseDTO}"
+            >
+                <input id="remove-all" type="submit" name="paymentButton" value="Remove All">
+                <input type="text" name="fromPage" value="list" style="display: none">
+            </form>
         </div>
         <div th:if="${session.cart==null}">
             <div class="cartContent" style="display: inline-flex">
@@ -312,7 +320,7 @@
                             <form class="display"
                                   role="form"
                                   method="post"
-                                  th:action="@{/payment}"
+                                  th:action="@{/cart}"
                                   th:object="${courseDTO}"
                             >
                                 <a th:href="@{/courseDetails(courseID=${courseListEntity.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${courseListEntity.courseImage}" alt="Image" class="shadow"></a>
@@ -421,6 +429,13 @@
 <script src="assets/js/slick-slider.js"></script>
 <script src="assets/js/custom.js"></script>
 <script th:inline="javascript">
+    function showMessage(){
+        var messageEl = [[${successMsg}]];
+        if (messageEl!=null) {
+            alert(messageEl)
+        }
+    }
+
     const message = [[${message}]];
     if (message!=null) {
         alert(message);

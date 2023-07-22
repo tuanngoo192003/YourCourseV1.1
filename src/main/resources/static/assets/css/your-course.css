@@ -198,7 +198,7 @@ body {
 }
 
 section {
-  margin-top: 140px;
+  margin-bottom: 140px;
 }
 
 #contact-section {
@@ -968,7 +968,7 @@ section.simple-cta {
   background-position: center center;
   background-size: cover;
   width: 100%;
-  padding: 180px 0px 180px 0px;
+  padding: 130px 0px 180px 0px;
 }
 
 section.simple-cta .left-image {
