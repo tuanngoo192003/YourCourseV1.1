@@ -301,7 +301,7 @@
     <div class="col-md-3 filter">
       <div class="filterTitle">
         <h2>Filter and refine</h2>
-        <form method="post" role="form" th:action="@{/filter}" th:object="${categoryDTO}" style="margin-top: 20px">
+        <form method="post" role="form" th:action="@{/allCourseFilter}" th:object="${categoryDTO}" style="margin-top: 20px">
           <input type="checkbox" th:value="'All'" th:field="*{categoryName}" onclick="this.form.submit()">
           <span th:text="'All'" style="margin-left: 5px"></span>
         </form>
@@ -315,7 +315,7 @@
             </button>
           </h2>
           <div th:id="flush-collapseCategory" class="accordion-collapse collapse" aria-labelledby="flush-headingCategory" data-bs-parent="#accordionFlushCategory">
-            <form method="post" role="form" th:action="@{/filter}" th:object="${categoryDTO}">
+            <form method="post" role="form" th:action="@{/allCourseFilter}" th:object="${categoryDTO}">
               <div th:each="category, state: ${category}">
                 <div class="accordion-body">
                   <div class="option">
@@ -341,7 +341,7 @@
             <form
                     role="form"
                     method="post"
-                    th:action="@{/sort}"
+                    th:action="@{/allCourseSort}"
                     th:object="${courseDTO}"
                     style="margin-right: 30px;"
             >
@@ -371,7 +371,7 @@
             <form
                     role="form"
                     method="post"
-                    th:action="@{/sort}"
+                    th:action="@{/allCourseSort}"
                     th:object="${courseDTO}"
                     style="margin-right: 30px;"
             >

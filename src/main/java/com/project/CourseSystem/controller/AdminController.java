@@ -143,6 +143,25 @@ public class AdminController {
         }
     }
 
+    @PostMapping("/allCourseFilter")
+    public String filter(@ModelAttribute("category") CategoryDTO categoryDTO, Model model,
+                         HttpServletRequest request, HttpServletResponse response) {
+        if(categoryDTO.getCategoryName().equals("All")){
+            return getPaginated(1, "courseID", "asc", model, request, response);
+        }
+        else{
+            CourseDTO courseDTO = new CourseDTO();
+            model.addAttribute("courseDTO", courseDTO);
+            CategoryDTO temp = new CategoryDTO();
+            model.addAttribute("categoryDTO", temp);
+            model.addAttribute("category", categoryService.getAllCategories());
+            temp = categoryService.getCategoryByName(categoryDTO.getCategoryName());
+            int categoryID = temp.getCategoryID();
+            model.addAttribute("courseList", courseService.getAllCoursesByCategoryID(categoryID));
+            return getPaginatedByAttribute(1, "courseID", "desc", "categoryID", String.valueOf(categoryID), model, request, response);
+        }
+    }
+
     @GetMapping("/allCourses/page/{pageNo}")
     public String getPaginated(@PathVariable (value = "pageNo") int pageNo,
                                @RequestParam("sortField") String sortField,
@@ -176,6 +195,101 @@ public class AdminController {
         model.addAttribute("reverseSortDir", sortDir.equals("asc")?"desc":"asc");
 
         model.addAttribute("courseList", courseListTemp);
+
+        //nav bar attribute
+        CategoryDTO cDto = new CategoryDTO();
+        CourseDTO courseDTO = new CourseDTO();
+        model.addAttribute("courseDTO", courseDTO);
+        model.addAttribute("categoryDTO", cDto);
+        model.addAttribute("category", categoryService.getAllCategories());
+        DiscountDTO discountDTO = new DiscountDTO();
+        model.addAttribute("discountDTO", discountDTO);
+        if(session.getAttribute("errorDiscount")!=null){
+            model.addAttribute("errorDiscount", session.getAttribute("errorDiscount"));
+            session.removeAttribute("errorDiscount");
+        }
+
+        //add discount
+        List<Discount> discountList = discountService.getAllDiscounts();
+        if(!discountList.isEmpty()) model.addAttribute("listOfDiscount", discountList);
+        return "listAll";
+    }
+
+    @PostMapping("/allCourseSort")
+    public String sort(@ModelAttribute("courseDTO") CourseDTO courseDTO, @RequestParam("option") String option,
+                       Model model, HttpServletRequest request, HttpServletResponse response){
+        if(option.equals("Newest")){
+            return getPaginated(1, "startDate", "desc", model, request, response);
+        }
+        else if(option.equals("Oldest")){
+            return getPaginated(1, "startDate", "asc", model, request, response);
+        }
+        else if(option.equals("About to end")){
+            return getPaginated(1, "endDate", "asc", model, request, response);
+        }
+        else if(option.equals("High to low")){
+            return getPaginated(1, "price", "desc", model, request, response);
+        }
+        else if(option.equals("Low to high")){
+            return getPaginated(1, "price", "asc", model, request, response);
+        }
+        else if(option.equals("Free")){
+            String sortField = "price";
+            String sortDir = "desc";
+            return getPaginatedByAttribute(1, sortField, sortDir, "price", "0", model, request, response);
+        }
+        else{
+            return getPaginated(1, "courseID", "asc", model, request, response);
+        }
+    }
+
+    public String getPaginatedByAttribute(@PathVariable (value = "pageNo") int pageNo,
+                                          @RequestParam("sortField") String sortField,
+                                          @RequestParam("sortDir") String sortDir,
+                                          String attribute, String value,
+                                          Model model, HttpServletRequest request, HttpServletResponse response){
+        int pageSize = 18;
+        //pagination attribute
+        Page<Course> page = courseService.findPaginated(pageNo, pageSize, sortField, sortDir);
+        List<Course> courseList = page.getContent();
+        List<Course> courseListTemp = new ArrayList<>();
+        HttpSession session = request.getSession();
+
+        courseListTemp.addAll(courseList);
+
+        List<Course> courseListTemp1 = new ArrayList<>();
+        if(attribute.equals("price")){
+            for(int i = 0; i < courseListTemp.size(); i++){
+                if(courseListTemp.get(i).getPrice() == 0){
+                    courseListTemp1.add(courseListTemp.get(i));
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < courseListTemp.size(); i++) {
+                if (courseListTemp.get(i).getCategoryID().getCategoryID() == Integer.parseInt(value)) {
+                    courseListTemp1.add(courseListTemp.get(i));
+                }
+            }
+        }
+
+        model.addAttribute("currentPage", pageNo);
+        int totalPages = page.getTotalPages();
+        int temp = pageSize;
+        for(int i = 0; i < courseListTemp.size(); i++){
+            if(i>temp){
+                totalPages++;
+                temp+=pageSize;
+            }
+        }
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("totalItems", courseListTemp1.size());
+
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc")?"desc":"asc");
+
+        model.addAttribute("courseList", courseListTemp1);
 
         //nav bar attribute
         CategoryDTO cDto = new CategoryDTO();
