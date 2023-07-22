@@ -23,7 +23,7 @@ public class RatingCourse {
     @Column(name="comment", length = 1000,nullable = false)
     private String comment;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="courseID", nullable = false)
     private Course courseID;
 

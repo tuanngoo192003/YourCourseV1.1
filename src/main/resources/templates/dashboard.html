@@ -572,27 +572,13 @@
     var paymentDetails = document.querySelectorAll('[data-paymentid]');
     paymentDetails.forEach(function (btn) {
         btn.addEventListener('click', function () {
-            var paymentID = this.getAttribute('data-paymentID');
             var cardNumber = this.getAttribute('data-cardNumber');
             var cvv = this.getAttribute('data-cvv');
             var expiryDate = this.getAttribute('data-expiryDate');
             var nameOnCard = this.getAttribute('data-nameOnCard');
             var paymentAmount = this.getAttribute('data-paymentAmount');
-            var paymentDate = this.getAttribute('data-paymentDate');
             var userName = this.getAttribute('data-userName');
 
-            var courseNames = [];
-
-            /*[# th:each="pDetails: ${paymentDetailsList}"]*/
-            var paymentIDTemp = [[${pDetails.paymentID.paymentID}]];
-            if (paymentID === paymentIDTemp) {
-                /*[# th:each="courses: ${allCourses}" ]*/
-                /*[# th:if="${pDetails.courseID.courseID == courses.courseID}" ]*/
-                courseNames.push([[${courses.courseName}]]);
-                /*[/]*/
-                /*[/]*/
-            }
-            /*[/]*/;
 
             //display modal
             var pmDetailsmodal = document.getElementById('paymentDetailsModal');
@@ -616,13 +602,6 @@
 
             var nameOnCardElement = document.getElementById('nameOnCard');
             nameOnCardElement.textContent = nameOnCard;
-
-            var courseNamesElement = document.getElementById('courseNames');
-            if (courseNames.length > 0) {
-                courseNamesElement.innerHTML = courseNames.join(', ');
-            } else {
-                courseNamesElement.innerHTML = 'N/A';
-            }
 
             modal.show();
         });

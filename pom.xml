@@ -117,7 +117,9 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
 		</plugins>
+		<finalName>YourCourse</finalName>
 	</build>
 
 </project>
