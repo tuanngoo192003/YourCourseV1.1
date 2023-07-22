@@ -75,9 +75,6 @@ public class DashboardController {
                 authController.loginPage(model, request, response);
             }
             else{
-                int userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
-                UserInfo userInfo = userService.findUser(userID);
-                model.addAttribute("userInfo", userInfo);
                 //Get rating
                 List<RatingCourse> ratingCourseList = ratingCourseService.getAllRating();
                 model.addAttribute("userRating", ratingCourseList);
@@ -284,6 +281,10 @@ public class DashboardController {
                 model.addAttribute("userList", userList);
                 List<PaymentDetails> paymentDetailsList = paymentDetailsService.getAllPaymentDetails();
                 model.addAttribute("paymentDetailsList", paymentDetailsList);
+
+                int userID = userService.findUserIDByAccountID(systemAccountDTO.getAccountID());
+                UserInfo userInfo = userService.findUser(userID);
+                model.addAttribute("userInfo", userInfo);
             }
 
             String msg = (String) session.getAttribute("successMessage");
