@@ -27,7 +27,7 @@ public class RatingCourse {
     @JoinColumn(name="courseID", nullable = false)
     private Course courseID;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="userID", nullable = false)
     private UserInfo userID;
 }
