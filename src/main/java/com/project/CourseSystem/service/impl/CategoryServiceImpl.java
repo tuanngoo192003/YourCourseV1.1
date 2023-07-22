@@ -46,7 +46,6 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDTO getCategoryByName(String categoryName) {
         CategoryDTO categoryDTO = new CategoryDTO();
         Category category = categoryRepository.getCategoryByName(categoryName);
-        System.out.println(category.getCategoryName());
         categoryDTO = categoryConverter.convertEntityToDTO(category);
         return categoryDTO;
     }

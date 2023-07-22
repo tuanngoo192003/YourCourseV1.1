@@ -274,7 +274,6 @@ public class CourseController {
             courseListTemp.addAll(courseList);
         }
         List<Course> courseListTemp1 = new ArrayList<>();
-        System.out.println(attribute);
         if(attribute.equals("price")){
             for(int i = 0; i < courseListTemp.size(); i++){
                 if(courseListTemp.get(i).getPrice() == 0){
@@ -385,15 +384,21 @@ public class CourseController {
     @PostMapping("/myCourseFilter")
     public String myCourseFilter(@ModelAttribute("category") CategoryDTO categoryDTO, Model model,
                          HttpServletRequest request, HttpServletResponse response) {
-        CourseDTO courseDTO = new CourseDTO();
-        model.addAttribute("courseDTO", courseDTO);
-        CategoryDTO temp = new CategoryDTO();
-        model.addAttribute("categoryDTO", temp);
-        model.addAttribute("category", categoryService.getAllCategories());
-        temp = categoryService.getCategoryByName(categoryDTO.getCategoryName());
-        int categoryID = temp.getCategoryID();
-        model.addAttribute("courseList", courseService.getAllCoursesByCategoryID(categoryID));
-        return getMyCoursePaginatedByAttribute(1, "courseID", "desc", "categoryID", String.valueOf(categoryID), model, request, response);
+        if(categoryDTO.getCategoryName().equals("All")){
+            return getMyCourse(model, request, response);
+        }
+        else{
+            CourseDTO courseDTO = new CourseDTO();
+            model.addAttribute("courseDTO", courseDTO);
+            CategoryDTO temp = new CategoryDTO();
+            model.addAttribute("categoryDTO", temp);
+            model.addAttribute("category", categoryService.getAllCategories());
+            temp = categoryService.getCategoryByName(categoryDTO.getCategoryName());
+            int categoryID = temp.getCategoryID();
+            model.addAttribute("courseList", courseService.getAllCoursesByCategoryID(categoryID));
+            return getMyCoursePaginatedByAttribute(1, "courseID", "desc", "categoryID", String.valueOf(categoryID), model, request, response);
+
+        }
     }
 
     @PostMapping("/filter")
@@ -434,21 +439,15 @@ public class CourseController {
             return getPaginated(1, "startDate", "desc", model, request, response);
         }
         else if(option.equals("Oldest")){
-            String sortField = "startDate";
-            String sortDir = "asc";
             return getPaginated(1, "startDate", "asc", model, request, response);
         }
         else if(option.equals("About to end")){
-            String sortField = "endDate";
-            String sortDir = "asc";
             return getPaginated(1, "endDate", "asc", model, request, response);
         }
         else if(option.equals("High to low")){
             return getPaginated(1, "price", "desc", model, request, response);
         }
         else if(option.equals("Low to high")){
-            String sortField = "price";
-            String sortDir = "asc";
             return getPaginated(1, "price", "asc", model, request, response);
         }
         else if(option.equals("Free")){
@@ -457,8 +456,6 @@ public class CourseController {
             return getPaginatedByAttribute(1, sortField, sortDir, "price", "0", model, request, response);
         }
         else{
-            String sortField = "courseID";
-            String sortDir = "asc";
             return getPaginated(1, "courseID", "asc", model, request, response);
         }
     }
