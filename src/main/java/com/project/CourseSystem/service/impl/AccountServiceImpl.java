@@ -135,6 +135,12 @@ public class AccountServiceImpl implements AccountService {
         return system_accountRespository.findAll(PageRequest.of(pageNo - 1, pageSize, sort));
     }
 
+    @Override
+    public SystemAccount findAccountByID(Integer accountID) {
+        SystemAccount systemAccount = system_accountRespository.findByAccountId(accountID);
+        return systemAccount;
+    }
+
     public boolean isUsernameExist(String account_name){
         SystemAccount system_accountEntity = system_accountRespository.findByAccount_name(account_name);
         if(system_accountEntity == null){

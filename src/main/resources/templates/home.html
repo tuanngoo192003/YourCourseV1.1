@@ -67,7 +67,7 @@
         <form
                 role="form"
                 method="post"
-                th:action="@{payment}"
+                th:action="@{/cart}"
                 th:object="${courseDTO}"
         >
           <div class="cartContent" >
@@ -89,7 +89,15 @@
         </form>
       </th:block>
       <button id="check-out"><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
-      <button id="remove-all"><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
+      <form
+              role="form"
+              method="post"
+              th:action="@{/cart}"
+              th:object="${courseDTO}"
+      >
+        <input id="remove-all" type="submit" name="paymentButton" value="Remove All">
+        <input type="text" name="fromPage" value="list" style="display: none">
+      </form>
     </div>
     <div th:if="${session.cart==null}">
       <div class="cartContent" style="display: inline-flex">
@@ -171,26 +179,27 @@
 </header>
 <!-- ***** Header Area End ***** -->
 
-<!-- ***** Main Banner Area Start ***** -->
-<section class="main-banner" id="top">
+<section class="simple-cta" id="top">
   <div class="container">
     <div class="row">
-      <div class="col-lg-12" style="text-align: center">
-        <div class="header-text">
-          <h6>Welcome to YourCourse</h6>
-          <div>
-            <h2>Learn <em>Anytime</em> <em>Anywhere</em></h2>
-            <h2>From <span><em>Any Device</em></span></h2>
-          </div>
+      <div class="col-lg-5 offset-lg-1">
+        <div class="left-image">
+          <img src="assets/images/cta-left-image.png" alt="">
+        </div>
+      </div>
+      <div class="col-lg-5 align-self-center">
+        <h6>Get the sale right now!</h6>
+        <h4>Up to 50% OFF For 1+ courses</h4>
+        <div class="white-button" style="margin-top: 20px;">
+          <a th:href="@{/course}">View course</a>
         </div>
       </div>
     </div>
   </div>
 </section>
-<!-- ***** Main Banner Area End ***** -->
 
 <section class="our-courses" id="courses">
-  <div class="container">
+  <div class="container-fluid">
     <div class="row">
       <div class="col-lg-6 offset-lg-3">
         <div class="section-heading">
@@ -368,26 +377,9 @@
   </div>
 </section>
 
-<section class="simple-cta">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-5 offset-lg-1">
-        <div class="left-image">
-          <img src="assets/images/cta-left-image.png" alt="">
-        </div>
-      </div>
-      <div class="col-lg-5 align-self-center">
-        <h6>Get the sale right now!</h6>
-        <h4>Up to 50% OFF For 1+ courses</h4>
-        <div class="white-button" style="margin-top: 20px;">
-          <a th:href="@{/course}">View course</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="contact-us" id="contact-section">
+
+<section class="contact-us" id="contact-section" style="margin-bottom: 0px">
   <div class="container">
     <div class="row">
       <div class="col-lg-8" style="margin-bottom: 25px">

@@ -74,7 +74,7 @@
                 <form
                         role="form"
                         method="post"
-                        th:action="@{payment}"
+                        th:action="@{/cart}"
                         th:object="${courseDTO}"
                 >
                     <div class="cartContent" >
@@ -96,7 +96,15 @@
                 </form>
             </th:block>
             <button id="check-out"><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
-            <button id="remove-all"><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
+            <form
+                    role="form"
+                    method="post"
+                    th:action="@{/cart}"
+                    th:object="${courseDTO}"
+            >
+                <input id="remove-all" type="submit" name="paymentButton" value="Remove All">
+                <input type="text" name="fromPage" value="list" style="display: none">
+            </form>
         </div>
         <div th:if="${session.cart==null}">
             <div class="cartContent" style="display: inline-flex">
@@ -179,7 +187,7 @@
 <!-- ***** Header Area End ***** -->
 
 <!-- if user didn't purchase the course, this session appear -->
-<div class="purchase-session sticky-top">
+<div class="purchase-session sticky-top" th:if="${paid==null}">
     <!-- if the course has discount -->
     <div th:if="${discountPrice!=null}">
         <h2>
@@ -192,7 +200,7 @@
         <form
                 role="form"
                 method="post"
-                th:action="@{payment}"
+                th:action="@{cart}"
                 th:object="${courseDTO}"
         >
             <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
@@ -203,7 +211,7 @@
         <form
                 role="form"
                 method="post"
-                th:action="@{payment}"
+                th:action="@{cart}"
                 th:object="${courseDTO}"
         >
             <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
@@ -218,7 +226,7 @@
         <form
                 role="form"
                 method="post"
-                th:action="@{payment}"
+                th:action="@{cart}"
                 th:object="${courseDTO}"
         >
             <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">
@@ -229,7 +237,7 @@
         <form
                 role="form"
                 method="post"
-                th:action="@{payment}"
+                th:action="@{cart}"
                 th:object="${courseDTO}"
         >
             <input type="number" th:value="${course.courseID}" th:name="courseID" style="display: none">

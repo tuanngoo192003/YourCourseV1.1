@@ -8,9 +8,17 @@ public interface PaymentService {
 
     void addPaymentForOne(Payment payment);
 
+    Payment addPayment(Payment payment);
+
     List<Payment> getAllPayment();
 
     List<Payment> getPaymentByMonth(int endMonth, int startMonth);
 
     List<Payment> findPaymentByUserID(Integer userID);
+
+    Payment getPaymentByID(int paymentID);
+
+    void updatePayment(Payment payment);
+
+    List<Payment> getAllConfirmedPayment();
 }

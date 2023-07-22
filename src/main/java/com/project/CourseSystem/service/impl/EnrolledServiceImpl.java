@@ -29,7 +29,7 @@ public class EnrolledServiceImpl implements EnrolledService {
     @Override
     public void addEnrolled(List<Enrolled> enrolled) {
         for(int i = 0; i < enrolled.size(); i++) {
-            enrolledRepository.save(enrolled.get(i));
+            enrolledRepository.insertEnrolled(enrolled.get(i).getEnrolledDate(), enrolled.get(i).getAccountID().getAccountID(), enrolled.get(i).getCourseID().getCourseID(), enrolled.get(i).getPaymentID().getPaymentID());
         }
     }
 
@@ -46,5 +46,10 @@ public class EnrolledServiceImpl implements EnrolledService {
     @Override
     public void deleteEnrolled(Integer enrolledID) {
         enrolledRepository.deleteById(enrolledID);
+    }
+
+    @Override
+    public void saveEnrolled(Enrolled enrolled) {
+        enrolledRepository.save(enrolled);
     }
 }

@@ -87,7 +87,7 @@
                 <form
                         role="form"
                         method="post"
-                        th:action="@{payment}"
+                        th:action="@{/cart}"
                         th:object="${courseDTO}"
                 >
                     <div class="cartContent" >
@@ -109,7 +109,15 @@
                 </form>
             </th:block>
             <button id="check-out"><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
-            <button id="remove-all"><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
+            <form
+                    role="form"
+                    method="post"
+                    th:action="@{/cart}"
+                    th:object="${courseDTO}"
+            >
+                <input id="remove-all" type="submit" name="paymentButton" value="Remove All">
+                <input type="text" name="fromPage" value="list" style="display: none">
+            </form>
         </div>
         <div th:if="${session.cart==null}">
             <div class="cartContent" style="display: inline-flex">
@@ -196,11 +204,11 @@
         <h2 th:text="${quiz.quizName}" style="font-weight: 600"></h2>
         <p th:text="${quiz.quizDes}" ></p>
         <div th:if="${report.mark<50}">
-            <h4 th:text="'Score: '+${report.mark}" style="color: red; font-weight: 600;"></h4>
+            <h4 th:text="'Score: '+${report.mark}+'/100'" style="color: red; font-weight: 600;"></h4>
             <p style="color: red">Status: Not passed</p>
         </div>
         <div th:if="${report.mark>40}">
-            <h4 th:text="'Score: '+${report.mark}" style="color: green; font-weight: 600;"></h4>
+            <h4 th:text="'Score: '+${report.mark}+'/100'" style="color: green; font-weight: 600;"></h4>
             <p style="color: green">Status: Passed</p>
         </div>
         <p th:text="'Completed date: '+${report.completedDate}"></p>

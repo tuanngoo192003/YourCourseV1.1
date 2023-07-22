@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
-    @Query(value = "SELECT * FROM Category", nativeQuery = true)
+    @Query(value = "SELECT * FROM category", nativeQuery = true)
     List<Category> getAllCategories();
 
-    @Query(value = "SELECT * FROM Category WHERE categoryid = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM category WHERE categoryid = ?1", nativeQuery = true)
     Category getCategoryByID(Integer categoryID);
 
-    @Query(value = "SELECT * FROM Category WHERE category_name = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM category WHERE category_name = ?1", nativeQuery = true)
     Category getCategoryByName(String categoryName);
 }

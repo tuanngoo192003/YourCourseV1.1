@@ -20,4 +20,6 @@ public interface UserService {
     List<UserInfo> findAllUser();
 
     Page<UserInfo> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
+
+    UserInfo findByUserID(Integer userID);
 }

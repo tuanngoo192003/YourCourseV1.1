@@ -5,6 +5,8 @@ import com.project.CourseSystem.dto.CategoryDTO;
 import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.dto.SystemAccountDTO;
 import com.project.CourseSystem.entity.Enrolled;
+import com.project.CourseSystem.entity.Payment;
+import com.project.CourseSystem.entity.PaymentDetails;
 import com.project.CourseSystem.entity.UserInfo;
 import com.project.CourseSystem.service.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,6 +48,10 @@ public class UserController {
 
     private AuthController authController;
 
+    private PaymentService paymentService;
+
+    private PaymentDetailsService paymentDetailService;
+
     public UserController(SystemAccountDTO systemAccountDTO, UserService userService,
                           AccountService accountService,
                           UserInfoConverter userInfoConverter,
@@ -53,7 +59,9 @@ public class UserController {
                           CourseService courseService,
                           EnrolledService enrolledService,
                           GoogleDriveService driveService,
-                          AuthController authController) {
+                          AuthController authController,
+                          PaymentService paymentService,
+                          PaymentDetailsService paymentDetailService) {
         this.systemAccountDTO = systemAccountDTO;
         this.userService = userService;
         this.accountService = accountService;
@@ -63,6 +71,8 @@ public class UserController {
         this.enrolledService = enrolledService;
         this.driveService = driveService;
         this.authController = authController;
+        this.paymentService = paymentService;
+        this.paymentDetailService = paymentDetailService;
     }
 
     @GetMapping("/profile")
@@ -74,6 +84,7 @@ public class UserController {
         else{
 
             List<CourseDTO> courseList = courseService.getAllCourses();
+            model.addAttribute("allCourse", courseList);
             List<Enrolled> enrolledList = (List<Enrolled>) session.getAttribute("enrolledList");
             List<CourseDTO> courseListTemp = new ArrayList<>();
             for(int i = 0; i < enrolledList.size(); i++){
@@ -97,6 +108,19 @@ public class UserController {
             String gmail = systemAccountDTO.getGmail();
             model.addAttribute("gmail", gmail);
             model.addAttribute("system_account", systemAccountDTO);
+
+            List<Payment> paymentList = paymentService.findPaymentByUserID(userInfo.getUserID());
+            model.addAttribute("paymentList", paymentList);
+            List<PaymentDetails> paymentDetailsList = new ArrayList<>();
+            for(int i = 0; i < paymentList.size(); i++){
+            	List<PaymentDetails> paymentDetailsListTemp = paymentDetailService.getAllPaymentDetailsByPaymentID(paymentList.get(i).getPaymentID());
+            	for(int j = 0; j < paymentDetailsListTemp.size(); j++) {
+            		paymentDetailsList.add(paymentDetailsListTemp.get(j));
+            	}
+            }
+
+            model.addAttribute("paymentDetailsList", paymentDetailsList);
+
             return "userProfile";
         }
     }

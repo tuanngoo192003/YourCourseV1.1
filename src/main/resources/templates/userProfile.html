@@ -104,6 +104,39 @@
             background: linear-gradient(-145deg, rgb(178, 102, 182) 0%, rgb(213, 154, 125) 100%) !important;
             border: none;
         }
+
+        #confirmed{
+            border: none;
+            background: #74ce74;
+            padding: 15px;
+            border-radius: 7px;
+            color: #fff;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        #pending{
+            border: none;
+            padding: 10px 20px;
+            background: cornflowerblue;
+            border-radius: 7px;
+            color: #fff;
+            font-weight: 600;
+            text-align: center;
+            margin-right: 10px;
+        }
+
+        #reject{
+            border: none;
+            padding: 10px 20px;
+            background: #ea0200;
+            border-radius: 7px;
+            margin-top: 5px;
+            color: #fff;
+            font-weight: 600;
+            text-align: center;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -121,7 +154,7 @@
                 <form
                         role="form"
                         method="post"
-                        th:action="@{payment}"
+                        th:action="@{/cart}"
                         th:object="${courseDTO}"
                 >
                     <div class="cartContent" >
@@ -143,7 +176,15 @@
                 </form>
             </th:block>
             <button id="check-out"><a th:href="@{/checkout(cartButton = 'checkout')}" th:text="'Check out: '+${session.sum}+'đ'"></a></button>
-            <button id="remove-all"><a th:href="@{/checkout(cartButton = 'removeAll')}" th:text="'Remove all from cart'"></a></button>
+            <form
+                    role="form"
+                    method="post"
+                    th:action="@{/cart}"
+                    th:object="${courseDTO}"
+            >
+                <input id="remove-all" type="submit" name="paymentButton" value="Remove All">
+                <input type="text" name="fromPage" value="list" style="display: none">
+            </form>
         </div>
         <div th:if="${session.cart==null}">
             <div class="cartContent" style="display: inline-flex">
@@ -269,8 +310,12 @@
                         Password
                     </a>
                     <a class="nav-link" id="notification-tab" data-toggle="pill" href="#notification" role="tab" aria-controls="notification" aria-selected="false">
-                        <i class="fa fa-bell text-center mr-1"></i>
+                        <i class="fa fa-book text-center mr-1"></i>
                         Your Course
+                    </a>
+                    <a class="nav-link" id="payment-tab" data-toggle="pill" href="#payment" role="tab" aria-controls="notification" aria-selected="false">
+                        <i class="fa fa-credit-card text-center mr-1"></i>
+                        Your payment
                     </a>
                 </div>
             </div>
@@ -435,6 +480,48 @@
                                 ><a th:href="@{/myCourse}"
                                     style="color: #fff"
                                 >See full purchased course</a></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="payment" role="tabpanel" aria-labelledby="password-tab">
+                    <h3 class="mb-4" style="font-weight: 900;">Your Payment</h3>
+                    <div th:each="payments: ${paymentList}" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);margin-bottom: 20px;border-radius: 7px">
+                        <div style="margin-left: 20px">
+                            <div style="margin-top: 15px">
+                                <span th:text="'Payment amount: '+${payments.paymentAmount}" style="font-weight: 700;margin: 10px 10px 0px 0px;"></span>
+                                <span th:text="'Payment date: '+${payments.paymentDate}" style="font-weight: 700;margin: 10px 10px 0px 0px;"></span>
+                                <span style="font-weight: 700;margin: 10px 10px 0px 0px;">
+                                <th:block th:if="${payments.status=='Confirm'}">
+                                    <button th:text="'Status: '+${payments.status}" id="confirmed"></button>
+                                </th:block>
+                                <th:block th:if="${payments.status=='Pending'}">
+                                    <button th:text="'Status: '+${payments.status}" id="pending"></button>
+                                </th:block>
+                                <th:block th:if="${payments.status == 'Reject'}">
+                                    <button th:text="'Status: '+${payments.status}" id="reject"></button>
+                                </th:block>
+                            </span>
+                            </div>
+
+                        </div>
+                        <div th:each="paymentDetails: ${paymentDetailsList}">
+                            <div th:if="${payments.paymentID == paymentDetails.paymentID.paymentID}">
+                                <div>
+                                    <div th:each="all: ${allCourse}">
+                                        <div th:if="${all.courseID == paymentDetails.courseID.courseID}">
+                                            <div class="container-fluid" style="display: flex; margin-top: 20px;">
+                                                <a th:href="@{/courseDetails/learn(courseID=${all.courseID})}"><img th:src="'https://drive.google.com/uc?id='+${all.courseImage}" alt="Image" class="shadow"
+                                                    style="overflow: hidden;width: 60px;height: 60px;margin: 5px 5px;border-radius: 10px;"></a>
+                                                <div class="displayContent">
+                                                    <input type="text" name="fromPage" value="list" style="display: none">
+                                                    <input type="number" th:value="${all.courseID}" th:name="courseID" style="display: none">
+                                                    <a th:href="@{/courseDetails/learn(courseID=${all.courseID})}"><h4 th:text="${all.courseName}"></h4></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
