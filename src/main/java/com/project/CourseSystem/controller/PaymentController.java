@@ -324,8 +324,19 @@ public class PaymentController {
             }
         }
         else{
-            session.setAttribute("errorMsg", "Payment status has already been pending");
-            return "redirect:/dashboard?error=Payment status has already been pending";
+            Payment payment = paymentService.getPaymentByID(Integer.parseInt(paymentID));
+            if(payment.getStatus().equals("Confirm")){
+                session.setAttribute("errorMsg", "You cannot change confirmed payment");
+                return "redirect:/dashboard?error=You cannot change confirmed payment";
+            } else if (payment.getStatus().equals("Reject")) {
+                session.setAttribute("errorMsg", "You cannot change rejected payment");
+                return "redirect:/dashboard?error=You cannot change rejected payment";
+            }
+            else{
+                session.setAttribute("errorMsg", "Payment status has already been pending");
+                return "redirect:/dashboard?error=Payment status has already been pending";
+            }
+
         }
 
         session.setAttribute("successMessage", "Payment status has been changed successfully!");

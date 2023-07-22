@@ -19,4 +19,6 @@ public interface PaymentService {
     Payment getPaymentByID(int paymentID);
 
     void updatePayment(Payment payment);
+
+    List<Payment> getAllConfirmedPayment();
 }

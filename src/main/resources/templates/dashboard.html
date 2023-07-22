@@ -170,15 +170,8 @@
 
 
     </style>
-    <script>
-        var error = [[${error}]];
-        console.log(error);
-        if (error && error.trim() !== "") {
-            alert(error);
-        }
-    </script>
 </head>
-<body>
+<body onload="showMessage()">
 <!-- Modal -->
 <div class="modal fade" tabindex="-1" id="paymentDetailsModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -194,7 +187,6 @@
                     <p><strong>CVV:</strong> <span id="cvv"></span></p>
                     <p><strong>Expiry Date:</strong> <span id="expiryDate"></span></p>
                     <p><strong>Name On Card:</strong> <span id="nameOnCard"></span></p>
-                    <p><strong>Course Name(s):</strong> <span id="courseNames"></span></p>
                 </div>
             </div>
             <div class="modal-footer">
@@ -329,7 +321,7 @@
 </header>
 <!-- ***** Header Area End ***** -->
 
-<div class="container-fluid" onload="showMessage()" style="margin-top: 110px; padding-top: 20px">
+<div class="container-fluid"  style="margin-top: 110px; padding-top: 20px">
     <div>
         <div id="dashboard-title" style="display: block">
             <h2>Dashboard</h2>
@@ -391,7 +383,7 @@
                 <div class="displayTotalStatistic">
                     <i class="fa-solid fa-money-bill display-i"></i>
                     <div>
-                        <h2 th:text="${totalRevenue}+'đ'"></h2>
+                        <h2 th:text="${totalRevenue}"></h2>
                         <p>Total revenue: </p>
                         <p th:text="${growthRevenue}+'%(30 days)'"></p>
                         <th:block th:if="${statusOfGrowthRevenue=='increase'}">
@@ -471,34 +463,34 @@
                                  <td style="font-weight: 700;">Payment Status</td>
                                  <td></td>
                             </tr>
-                            <tr th:each="payments: ${paymentList}">
-                                <td th:text="${payments.paymentID}"></td>
-                                <td th:text="${payments.paymentAmount}+'đ'"></td>
-                                <td th:text="${payments.paymentDate}"></td>
-                                <td>
-                                    <th:block th:each="user: ${userList}">
-                                        <th:block th:if="${payments.userID.userID == user.userID}">
-                                            <span th:text="${user.userName}"></span>
-                                        </th:block>
+                        <tr th:each="payments: ${paymentList}">
+                            <td th:text="${payments.paymentID}"></td>
+                            <td th:text="${payments.paymentAmount}+'đ'"></td>
+                            <td th:text="${payments.paymentDate}"></td>
+                            <td>
+                                <th:block th:each="user: ${userList}">
+                                    <th:block th:if="${payments.userID.userID == user.userID}">
+                                        <span th:text="${user.userName}"></span>
                                     </th:block>
-                                </td>
-                                <td>
-                                    <form th:id="'formStatus'+${payments.paymentID}" role="form" method="post" th:original-status="${payments.status}" th:action="@{/confirmPayment}">
-                                        <input type="text" name="paymentID" th:value="${payments.paymentID}" style="display: none">
-                                        <select class="status" name="pStatus" onchange="updateStatus(this)">
-                                            <option value="Pending" th:selected="${payments.status=='Pending'}">Pending</option>
-                                            <option value="Confirm" th:selected="${payments.status=='Confirm'}">Confirm</option>
-                                            <option value="Reject" th:selected="${payments.status=='Reject'}">Reject</option>
-                                        </select>
-                                    </form>
-                                </td>
-                                <td>
-                                    <button class="payDetails" id="paymentDetails" th:data-cardNumber="${payments.cardNumber}" th:data-cvv="${payments.cvv}" th:data-expiryDate="${payments.expiryDate}" th:data-nameOnCard="${payments.nameOnCard}"
-                                            th:data-paymentAmount="${payments.paymentAmount}" th:data-paymentID="${payments.paymentID}"
-                                            th:data-paymentDate="${payments.paymentDate}" th:data-userName="${payments.userID.userName}"
-                                    >View payment details</button>
-                                </td>
-                            </tr>
+                                </th:block>
+                            </td>
+                            <td>
+                                <form th:id="'formStatus'+${payments.paymentID}" role="form" method="post" th:original-status="${payments.status}" th:action="@{/confirmPayment}">
+                                    <input type="text" name="paymentID" th:value="${payments.paymentID}" style="display: none">
+                                    <select class="status" name="pStatus" onchange="updateStatus(this)">
+                                        <option value="Pending" th:selected="${payments.status=='Pending'}" selected>Pending</option>
+                                        <option value="Confirm" th:selected="${payments.status=='Confirm'}" selected>Confirm</option>
+                                        <option value="Reject" th:selected="${payments.status=='Reject'}" selected>Reject</option>
+                                    </select>
+                                </form>
+                            </td>
+                            <td>
+                                <button class="payDetails" id="paymentDetails" th:data-cardNumber="${payments.cardNumber}" th:data-cvv="${payments.cvv}" th:data-expiryDate="${payments.expiryDate}" th:data-nameOnCard="${payments.nameOnCard}"
+                                        th:data-paymentAmount="${payments.paymentAmount}" th:data-paymentID="${payments.paymentID}"
+                                        th:data-paymentDate="${payments.paymentDate}" th:data-userName="${payments.userID.userName}"
+                                >View payment details</button>
+                            </td>
+                        </tr>
                     </table>
             </div>
         </div>
@@ -639,22 +631,28 @@
 
     function updateStatus(selectElement) {
         const formElement = selectElement.closest("form");
-        const originalStatus = formElement.getAttribute("original-status");
+        const options = selectElement.options;
+        let originalStatus = "";
+        for (let i = 0; i < options.length; i++) {
+            if (options[i].hasAttribute("selected")) {
+                originalStatus = options[i].value;
+                break;
+            }
+        }
         const pStatus = selectElement.value;
         const confirmMessage = "Are you sure to " + pStatus + " this payment?";
-        const options = selectElement.querySelectorAll("option");
-
         if (!confirm(confirmMessage)) {
-            // Đặt lại giá trị lựa chọn ban đầu
+            for (let i = 0; i < options.length; i++) {
+                options[i].removeAttribute('selected');
+            }
             for (let i = 0; i < options.length; i++) {
                 if (options[i].value === originalStatus) {
-                    options[i].setAttribute("selected", "selected");
+                    options[i].setAttribute('selected', true);
                     break;
                 }
             }
             return false;
         }
-
         formElement.submit();
     }
 

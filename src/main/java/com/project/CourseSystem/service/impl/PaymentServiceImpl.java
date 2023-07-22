@@ -34,7 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<Payment> getPaymentByMonth(int endMonth, int startMonth) {
-        List<Payment> paymentList = paymentRepository.getPaymentByMonth(endMonth, startMonth);
+        List<Payment> paymentList = paymentRepository.getPaymentByMonth(endMonth, startMonth, "Confirm");
         return paymentList;
     }
 
@@ -53,6 +53,12 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public void updatePayment(Payment payment) {
         paymentRepository.save(payment);
+    }
+
+    @Override
+    public List<Payment> getAllConfirmedPayment() {
+        List<Payment> paymentList = paymentRepository.getAllConfirmedPayment("Confirm");
+        return paymentList;
     }
 
 }

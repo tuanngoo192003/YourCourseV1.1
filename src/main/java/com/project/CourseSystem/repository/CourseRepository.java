@@ -13,13 +13,13 @@ import java.util.List;
 
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
-    @Query(value = "SELECT * FROM Course WHERE categoryID = ?1", nativeQuery = true)
+    @Query(value = "SELECT * FROM course WHERE categoryID = ?1", nativeQuery = true)
     List<Course> getAllByCategoryID(int categoryID);
 
-    @Query(value = "SELECT * FROM Course WHERE course_name LIKE %?1%", nativeQuery = true)
+    @Query(value = "SELECT * FROM course WHERE course_name LIKE %?1%", nativeQuery = true)
     List<Course> getAllByCourseNameContaining(String courseName);
 
-    @Query(value = "SELECT * FROM Course WHERE ?1 = ?2", nativeQuery = true)
+    @Query(value = "SELECT * FROM course WHERE ?1 = ?2", nativeQuery = true)
     Page<Course> findAllByAttribute(String attribute, String value, PageRequest of);
 
     @Modifying
@@ -29,6 +29,6 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     void updateCourse(String courseName, String courseImage, String courseDes, Date createdDate
             , Date startDate, Date endDate, Float price, int categoryID, int courseID);
 
-    @Query(value = "SELECT * FROM Course WHERE categoryID = ?1 LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM course WHERE categoryID = ?1 LIMIT 1", nativeQuery = true)
     Course findFirstCourseByCategory(Integer categoryID);
 }

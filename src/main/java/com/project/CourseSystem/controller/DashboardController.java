@@ -15,8 +15,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 public class DashboardController {
@@ -91,6 +94,7 @@ public class DashboardController {
                 //Get total revenue
                 List<Payment> paymentList = paymentService.getAllPayment();
                 model.addAttribute("paymentList", paymentList);
+                paymentList = paymentService.getAllConfirmedPayment();
                 //Get course bought
                 List<Enrolled> enrolledList = new ArrayList<>();
                 int totalNumberOfCourseBought = 0;
@@ -105,7 +109,9 @@ public class DashboardController {
                     }
                     totalRevenue += paymentList.get(i).getPaymentAmount();
                 }
-                model.addAttribute("totalRevenue", totalRevenue);
+                NumberFormat vnCurrencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+                String formattedRevenue = vnCurrencyFormat.format(totalRevenue);
+                model.addAttribute("totalRevenue", formattedRevenue);
 
                 for(int i = 0; i < enrolledList.size(); i++){
                     totalNumberOfCourseBought++;
@@ -124,62 +130,73 @@ public class DashboardController {
                     revenueOfOneMonthRecent += paymentList.get(i).getPaymentAmount();
                 }
                 model.addAttribute("revenueOfOneMonthRecent", revenueOfOneMonthRecent);
+
                 //set growth of payment in 30 day recent
                 double growthPayment = ((totalPayment - paymentList.size())/totalPayment)*100;
-                model.addAttribute("growthPayment", growthPayment);
+                DecimalFormat df = new DecimalFormat("#.##");
+                String formattedGrowthPayment = df.format(growthPayment);
+                model.addAttribute("growthPayment", formattedGrowthPayment);
+
                 //set growth of course bought in 30 day recent
                 double growthCourseBought = ((totalNumberOfCourseBought - enrolledList.size())/totalNumberOfCourseBought)*100;
-                model.addAttribute("growthCourseBought", growthCourseBought);
+                String formattedGrowthCourseBought = df.format(growthCourseBought);
+                model.addAttribute("growthCourseBought", formattedGrowthCourseBought);
+
                 //set growth of revenue in 30 day recent
-                double growthRevenue = ((totalRevenue - revenueOfOneMonthRecent)/totalRevenue)*100;
-                model.addAttribute("growthRevenue", growthRevenue);
+                double growthRevenue = ((totalRevenue - revenueOfOneMonthRecent) / totalRevenue) * 100;
+                String formattedGrowthRevenue = df.format(growthRevenue);
+                model.addAttribute("growthRevenue", formattedGrowthRevenue);
 
                 int totalPaymentOfOneMonthRecent = paymentList.size();
-                paymentList = paymentService.getPaymentByMonth(2,1);
-                Float revenueOfTwoMonthRecentToOneMonthRecent = 0.0F;
+                paymentList = paymentService.getPaymentByMonth(2, 1);
+                float revenueOfTwoMonthRecentToOneMonthRecent = 0.0F;
                 enrolledList.clear();
-                for(int i = 0; i < paymentList.size(); i++){
+                for (int i = 0; i < paymentList.size(); i++) {
                     List<Enrolled> enrolled = enrolledService.getEnrolledByPaymentID(paymentList.get(i).getPaymentID());
-                    for(int j = 0; j < enrolled.size(); j++){
+                    for (int j = 0; j < enrolled.size(); j++) {
                         enrolledList.add(enrolled.get(j));
                     }
                     revenueOfTwoMonthRecentToOneMonthRecent += paymentList.get(i).getPaymentAmount();
                 }
-                model.addAttribute("revenueOfTwoMonthRecent", revenueOfTwoMonthRecentToOneMonthRecent);
+                String formattedRevenueOfTwoMonthRecentToOneMonthRecent = df.format(revenueOfTwoMonthRecentToOneMonthRecent);
+                model.addAttribute("revenueOfTwoMonthRecent", formattedRevenueOfTwoMonthRecentToOneMonthRecent);
+
                 //set growth of payment of 2 month recent to 1 month recent
-                double growthPaymentOfOneMonthRecent = ((totalPaymentOfOneMonthRecent - paymentList.size())/totalPaymentOfOneMonthRecent)*100;
+                double growthPaymentOfOneMonthRecent = ((totalPaymentOfOneMonthRecent - paymentList.size()) / (double)totalPaymentOfOneMonthRecent) * 100;
                 double tempPayment = growthPayment - growthPaymentOfOneMonthRecent;
-                if(tempPayment < 0){
-                    tempPayment = tempPayment*(-1);
+                if (tempPayment < 0) {
+                    tempPayment = tempPayment * (-1);
                     model.addAttribute("statusOfGrowthPayment", "decrease");
-                }
-                else{
+                } else {
                     model.addAttribute("statusOfGrowthPayment", "increase");
                 }
-                model.addAttribute("growthPaymentOfOneMonthRecent", tempPayment);
+                String formattedGrowthPaymentOfOneMonthRecent = df.format(tempPayment);
+                model.addAttribute("growthPaymentOfOneMonthRecent", formattedGrowthPaymentOfOneMonthRecent);
+
                 //set growth of course bought of 2 month recent to 1 month recent
                 int totalNumberOfCourseBoughtOfOneMonthRecent = enrolledList.size();
-                double growthCourseBoughtOfOneMonthRecent = ((totalNumberOfCourseBoughtOfOneMonthRecent - enrolledList.size())/totalNumberOfCourseBoughtOfOneMonthRecent)*100;
+                double growthCourseBoughtOfOneMonthRecent = ((totalNumberOfCourseBoughtOfOneMonthRecent - enrolledList.size()) / (double)totalNumberOfCourseBoughtOfOneMonthRecent) * 100;
                 double tempCourseBought = growthCourseBought - growthCourseBoughtOfOneMonthRecent;
-                if(tempCourseBought < 0){
-                    tempCourseBought = tempCourseBought*(-1);
+                if (tempCourseBought < 0) {
+                    tempCourseBought = tempCourseBought * (-1);
                     model.addAttribute("statusOfGrowthCourseBought", "decrease");
-                }
-                else{
+                } else {
                     model.addAttribute("statusOfGrowthCourseBought", "increase");
                 }
-                model.addAttribute("growthCourseBoughtOfOneMonthRecent", tempCourseBought);
+                String formattedGrowthCourseBoughtOfOneMonthRecent = df.format(tempCourseBought);
+                model.addAttribute("growthCourseBoughtOfOneMonthRecent", formattedGrowthCourseBoughtOfOneMonthRecent);
+
                 //set growth of revenue of 2 month recent to 1 month recent
-                double growthRevenueOfOneMonthRecent = ((revenueOfOneMonthRecent - revenueOfTwoMonthRecentToOneMonthRecent)/revenueOfOneMonthRecent)*100;
+                double growthRevenueOfOneMonthRecent = ((revenueOfOneMonthRecent - revenueOfTwoMonthRecentToOneMonthRecent) / revenueOfOneMonthRecent) * 100;
                 double tempRevenue = growthRevenue - growthRevenueOfOneMonthRecent;
-                if(tempRevenue < 0){
-                    tempRevenue = tempRevenue*(-1);
+                if (tempRevenue < 0) {
+                    tempRevenue = tempRevenue * (-1);
                     model.addAttribute("statusOfGrowthRevenue", "decrease");
-                }
-                else{
+                } else {
                     model.addAttribute("statusOfGrowthRevenue", "increase");
                 }
-                model.addAttribute("growthRevenueOfOneMonthRecent", tempRevenue);
+                String formattedGrowthRevenueOfOneMonthRecent = df.format(tempRevenue);
+                model.addAttribute("growthRevenueOfOneMonthRecent", formattedGrowthRevenueOfOneMonthRecent);
 
 
                 paymentList = paymentService.getPaymentByMonth(3,2);
