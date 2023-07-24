@@ -18,23 +18,23 @@ import java.util.List;
 @Controller
 public class QuizController {
 
-    QuizService quizService;
+    final private QuizService quizService;
 
-    QuestionService questionService;
+    final private QuestionService questionService;
 
-    AnswerService answerService;
+    final private AnswerService answerService;
 
-    AuthController authController;
+    final private AuthController authController;
 
-    QuizRevisionService quizRevisionService;
+    final private QuizRevisionService quizRevisionService;
 
-    CategoryService categoryService;
+    final private CategoryService categoryService;
 
-    ReportService reportService;
+    final private ReportService reportService;
 
-    CourseService courseService;
+    final private CourseService courseService;
 
-    CourseConverter courseConverter;
+    final private CourseConverter courseConverter;
 
     public QuizController(QuizService quizService, QuestionService questionService
     , AnswerService answerService, AuthController authController, QuizRevisionService quizRevisionService,

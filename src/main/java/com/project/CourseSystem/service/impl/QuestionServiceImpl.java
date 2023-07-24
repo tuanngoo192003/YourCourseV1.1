@@ -13,8 +13,8 @@ import java.util.List;
 @Service
 public class QuestionServiceImpl implements QuestionService {
 
-    QuestionConverter questionConverter;
-    QuestionRepository questionRepository;
+    final private QuestionConverter questionConverter;
+    final private QuestionRepository questionRepository;
 
     public QuestionServiceImpl(QuestionRepository questionRepository, QuestionConverter questionConverter){
         this.questionRepository = questionRepository;

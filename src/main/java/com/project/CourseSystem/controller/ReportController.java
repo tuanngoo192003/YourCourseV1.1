@@ -18,23 +18,23 @@ import java.util.List;
 @Controller
 public class ReportController {
 
-    ReportService reportService;
+    final private ReportService reportService;
 
-    AccountService accountService;
+    final private AccountService accountService;
 
-    UserService userService;
+    final private UserService userService;
 
-    AuthController authController;
+    final private AuthController authController;
 
-    QuestionService questionService;
+    final private QuestionService questionService;
 
-    AnswerService answerService;
+    final private AnswerService answerService;
 
-    QuizRevisionService quizRevisionService;
+    final private QuizRevisionService quizRevisionService;
 
-    QuizController quizController;
+    final private QuizController quizController;
 
-    QuizService quizService;
+    final private QuizService quizService;
 
     ReportController(ReportService reportService, AccountService accountService
                      , UserService userService, AuthController authController,

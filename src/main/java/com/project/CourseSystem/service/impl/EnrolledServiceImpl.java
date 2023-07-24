@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class EnrolledServiceImpl implements EnrolledService {
 
-    EnrolledRepository enrolledRepository;
+    final private EnrolledRepository enrolledRepository;
 
     public EnrolledServiceImpl(EnrolledRepository enrolledRepository) {
         this.enrolledRepository = enrolledRepository;
@@ -28,8 +28,8 @@ public class EnrolledServiceImpl implements EnrolledService {
 
     @Override
     public void addEnrolled(List<Enrolled> enrolled) {
-        for(int i = 0; i < enrolled.size(); i++) {
-            enrolledRepository.insertEnrolled(enrolled.get(i).getEnrolledDate(), enrolled.get(i).getAccountID().getAccountID(), enrolled.get(i).getCourseID().getCourseID(), enrolled.get(i).getPaymentID().getPaymentID());
+        for (Enrolled value : enrolled) {
+            enrolledRepository.insertEnrolled(value.getEnrolledDate(), value.getAccountID().getAccountID(), value.getCourseID().getCourseID(), value.getPaymentID().getPaymentID());
         }
     }
 

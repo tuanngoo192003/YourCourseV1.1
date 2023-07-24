@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class ReportServiceImpl implements ReportService {
 
-    ReportRepository reportRepository;
+    final private ReportRepository reportRepository;
 
     ReportServiceImpl(ReportRepository reportRepository){
         this.reportRepository = reportRepository;

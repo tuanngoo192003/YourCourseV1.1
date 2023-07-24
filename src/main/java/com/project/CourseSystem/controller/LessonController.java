@@ -2,11 +2,7 @@ package com.project.CourseSystem.controller;
 
 import com.project.CourseSystem.dto.AddLessonFormDTO;
 import com.project.CourseSystem.dto.QuizListForm;
-import com.project.CourseSystem.entity.LearningMaterial;
-import com.project.CourseSystem.entity.Lesson;
 import com.project.CourseSystem.service.GoogleDriveService;
-import com.project.CourseSystem.service.LearningMaterialService;
-import com.project.CourseSystem.service.LessonService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -27,18 +23,11 @@ import java.util.List;
 @Controller
 public class LessonController {
 
-    private LearningMaterialService learningMaterialService;
+    final private AuthController authController;
 
-    private LessonService lessonService;
+    final private GoogleDriveService driveService;
 
-    private AuthController authController;
-
-    private GoogleDriveService driveService;
-
-    public LessonController(LearningMaterialService learningMaterialService, LessonService lessonService,
-                            AuthController authController, GoogleDriveService driveService){
-        this.learningMaterialService = learningMaterialService;
-        this.lessonService = lessonService;
+    public LessonController(AuthController authController, GoogleDriveService driveService){
         this.authController = authController;
         this.driveService = driveService;
     }
@@ -66,8 +55,6 @@ public class LessonController {
                 MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
                 MultipartFile file = multipartRequest.getFile("Input");
                 try{
-                    String fileName = file.getOriginalFilename();
-                    String mimeType = file.getContentType();
                     File tempFile = File.createTempFile("temp", null);// create a temporary file on disk
 
                     file.transferTo(tempFile); // save the uploaded file to the temporary file
@@ -79,15 +66,13 @@ public class LessonController {
                     addLessonForm.setLearningMaterialLink(fileId);
                 }
                 catch(IOException e){
-
+                    System.err.println("Uploading error");
                 }
             }
             else{
                 MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
                 MultipartFile file = multipartRequest.getFile("Input");
                 try{
-                    String fileName = file.getOriginalFilename();
-                    String mimeType = file.getContentType();
                     File tempFile = File.createTempFile("temp", null);// create a temporary file on disk
 
                     file.transferTo(tempFile); // save the uploaded file to the temporary file
@@ -99,7 +84,7 @@ public class LessonController {
                     addLessonForm.setLearningMaterialLink(fileId);
                 }
                 catch(IOException e){
-
+                    System.err.println("Uploading error");
                 }
             }
             addLessonFormDTOList.add(addLessonForm);

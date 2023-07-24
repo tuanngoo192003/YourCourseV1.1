@@ -1,6 +1,5 @@
 package com.project.CourseSystem.controller;
 
-import com.project.CourseSystem.converter.System_AccountConverter;
 import com.project.CourseSystem.converter.UserInfoConverter;
 import com.project.CourseSystem.dto.CategoryDTO;
 import com.project.CourseSystem.dto.CourseDTO;
@@ -24,32 +23,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class AuthController {
 
-    private AccountService accountService;
-    private System_AccountConverter system_accountConverter;
-    private EmailService emailService;
-    private UserService userService;
-    private UserInfoDTO userInfoDTO;
-    private UserInfoConverter userInfoConverter;
+    final private AccountService accountService;
 
-    private CategoryService categoryService;
-    SystemAccountDTO system_AccountDTO = new SystemAccountDTO();
+    final private CategoryService categoryService;
+    final private SystemAccountDTO system_AccountDTO;
 
     @Autowired
     public AuthController(AccountService accountService,
-                          System_AccountConverter system_accountConverter,
-                          EmailService emailService,
                           SystemAccountDTO systemAccountDTO,
-                          UserService userService,
-                          UserInfoDTO userInfoDTO,
-                          UserInfoConverter userInfoConverter,
                           CategoryService categoryService) {
         this.accountService = accountService;
-        this.system_accountConverter = system_accountConverter;
-        this.emailService = emailService;
         this.system_AccountDTO = systemAccountDTO;
-        this.userService = userService;
-        this.userInfoDTO = userInfoDTO;
-        this.userInfoConverter = userInfoConverter;
         this.categoryService = categoryService;
     }
 

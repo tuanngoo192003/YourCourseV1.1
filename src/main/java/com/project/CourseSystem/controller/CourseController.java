@@ -38,34 +38,32 @@ public class CourseController {
 
     final private CategoryConverter categoryConverter;
 
-    final private EnrolledService enrolledService;
-
     final private System_AccountConverter system_accountConverter;
 
     final private LessonController lessonController;
 
-    private QuizService quizService;
+    final private QuizService quizService;
 
-    private LessonService lessonService;
+    final private LessonService lessonService;
 
-    private QuestionService questionService;
+    final private QuestionService questionService;
 
-    private AnswerService answerService;
+    final private AnswerService answerService;
 
-    private LearningMaterialService learningMaterialService;
+    final private LearningMaterialService learningMaterialService;
 
-    private DiscountService discountService;
+    final private DiscountService discountService;
 
-    private PaymentDetailsService paymentDetailsService;
+    final private PaymentDetailsService paymentDetailsService;
 
-    private UserService userService;
+    final private UserService userService;
 
-    private PaymentService paymentService;
+    final private PaymentService paymentService;
 
     @Autowired
     public CourseController(CourseService courseService,  CategoryService categoryService,
                             AuthController authController, AccountService accountService,
-                            CategoryConverter categoryConverter, EnrolledService enrolledService,
+                            CategoryConverter categoryConverter,
                             System_AccountConverter system_accountConverter, GoogleDriveService driveService,
                             LessonController lessonController, QuizService quizService,
                             LessonService lessonService, QuestionService questionService,
@@ -77,7 +75,6 @@ public class CourseController {
         this.authController = authController;
         this.accountService = accountService;
         this.categoryConverter = categoryConverter;
-        this.enrolledService = enrolledService;
         this.system_accountConverter = system_accountConverter;
         this.driveService = driveService;
         this.lessonController = lessonController;
@@ -140,7 +137,6 @@ public class CourseController {
             String accountName = session.getAttribute("CSys").toString();
             SystemAccount account = system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName));
             int userID = userService.findUserIDByAccountID(account.getAccountID());
-            UserInfo userInfo = userService.findByUserID(userID);
             List<Payment> payments = paymentService.findPaymentByUserID(userID);
             for(int i = 0; i < payments.size(); i++){
                 for(int j = 0; j < paymentDetailsList.size(); j++){
@@ -206,9 +202,6 @@ public class CourseController {
         HttpSession session = request.getSession();
         if(session.getAttribute("CSys")!=null){
             List<Enrolled> enrolledList = (List<Enrolled>) session.getAttribute("enrolledList");
-            String accountName = session.getAttribute("CSys").toString();
-            SystemAccount account = system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName));
-            List<Integer> courseIdList = new ArrayList<>();
             for(int i = 0; i < enrolledList.size(); i++){
                 for(int j = 0; j < courseList.size(); j++){
                     if(courseList.get(j).getCourseID() == enrolledList.get(i).getCourseID().getCourseID()){
@@ -435,28 +428,23 @@ public class CourseController {
     @PostMapping("/sort")
     public String sort(@ModelAttribute("courseDTO") CourseDTO courseDTO, @RequestParam("option") String option,
                        Model model, HttpServletRequest request, HttpServletResponse response){
-        if(option.equals("Newest")){
-            return getPaginated(1, "startDate", "desc", model, request, response);
-        }
-        else if(option.equals("Oldest")){
-            return getPaginated(1, "startDate", "asc", model, request, response);
-        }
-        else if(option.equals("About to end")){
-            return getPaginated(1, "endDate", "asc", model, request, response);
-        }
-        else if(option.equals("High to low")){
-            return getPaginated(1, "price", "desc", model, request, response);
-        }
-        else if(option.equals("Low to high")){
-            return getPaginated(1, "price", "asc", model, request, response);
-        }
-        else if(option.equals("Free")){
-            String sortField = "price";
-            String sortDir = "desc";
-            return getPaginatedByAttribute(1, sortField, sortDir, "price", "0", model, request, response);
-        }
-        else{
-            return getPaginated(1, "courseID", "asc", model, request, response);
+        switch (option){
+            case "Newest":
+                return getPaginated(1, "startDate", "desc", model, request, response);
+            case "Oldest":
+                return getPaginated(1, "startDate", "asc", model, request, response);
+            case "About to end":
+                return getPaginated(1, "endDate", "asc", model, request, response);
+            case "High to low":
+                return getPaginated(1, "price", "desc", model, request, response);
+            case "Low to high":
+                return getPaginated(1, "price", "asc", model, request, response);
+            case "Free":
+                String sortField = "price";
+                String sortDir = "desc";
+                return getPaginatedByAttribute(1, sortField, sortDir, "price", "0", model, request, response);
+            default:
+                return getPaginated(1, "courseID", "asc", model, request, response);
         }
     }
 
@@ -547,8 +535,6 @@ public class CourseController {
         course.setEndDate(sqlDate);
         course.setCreatedDate(new java.sql.Date(new Date().getTime()));
         try{
-            String fileName = file.getOriginalFilename();
-            String mimeType = file.getContentType();
             File tempFile = File.createTempFile("temp", null);// create a temporary file on disk
 
             file.transferTo(tempFile); // save the uploaded file to the temporary file
@@ -560,7 +546,7 @@ public class CourseController {
             course.setCourseImage(fileId);
         }
         catch(IOException e){
-
+            System.out.println(e.getMessage());
         }
         HttpSession session = request.getSession();
         session.setAttribute("newCourse", course);

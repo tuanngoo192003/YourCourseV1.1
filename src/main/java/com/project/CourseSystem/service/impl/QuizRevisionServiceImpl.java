@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class QuizRevisionServiceImpl implements QuizRevisionService {
 
-    QuizRevisionRepository quizRevisionRepository;
+    final private QuizRevisionRepository quizRevisionRepository;
 
     QuizRevisionServiceImpl(QuizRevisionRepository quizRevisionRepository){
         this.quizRevisionRepository = quizRevisionRepository;

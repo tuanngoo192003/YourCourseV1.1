@@ -5,7 +5,6 @@ import com.project.CourseSystem.converter.CourseConverter;
 import com.project.CourseSystem.dto.CategoryDTO;
 import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.dto.SystemAccountDTO;
-import com.project.CourseSystem.dto.UserInfoDTO;
 import com.project.CourseSystem.entity.*;
 import com.project.CourseSystem.service.*;
 import jakarta.servlet.http.HttpServletRequest;

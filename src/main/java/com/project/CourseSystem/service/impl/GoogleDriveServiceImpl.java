@@ -10,14 +10,10 @@ import com.google.api.services.drive.model.File;
 import com.project.CourseSystem.service.GoogleDriveService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.Collections;
 
 @Service

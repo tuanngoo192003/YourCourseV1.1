@@ -18,9 +18,9 @@ import java.util.UUID;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    private SystemAccountCRUDRepository system_accountCRUDRepository;
-    private System_AccountConverter system_accountConverter;
-    private SystemAccountRepository system_accountRespository;
+    final private SystemAccountCRUDRepository system_accountCRUDRepository;
+    final private System_AccountConverter system_accountConverter;
+    final private SystemAccountRepository system_accountRespository;
 
     @Autowired
     public AccountServiceImpl(SystemAccountRepository system_accountRespository, System_AccountConverter system_accountConverter,

@@ -22,47 +22,44 @@ import java.util.List;
 @Controller
 public class LearnController {
 
-    private CourseService courseService;
+    final private CourseService courseService;
 
-    private QuizService quizService;
+    final private QuizService quizService;
 
-    private LessonService lessonService;
+    final private LessonService lessonService;
 
-    private CategoryService categoryService;;
+    final private CategoryService categoryService;
 
-    private EnrolledService enrolledService;
+    final private EnrolledService enrolledService;
 
-    private EnrolledConverter enrolledConverter;
+    final private EnrolledConverter enrolledConverter;
 
-    private AccountService accountService;
+    final private AccountService accountService;
 
-    private LearningMaterialService learningMaterialService;
+    final private LearningMaterialService learningMaterialService;
 
-    private ReportService reportService;
+    final private ReportService reportService;
 
-    private UserService userService;
+    final private UserService userService;
 
-    private CourseConverter courseConverter;
+    final private CourseConverter courseConverter;
 
-    private RatingCourseService ratingCourseService;
+    final private RatingCourseService ratingCourseService;
 
-    private DiscountService discountService;
+    final private DiscountService discountService;
 
-    private DiscountConverter discountConverter;
+    final private DiscountConverter discountConverter;
 
-    private AuthController authController;
+    final private PaymentDetailsService paymentDetailsService;
 
-    private PaymentDetailsService paymentDetailsService;
-
-    private PaymentService paymentService;
+    final private PaymentService paymentService;
 
     private LearnController(LessonService lessonService, QuizService quizService, CourseService courseService
     , CategoryService categoryService, EnrolledService enrolledService, EnrolledConverter enrolledConverter,
                             AccountService accountService, LearningMaterialService learningMaterialService,
                             ReportService reportService, UserService userService, CourseConverter courseConverter,
                             RatingCourseService ratingCourseService, DiscountService discountService,
-                            DiscountConverter discountConverter, AuthController authController,
-                            PaymentDetailsService paymentDetailsService, PaymentService paymentService) {
+                            DiscountConverter discountConverter, PaymentDetailsService paymentDetailsService, PaymentService paymentService) {
         this.lessonService = lessonService;
         this.quizService = quizService;
         this.courseService = courseService;
@@ -77,7 +74,6 @@ public class LearnController {
         this.ratingCourseService = ratingCourseService;
         this.discountService = discountService;
         this.discountConverter = discountConverter;
-        this.authController = authController;
         this.paymentDetailsService = paymentDetailsService;
         this.paymentService = paymentService;
     }
@@ -88,7 +84,7 @@ public class LearnController {
         if(courseID == null) {
             return "redirect:/course";
         }
-        int id = courseID.intValue();
+        int id = courseID;
         CourseDTO course = courseService.getCourseByID(id);
 
             /* check if user is enrolled */
@@ -115,7 +111,6 @@ public class LearnController {
                 }
                 /* get paid */
                 int userID = userService.findUserIDByAccountID(accountDTO.getAccountID());
-                UserInfo userInfo = userService.findByUserID(userID);
                 List<Payment> paymentList = paymentService.findPaymentByUserID(userID);
                 List<PaymentDetails> paymentDetailsList = paymentDetailsService.getAllByCourseID(courseID);
                 for(PaymentDetails paymentDetails : paymentDetailsList){
@@ -185,7 +180,7 @@ public class LearnController {
                 learningStatus.add(passedStatusCheck);
             }
         }
-        String totalStatus = "";
+        String totalStatus;
         if(learningStatusCount == lessonList.size()){
             totalStatus="Status: Completed";
         }
@@ -267,7 +262,6 @@ public class LearnController {
                 model.addAttribute("enrolledDTO", enrolledDTO);
                 /* get rating */
                 UserInfo userInfo = userService.findUser(accountDTO.getAccountID());
-                List<Report> reportList = reportService.getAllReportByUserID(userInfo.getUserID());
                 RatingCourse ratingCourse = ratingCourseService.getRatingCourseByCourseIdAndUserId(courseID, userInfo.getUserID());
                 if(ratingCourse != null){
                     model.addAttribute("rating", ratingCourse.getRating());

@@ -2,9 +2,7 @@ package com.project.CourseSystem.controller;
 
 import com.project.CourseSystem.dto.*;
 import com.project.CourseSystem.entity.Course;
-import com.project.CourseSystem.entity.CourseDetails;
 import com.project.CourseSystem.entity.Enrolled;
-import com.project.CourseSystem.entity.Lesson;
 import com.project.CourseSystem.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -22,26 +20,23 @@ import java.util.List;
 @Controller
 public class HomeController {
 
-    private CategoryService categoryService;
+    final private CategoryService categoryService;
 
-    private AccountService accountService;
+    final private AccountService accountService;
 
-    private CourseService courseService;
+    final private CourseService courseService;
 
-    private EnrolledService enrolledService;
+    final private EnrolledService enrolledService;
 
-    private DashboardController dashboardController;
-
-    private LessonService lessonService;
+    final private LessonService lessonService;
 
     public HomeController(AccountService accountService, CategoryService categoryService,
                           CourseService courseService, EnrolledService enrolledService,
-                          DashboardController dashboardController, LessonService lessonService) {
+                          LessonService lessonService) {
         this.categoryService = categoryService;
         this.accountService = accountService;
         this.courseService = courseService;
         this.enrolledService = enrolledService;
-        this.dashboardController = dashboardController;
         this.lessonService = lessonService;
     }
 
@@ -55,11 +50,6 @@ public class HomeController {
         model.addAttribute("courseDTO", courseDTO);
         List<CategoryDTO> categoryList = categoryService.getAllCategories();
         model.addAttribute("category", categoryList);
-
-        Course course = new Course();
-        CourseDetailsDTO courseDetailsDTO = new CourseDetailsDTO();
-        List<String> tempDetails = new ArrayList<>();
-        List<LessonDTO> lessonList = new ArrayList<>();
 
         //category: Language Learning
         Course course1 = courseService.findFirstCourseByCategoryID(1);
@@ -249,7 +239,6 @@ public class HomeController {
     @PostMapping("/search")
     public String search(Model model, HttpServletRequest request, HttpServletResponse response,
                          @ModelAttribute("courseDTO") CourseDTO courseDTO){
-        CourseDTO courseDTO1 = new CourseDTO();
         model.addAttribute("courseDTO", courseDTO);
         CategoryDTO temp = new CategoryDTO();
         model.addAttribute("categoryDTO", temp);
