@@ -110,12 +110,15 @@ public class CourseController {
         //pagination attribute
         Page<Course> page = courseService.findPaginated(pageNo, pageSize, sortField, sortDir);
         List<Course> courseList = page.getContent();
+
         List<Course> courseListTemp = new ArrayList<>();
         HttpSession session = request.getSession();
         if(session.getAttribute("CSys")!=null){
             List<Enrolled> enrolledList = (List<Enrolled>) session.getAttribute("enrolledList");
+
             String accountName = session.getAttribute("CSys").toString();
             SystemAccount account = system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName));
+
             List<Integer> courseIdList = new ArrayList<>();
             for(int i = 0; i < enrolledList.size(); i++){
                 if(enrolledList.get(i).getAccountID().getAccountID() == account.getAccountID()){
@@ -138,11 +141,11 @@ public class CourseController {
             SystemAccount account = system_accountConverter.convertDTOToEntity(accountService.findUserByAccountName(accountName));
             int userID = userService.findUserIDByAccountID(account.getAccountID());
             List<Payment> payments = paymentService.findPaymentByUserID(userID);
-            for(int i = 0; i < payments.size(); i++){
-                for(int j = 0; j < paymentDetailsList.size(); j++){
-                    if(payments.get(i).getPaymentID() == paymentDetailsList.get(j).getPaymentID().getPaymentID()){
-                        for(int k = 0; k < courseListTemp.size(); k++){
-                            if(courseListTemp.get(k).getCourseID() == paymentDetailsList.get(j).getCourseID().getCourseID()){
+            for (Payment payment : payments) {
+                for (PaymentDetails paymentDetails : paymentDetailsList) {
+                    if (payment.getPaymentID() == paymentDetails.getPaymentID().getPaymentID()) {
+                        for (int k = 0; k < courseListTemp.size(); k++) {
+                            if (courseListTemp.get(k).getCourseID() == paymentDetails.getCourseID().getCourseID()) {
                                 courseListTemp.remove(k);
                             }
                         }
@@ -176,7 +179,7 @@ public class CourseController {
         model.addAttribute("categoryDTO", cDto);
         model.addAttribute("category", categoryService.getAllCategories());
 
-        //add discount
+        //apply discount
         List<Discount> discountList = discountService.getAllDiscounts();
         if(!discountList.isEmpty()) model.addAttribute("listOfDiscount", discountList);
 
