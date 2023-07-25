@@ -13,11 +13,11 @@ import java.util.List;
 @Service
 public class QuizServiceImpl implements QuizService {
 
-    private QuizRepository quizRepository;
+    final private QuizRepository quizRepository;
 
-    private LessonRepository lessonRepository;
+    final private LessonRepository lessonRepository;
 
-    private QuizConverter quizConverter;
+    final private QuizConverter quizConverter;
 
     public QuizServiceImpl(QuizRepository quizRepository, LessonRepository lessonRepository, QuizConverter quizConverter) {
         this.lessonRepository = lessonRepository;

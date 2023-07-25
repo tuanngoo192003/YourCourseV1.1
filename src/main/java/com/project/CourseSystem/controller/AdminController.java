@@ -86,8 +86,7 @@ public class AdminController {
                     QuizConverter quizConverter, CourseConverter courseConverter,
                     UserService userService, PaymentService paymentService,
                     LessonConverter lessonConverter, EnrolledService enrolledService,
-                    DiscountService discountService, DiscountConverter discountConverter,
-                    RatingCourseService ratingCourseService, ReportService reportService,
+                    DiscountService discountService, RatingCourseService ratingCourseService, ReportService reportService,
                     QuizRevisionService quizRevisionService, PaymentDetailsService paymentDetailsService){
         this.courseController = courseController;
         this.authController = authController;
@@ -173,10 +172,7 @@ public class AdminController {
         List<Course> courseList = page.getContent();
         List<Course> courseListTemp = new ArrayList<>();
         HttpSession session = request.getSession();
-
             courseListTemp.addAll(courseList);
-
-
 
         model.addAttribute("currentPage", pageNo);
         int totalPages = page.getTotalPages();
@@ -218,28 +214,23 @@ public class AdminController {
     @PostMapping("/allCourseSort")
     public String sort(@ModelAttribute("courseDTO") CourseDTO courseDTO, @RequestParam("option") String option,
                        Model model, HttpServletRequest request, HttpServletResponse response){
-        if(option.equals("Newest")){
-            return getPaginated(1, "startDate", "desc", model, request, response);
-        }
-        else if(option.equals("Oldest")){
-            return getPaginated(1, "startDate", "asc", model, request, response);
-        }
-        else if(option.equals("About to end")){
-            return getPaginated(1, "endDate", "asc", model, request, response);
-        }
-        else if(option.equals("High to low")){
-            return getPaginated(1, "price", "desc", model, request, response);
-        }
-        else if(option.equals("Low to high")){
-            return getPaginated(1, "price", "asc", model, request, response);
-        }
-        else if(option.equals("Free")){
-            String sortField = "price";
-            String sortDir = "desc";
-            return getPaginatedByAttribute(1, sortField, sortDir, "price", "0", model, request, response);
-        }
-        else{
-            return getPaginated(1, "courseID", "asc", model, request, response);
+        switch (option){
+            case "Newest":
+                return getPaginated(1, "startDate", "desc", model, request, response);
+            case "Oldest":
+                return getPaginated(1, "startDate", "asc", model, request, response);
+            case "About to end":
+                return getPaginated(1, "endDate", "asc", model, request, response);
+            case "High to low":
+                return getPaginated(1, "price", "desc", model, request, response);
+            case "Low to high":
+                return getPaginated(1, "price", "asc", model, request, response);
+            case "Free":
+                String sortField = "price";
+                String sortDir = "desc";
+                return getPaginatedByAttribute(1, sortField, sortDir, "price", "0", model, request, response);
+            default:
+                return getPaginated(1, "courseID", "asc", model, request, response);
         }
     }
 
@@ -364,8 +355,6 @@ public class AdminController {
         course.setEndDate(sqlDate);
         course.setCreatedDate(new java.sql.Date(new Date().getTime()));
         try{
-            String fileName = file.getOriginalFilename();
-            String mimeType = file.getContentType();
             File tempFile = File.createTempFile("temp", null);// create a temporary file on disk
 
             file.transferTo(tempFile); // save the uploaded file to the temporary file
@@ -539,8 +528,6 @@ public class AdminController {
 
     public String updateFile(MultipartFile file){
         try{
-            String fileName = file.getOriginalFilename();
-            String mimeType = file.getContentType();
             File tempFile = File.createTempFile("temp", null);// create a temporary file on disk
 
             file.transferTo(tempFile); // save the uploaded file to the temporary file
@@ -584,25 +571,6 @@ public class AdminController {
         return answerList;
     }
 
-    public void deleteQuiz(QuizDTO quizDTO){
-        if(quizDTO != null){
-            List<QuestionDTO> questionList = questionService.getAllByQuizID(quizDTO.getQuizID());
-            for(int i = 0; i < questionList.size(); i++){
-                List<AnswerDTO> answerList = answerService.getAllByQuestionId(questionList.get(i).getQuestionID());
-                for(int j = 0; j < answerList.size(); j++){
-                    AnswerDTO answerDTO = answerList.get(j);
-                    Answer answer = answerConverter.convertDtoToEntity(answerDTO);
-                    answerService.deleteAnswer(answer);
-                }
-                QuestionDTO questionDTO = questionList.get(i);
-                Question question = questionConverter.convertDtoToEntity(questionDTO);
-                questionService.deleteQuestion(question);
-            }
-            Quiz quiz = quizConverter.convertDtoToEntity(quizDTO);
-            quizService.deleteQuiz(quiz);
-        }
-    }
-
     @PostMapping("/updateQuiz")
     public String updateQuiz(@RequestParam("questionDTO-content")String questionContents,
                              @RequestParam("answerDTO-content") String answerContents,
@@ -635,7 +603,6 @@ public class AdminController {
             //Update question and answer
             //Get list of questionID and answerID
             List<Integer> listOfQuestionID = (List<Integer>) session.getAttribute("listOfQuestionID");
-            List<Integer> listOfAnswerID = (List<Integer>) session.getAttribute("listOfAnswerID");
 
             for(int i = 0; i < listOfQuestionID.size(); i++){
                 Question question = new Question();
@@ -648,7 +615,7 @@ public class AdminController {
                 List<AnswerDTO> answerDTOList = answerService.getAllByQuestionId(questionID);
                 for (int j = 0; j < answerDTOList.size(); j++) {
                     Integer answerID = answerDTOList.get(j).getAnswerID();
-                    Answer answer = answerService.getById(answerID);;
+                    Answer answer = answerService.getById(answerID);
                     String answerContent = request.getParameter("answerDTO-content" + answerDTOList.get(j).getAnswerID());
                     String isCorrect = request.getParameter("isCorrect"+questionID);
                     if(isCorrect.equals(answer.getAnswerOrdinal())){
@@ -835,9 +802,8 @@ public class AdminController {
     }
 
     @GetMapping("deleteCourse")
-    public String deleteCourse(@RequestParam("courseID") Integer courseID, Model model, HttpServletRequest request, HttpServletResponse response){
+    public String deleteCourse(@RequestParam("courseID") Integer courseID){
         courseService.deleteCourseDetails(courseID);
-        CourseDTO course = courseService.getCourseByID(courseID);
         List<LessonDTO> lessons = lessonService.getAllByCourseID(courseID);
         for (LessonDTO lesson : lessons){
             List<LearningMaterial> learningMaterial = learningMaterialService.getLearningMaterialByLessonID(lesson.getLessonID());

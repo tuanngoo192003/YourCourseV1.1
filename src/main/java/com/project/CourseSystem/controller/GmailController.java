@@ -25,17 +25,17 @@ import java.util.Date;
 @Controller
 public class GmailController {
 
-    private AccountService accountService;
+    final private AccountService accountService;
 
-    private System_AccountConverter system_accountConverter;
+    final private System_AccountConverter system_accountConverter;
 
-    private EmailService emailService;
+    final private EmailService emailService;
 
-    private SystemAccountDTO system_AccountDTO;
+    final private SystemAccountDTO system_AccountDTO;
 
-    private UserService userService;
+    final private UserService userService;
 
-    private UserInfoConverter userInfoConverter;
+    final private UserInfoConverter userInfoConverter;
 
     public GmailController(AccountService accountService, System_AccountConverter system_accountConverter,
                            EmailService emailService, SystemAccountDTO system_AccountDTO, UserService userService,

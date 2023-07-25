@@ -30,34 +30,31 @@ import java.util.List;
 @Controller
 public class UserController {
 
-    private SystemAccountDTO systemAccountDTO;
+    final private SystemAccountDTO systemAccountDTO;
 
-    private UserService userService;
+    final private UserService userService;
 
-    private AccountService accountService;
+    final private AccountService accountService;
 
-    private UserInfoConverter userInfoConverter;
+    final private UserInfoConverter userInfoConverter;
 
-    private CategoryService categoryService;
+    final private CategoryService categoryService;
 
-    private CourseService courseService;
+    final private CourseService courseService;
 
-    private EnrolledService enrolledService;
+    final private GoogleDriveService driveService;
 
-    private GoogleDriveService driveService;
+    final private AuthController authController;
 
-    private AuthController authController;
+    final private PaymentService paymentService;
 
-    private PaymentService paymentService;
-
-    private PaymentDetailsService paymentDetailService;
+    final private PaymentDetailsService paymentDetailService;
 
     public UserController(SystemAccountDTO systemAccountDTO, UserService userService,
                           AccountService accountService,
                           UserInfoConverter userInfoConverter,
                           CategoryService categoryService,
                           CourseService courseService,
-                          EnrolledService enrolledService,
                           GoogleDriveService driveService,
                           AuthController authController,
                           PaymentService paymentService,
@@ -68,7 +65,6 @@ public class UserController {
         this.userInfoConverter = userInfoConverter;
         this.categoryService = categoryService;
         this.courseService = courseService;
-        this.enrolledService = enrolledService;
         this.driveService = driveService;
         this.authController = authController;
         this.paymentService = paymentService;
@@ -161,8 +157,6 @@ public class UserController {
     @PostMapping("/updateAvatar")
     public String uploadAvatar(@RequestParam("file") MultipartFile file, Model model, HttpServletRequest request, HttpServletResponse response){
         try{
-            String fileName = file.getOriginalFilename();
-            String mimeType = file.getContentType();
             File tempFile = File.createTempFile("temp", null);// create a temporary file on disk
 
             file.transferTo(tempFile); // save the uploaded file to the temporary file

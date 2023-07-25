@@ -10,7 +10,7 @@ import java.util.List;
 @Service
 public class RatingCourseServiceImpl implements RatingCourseService {
 
-    RatingCourseRepository ratingCourseRepository;
+    final private RatingCourseRepository ratingCourseRepository;
 
     public RatingCourseServiceImpl(RatingCourseRepository ratingCourseRepository) {
         this.ratingCourseRepository = ratingCourseRepository;

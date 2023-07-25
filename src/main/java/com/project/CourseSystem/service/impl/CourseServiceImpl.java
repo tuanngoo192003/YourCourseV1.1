@@ -23,15 +23,15 @@ import java.util.List;
 @Service
 public class CourseServiceImpl implements CourseService {
 
-    CourseRepository courseRepository;
+    final private CourseRepository courseRepository;
 
-    CourseConverter courseConverter;
+    final private CourseConverter courseConverter;
 
-    CourseDetailsRepository courseDetailsRepository;
+    final private CourseDetailsRepository courseDetailsRepository;
 
-    CourseDetailsConverter  courseDetailsConverter;
+    final private CourseDetailsConverter  courseDetailsConverter;
 
-    ReportRepository reportRepository;
+    final private ReportRepository reportRepository;
 
     @Autowired
     public CourseServiceImpl(CourseRepository courseRepository, CourseConverter courseConverter,

@@ -3,7 +3,6 @@ package com.project.CourseSystem.service.impl;
 import com.project.CourseSystem.converter.UserInfoConverter;
 import com.project.CourseSystem.dto.UserInfoDTO;
 import com.project.CourseSystem.entity.UserInfo;
-import com.project.CourseSystem.repository.SystemAccountRepository;
 import com.project.CourseSystem.repository.UserInfoRepository;
 import com.project.CourseSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,16 +16,13 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserInfoConverter userInfoConverter;
-    private UserInfoRepository userInfoRepository;
-    private SystemAccountRepository systemAccountRepository;
+    final private UserInfoConverter userInfoConverter;
+    final private UserInfoRepository userInfoRepository;
 
     @Autowired
     public UserServiceImpl(UserInfoRepository userInfoRepository,
-                           SystemAccountRepository systemAccountRepository,
                            UserInfoConverter userInfoConverter){
         this.userInfoRepository = userInfoRepository;
-        this.systemAccountRepository = systemAccountRepository;
         this.userInfoConverter = userInfoConverter;
     }
 

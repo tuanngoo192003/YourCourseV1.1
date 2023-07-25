@@ -88,7 +88,6 @@ public class PaymentController {
                 courseDTO1.setPrice(discountPrice);
             }
         }
-
             if(paymentButton.equals("Add To Cart")){
                 if(session.getAttribute("cart")==null){
                     List<CourseDTO> list = new ArrayList<>();

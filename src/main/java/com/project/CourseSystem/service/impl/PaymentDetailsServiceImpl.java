@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class PaymentDetailsServiceImpl implements PaymentDetailsService {
 
-    PaymentDetailsRepository paymentDetailsRepository;
+    final private PaymentDetailsRepository paymentDetailsRepository;
 
     PaymentDetailsServiceImpl(PaymentDetailsRepository paymentDetailsRepository) {
         this.paymentDetailsRepository = paymentDetailsRepository;

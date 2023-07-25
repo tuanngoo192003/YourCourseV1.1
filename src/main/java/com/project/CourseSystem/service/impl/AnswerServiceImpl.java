@@ -13,9 +13,9 @@ import java.util.List;
 @Service
 public class AnswerServiceImpl implements AnswerService {
 
-    AnswerRepository answerRepository;
+    final private AnswerRepository answerRepository;
 
-    AnswerConverter answerConverter;
+    final private AnswerConverter answerConverter;
 
     public AnswerServiceImpl(AnswerRepository answerRepository, AnswerConverter answerConverter){
 

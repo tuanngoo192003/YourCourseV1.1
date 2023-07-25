@@ -13,9 +13,9 @@ import java.util.List;
 @Service
 public class LessonServiceImpl implements LessonService {
 
-    LessonRepository lessonRepository;
+    final private LessonRepository lessonRepository;
 
-    LessonConverter lessonConverter;
+    final private LessonConverter lessonConverter;
 
     public LessonServiceImpl(LessonRepository lessonRepository, LessonConverter lessonConverter) {
         this.lessonRepository = lessonRepository;

@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public class LearningMaterialServiceImpl implements LearningMaterialService {
-    LearningMaterialRepository learningMaterialRepository;
+    final private LearningMaterialRepository learningMaterialRepository;
 
     public LearningMaterialServiceImpl(LearningMaterialRepository learningMaterialRepository) {
         this.learningMaterialRepository = learningMaterialRepository;
