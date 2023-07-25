@@ -159,7 +159,7 @@ public class DashboardController {
 
                 //set growth of payment of 2 month recent to 1 month recent
                 double growthPaymentOfOneMonthRecent = ((totalPaymentOfOneMonthRecent - paymentList.size()) / (double)totalPaymentOfOneMonthRecent) * 100;
-                double tempPayment = growthPayment - growthPaymentOfOneMonthRecent;
+                double tempPayment = growthPaymentOfOneMonthRecent;
                 if (tempPayment < 0) {
                     tempPayment = tempPayment * (-1);
                     model.addAttribute("statusOfGrowthPayment", "decrease");
@@ -172,7 +172,7 @@ public class DashboardController {
                 //set growth of course bought of 2 month recent to 1 month recent
                 int totalNumberOfCourseBoughtOfOneMonthRecent = enrolledList.size();
                 double growthCourseBoughtOfOneMonthRecent = ((totalNumberOfCourseBoughtOfOneMonthRecent - enrolledList.size()) / (double)totalNumberOfCourseBoughtOfOneMonthRecent) * 100;
-                double tempCourseBought = growthCourseBought - growthCourseBoughtOfOneMonthRecent;
+                double tempCourseBought = growthCourseBoughtOfOneMonthRecent;
                 if (tempCourseBought < 0) {
                     tempCourseBought = tempCourseBought * (-1);
                     model.addAttribute("statusOfGrowthCourseBought", "decrease");
@@ -184,7 +184,7 @@ public class DashboardController {
 
                 //set growth of revenue of 2 month recent to 1 month recent
                 double growthRevenueOfOneMonthRecent = ((revenueOfOneMonthRecent - revenueOfTwoMonthRecentToOneMonthRecent) / revenueOfOneMonthRecent) * 100;
-                double tempRevenue = growthRevenue - growthRevenueOfOneMonthRecent;
+                double tempRevenue = growthRevenueOfOneMonthRecent;
                 if (tempRevenue < 0) {
                     tempRevenue = tempRevenue * (-1);
                     model.addAttribute("statusOfGrowthRevenue", "decrease");

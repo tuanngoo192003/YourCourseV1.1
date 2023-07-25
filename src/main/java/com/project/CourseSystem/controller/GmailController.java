@@ -101,6 +101,7 @@ public class GmailController {
             model.addAttribute("system_account", system_AccountDTO);
 
             session.setAttribute("newGmail", systemAccountDTO.getGmail());
+            // variable to check what change is made
             session.setAttribute("change", "gmail");
             return "verify";
         }

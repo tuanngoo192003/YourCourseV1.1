@@ -47,6 +47,7 @@ public class AuthController {
         else{
             CategoryDTO cDto = new CategoryDTO();
             model.addAttribute("categoryDTO", cDto);
+
             CourseDTO courseDTO = new CourseDTO();
             model.addAttribute("courseDTO", courseDTO);
             model.addAttribute("category", categoryService.getAllCategories());
