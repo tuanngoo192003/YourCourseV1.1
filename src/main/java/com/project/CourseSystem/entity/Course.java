@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Date;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -44,5 +43,4 @@ public class Course {
     @ManyToOne
     @JoinColumn(name="categoryID", nullable = false)
     private Category categoryID;
-
 }

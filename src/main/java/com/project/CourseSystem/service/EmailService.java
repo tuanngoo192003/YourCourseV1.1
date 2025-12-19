@@ -1,16 +1,10 @@
 package com.project.CourseSystem.service;
 
-// Importing required classes
-import com.project.CourseSystem.entity.EmailDetails;
+import com.project.CourseSystem.dto.EmailDetailsDTO;
 
-//interface
 public interface EmailService {
 
-    // Method
-    // To send a simple email
-    String sendSimpleEmail(EmailDetails emailDetails);
+    String sendSimpleEmail(EmailDetailsDTO emailDetails);
 
-    // Method
-    // To send an email with attachment
-    String sendMailWithAttachment(EmailDetails emailDetails);
+    String sendMailWithAttachment(EmailDetailsDTO emailDetails);
 }

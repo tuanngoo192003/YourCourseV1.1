@@ -1,6 +1,6 @@
 package com.project.CourseSystem.service.impl;
 
-import com.project.CourseSystem.entity.EmailDetails;
+import com.project.CourseSystem.dto.EmailDetailsDTO;
 import com.project.CourseSystem.service.EmailService;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class EmailServiceImpl implements EmailService {
     @Value("${spring.mail.username}") private String sender;
 
     @Override
-    public String sendSimpleEmail(EmailDetails emailDetails) {
+    public String sendSimpleEmail(EmailDetailsDTO emailDetails) {
         // Try block to check for exceptions
         try{
             //Creating a simple mail message
@@ -44,7 +44,7 @@ public class EmailServiceImpl implements EmailService {
 
     //send an email with attachment
     @Override
-    public String sendMailWithAttachment(EmailDetails emailDetails) {
+    public String sendMailWithAttachment(EmailDetailsDTO emailDetails) {
         //creating a mime message
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper;

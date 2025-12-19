@@ -2,9 +2,9 @@ package com.project.CourseSystem.controller;
 
 import com.project.CourseSystem.converter.System_AccountConverter;
 import com.project.CourseSystem.converter.UserInfoConverter;
+import com.project.CourseSystem.dto.EmailDetailsDTO;
 import com.project.CourseSystem.dto.SystemAccountDTO;
 import com.project.CourseSystem.dto.UserInfoDTO;
-import com.project.CourseSystem.entity.EmailDetails;
 import com.project.CourseSystem.entity.SystemAccount;
 import com.project.CourseSystem.service.AccountService;
 import com.project.CourseSystem.service.EmailService;
@@ -55,7 +55,7 @@ public class GmailController {
             return "redirect:/resetPassword?errorGmail";
         }
         else {
-            EmailDetails emailDetails = new EmailDetails();
+            EmailDetailsDTO emailDetails = new EmailDetailsDTO();
             emailDetails.setRecipient(systemAccountDTO.getGmail());
             emailDetails.setSubject("Please verify your password reset request");
             String verificationCode = accountService.generateVerificationCode();
@@ -84,7 +84,7 @@ public class GmailController {
             return "redirect:/userProfile?errorGmail";
         }
         else {
-            EmailDetails emailDetails = new EmailDetails();
+            EmailDetailsDTO emailDetails = new EmailDetailsDTO();
             emailDetails.setRecipient(systemAccountDTO.getGmail());
             emailDetails.setSubject("Please verify your gmail change request");
             String verificationCode = accountService.generateVerificationCode();
@@ -116,7 +116,7 @@ public class GmailController {
             return "redirect:/registration?errorGmail";
         }
         else{
-            EmailDetails emailDetails = new EmailDetails();
+            EmailDetailsDTO emailDetails = new EmailDetailsDTO();
             emailDetails.setRecipient(system_accountDTO.getGmail());
             emailDetails.setSubject("Please verify your gmail change request");
             String verificationCode = accountService.generateVerificationCode();
