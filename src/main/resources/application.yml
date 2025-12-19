@@ -1,0 +1,43 @@
+spring:
+  application: 
+    name: yourcourse
+  datasource:
+    url: jdbc:mysql://localhost:3306/your_course_db2
+    username: app_user
+    password: app_password
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: false
+        dialect: org.hibernate.dialect.MySQLDialect
+        show_sql: true
+        format_sql: true
+  security:
+    user:
+      name: tuan
+      password: tuan
+  mail: 
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_NAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    servlet:
+      multipart:
+        max-file-size: 1GB
+        max-request-size: 1GB
+        enabled: true
+
+google:
+  service_account_email: ${SERVICE_ACCOUNT_EMAIL}
+  application_name: ${APPLICATION_NAME}
+  folder_id_userAvatar: ${USER_AVATAR_FOLDER}
+  folder_id_learningMaterial: ${LEARNING_MATERIAL_FOLDER}
+  folder_id_courseAvatar: ${COURSE_AVATAR_FOLDER}
+  service_account_key: ${SERVICE_ACCOUNT_KEY}
+
