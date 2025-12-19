@@ -1,9 +1,6 @@
 package com.project.CourseSystem.dto;
 
 import com.project.CourseSystem.entity.Course;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import lombok.*;
 
 import java.sql.Date;
@@ -14,6 +11,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class DiscountDTO {
+    
     private Integer discountID;
 
     private Date discountStart;

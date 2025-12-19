@@ -8,7 +8,10 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class PassedStatusCheck {
+
     Integer checkStatus;
+
     Integer lessonID;
+    
     String statusContent;
 }

@@ -8,6 +8,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class RoleDTO {
+    
     private Integer roleID;
+    
     private String roleName;
 }

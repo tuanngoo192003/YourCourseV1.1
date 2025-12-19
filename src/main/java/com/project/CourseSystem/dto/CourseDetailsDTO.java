@@ -11,6 +11,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class CourseDetailsDTO {
+    
     private Integer courseDetailsID;
 
     private String courseDetailsContent;

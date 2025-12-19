@@ -12,6 +12,7 @@ import java.sql.Date;
 @Builder
 @Component
 public class UserInfoDTO {
+    
     private Integer userID;
 
     private String userName;

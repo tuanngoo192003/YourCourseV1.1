@@ -14,13 +14,20 @@ import java.sql.Date;
 @Builder
 @Component
 public class SystemAccountDTO {
+
     private Integer accountID;
+
     private String accountName;
+
     private String accountPassword;
+
     @Email
     private String gmail;
+
     private String verificationCode;
+
     private Date registerDate;
+    
     private Role roleID;
 
     public String getVerificationCode() {

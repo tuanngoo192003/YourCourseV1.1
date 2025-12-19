@@ -2,7 +2,6 @@ package com.project.CourseSystem.dto;
 
 import com.project.CourseSystem.entity.Course;
 import com.project.CourseSystem.entity.UserInfo;
-import jakarta.persistence.Column;
 import lombok.*;
 
 import java.sql.Date;

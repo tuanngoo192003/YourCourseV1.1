@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ReportDataDTO {
+
     private Integer reportID;
 
     private Integer mark;
@@ -25,6 +26,8 @@ public class ReportDataDTO {
     private UserInfo userID;
 
     private Quiz quizID;
+
     private List<String> answers;
+    
     private List<String> askedQuestions;
 }
