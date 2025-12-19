@@ -11,26 +11,26 @@ import java.sql.Date;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="enrolled")
+@Table(name = "enrolled")
 public class Enrolled {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="enrolledID", nullable = false)
+    @Column(name = "enrolled_id", nullable = false)
     private Integer enrolledID;
 
-    @Column(name="enrolledDate", nullable = false)
+    @Column(name = "enrolled_date", nullable = false)
     private Date enrolledDate;
 
     @ManyToOne
-    @JoinColumn(name="courseID", nullable = false)
+    @JoinColumn(name = "count_id", nullable = false)
     private Course courseID;
 
     @ManyToOne
-    @JoinColumn(name="accountID", nullable = false)
+    @JoinColumn(name = "account_id", nullable = false)
     private SystemAccount accountID;
 
     @ManyToOne
-    @JoinColumn(name="paymentID", nullable = true)
+    @JoinColumn(name = "payment_id", nullable = true)
     private Payment paymentID;
 }

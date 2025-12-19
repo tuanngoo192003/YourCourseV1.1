@@ -11,24 +11,24 @@ import java.sql.Time;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="quiz")
+@Table(name = "quizzes")
 public class Quiz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="quizID", nullable = false)
+    @Column(name = "quiz_id", nullable = false)
     private Integer quizID;
 
-    @Column(name="quizName", nullable = false, length = 60)
+    @Column(name = "name", nullable = false, length = 60)
     private String quizName;
 
-    @Column(name="quizDes", nullable = true, length = 200)
+    @Column(name = "description", nullable = true, length = 200)
     private String quizDes;
 
-    @Column(name="quizPeriod", nullable = true)
+    @Column(name = "period", nullable = true)
     private Time quizPeriod;
 
     @ManyToOne
-    @JoinColumn(name="courseID", nullable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course courseID;
 }

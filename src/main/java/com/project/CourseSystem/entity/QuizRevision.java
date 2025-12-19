@@ -9,23 +9,23 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="quizRevision")
+@Table(name = "quiz_revision")
 public class QuizRevision {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="quizRevisionID", nullable = false)
+    @Column(name = "quiz_revision_id", nullable = false)
     private Integer quizRevisionID;
 
     @ManyToOne
-    @JoinColumn(name="questionID", nullable = false)
+    @JoinColumn(name = "question_id", nullable = false)
     private Question questionID;
 
     @ManyToOne
-    @JoinColumn(name="answerID", nullable = false)
+    @JoinColumn(name = "answer_id", nullable = false)
     private Answer answerID;
 
     @ManyToOne
-    @JoinColumn(name="reportID", nullable = false)
+    @JoinColumn(name = "report_id", nullable = false)
     private Report reportID;
 }

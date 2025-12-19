@@ -9,14 +9,14 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="category")
+@Table(name = "categories")
 
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="categoryID", nullable = false)
+    @Column(name = "category_id", nullable = false)
     private Integer categoryID;
 
-    @Column(name="categoryName", nullable = false, length = 50)
+    @Column(name = "category_name", nullable = false, length = 50)
     private String categoryName;
 }

@@ -9,21 +9,19 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="paymentDetails")
+@Table(name = "payment_details")
 public class PaymentDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="paymentDetailsID", nullable = false)
+    @Column(name = "payment_details_id", nullable = false)
     private Integer paymentDetailsID;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="paymentID", nullable = false)
+    @JoinColumn(name = "payment_id", nullable = false)
     private Payment paymentID;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name="courseID", nullable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course courseID;
-
-    //this entity will be removed
 }

@@ -9,19 +9,18 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="question")
+@Table(name = "questions")
 public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="questionID", nullable = false)
+    @Column(name = "question_id", nullable = false)
     private Integer questionID;
 
-    @Column(name="content", nullable = false, length = 200)
+    @Column(name = "content", nullable = false, length = 200)
     private String content;
 
     @ManyToOne
-    @JoinColumn(name="quizID", nullable = false)
+    @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quizID;
-
 }

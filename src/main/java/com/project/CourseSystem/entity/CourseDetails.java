@@ -11,30 +11,30 @@ import java.sql.Date;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="courseDetails")
+@Table(name = "course_details")
 public class CourseDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="courseDetailsID", nullable = false)
+    @Column(name = "course_details_id", nullable = false)
     private Integer courseDetailsID;
 
-    @Column(name="courseDetailsContent", nullable = false, length = 5000)
+    @Column(name = "content", nullable = false, length = 5000)
     private String courseDetailsContent;
 
-    @Column(name="courseRequirements", nullable = false, length = 1000)
+    @Column(name = "requirements", nullable = false, length = 1000)
     private String courseRequirements;
 
-    @Column(name="courseDescription", nullable = false, length = 5000)
+    @Column(name = "description", nullable = false, length = 5000)
     private String courseDescription;
 
-    @Column(name="forWho", nullable = false, length = 1000)
+    @Column(name = "for_user", nullable = false, length = 1000)
     private String forWho;
 
-    @Column(name="updatedDate", nullable = true)
+    @Column(name = "updated_date", nullable = true)
     private Date updatedDate;
 
     @OneToOne
-    @JoinColumn(name="courseID", nullable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course courseID;
 }

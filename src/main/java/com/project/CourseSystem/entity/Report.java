@@ -1,6 +1,5 @@
 package com.project.CourseSystem.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,28 +12,28 @@ import java.sql.Time;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="report")
+@Table(name = "reports")
 public class Report {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="reportID", nullable = false)
+    @Column(name = "report_id", nullable = false)
     private Integer reportID;
 
-    @Column(name="mark", nullable = false)
+    @Column(name = "mark", nullable = false)
     private Integer mark;
 
-    @Column(name="completedDate", nullable = false)
+    @Column(name = "completed_date", nullable = false)
     private Date completedDate;
 
-    @Column(name="timeSpent", nullable = true)
+    @Column(name = "time_spent", nullable = true)
     private Time timeSpent;
 
     @ManyToOne
-    @JoinColumn(name="userID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserInfo userID;
 
     @ManyToOne
-    @JoinColumn(name="quizID", nullable = false)
+    @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quizID;
 }

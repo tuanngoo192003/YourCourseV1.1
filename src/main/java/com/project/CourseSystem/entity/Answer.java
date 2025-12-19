@@ -9,24 +9,24 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="answer")
+@Table(name = "answers")
 public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="answerID", nullable = false)
+    @Column(name = "answer_id", nullable = false)
     private Integer answerID;
 
-    @Column(name="content", nullable = false, length = 200)
+    @Column(name = "content", nullable = false, length = 200)
     private String content;
 
-    @Column(name="isCorrect", nullable = false)
+    @Column(name = "is_correct", nullable = false)
     private String isCorrect;
 
-    @Column(name="answerOrdinal", nullable = true)
+    @Column(name = "ordinal", nullable = true)
     private String answerOrdinal;
 
     @ManyToOne
-    @JoinColumn(name="questionID", nullable = false)
+    @JoinColumn(name = "question_id", nullable = false)
     private Question questionID;
 }

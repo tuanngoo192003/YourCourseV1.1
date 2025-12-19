@@ -12,31 +12,32 @@ import java.sql.Date;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="systemAccount")
+@Table(name = "system_accounts")
 public class SystemAccount {
+
     @Id
-    @Column(name="accountID", nullable = false)
+    @Column(name = "account_id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer accountID;
 
-    @Column(name="accountName", nullable = false, length = 30)
+    @Column(name = "account_name", nullable = false, length = 30)
     private String accountName;
 
-    @Column(name="accountPassword", nullable = false, length = 200)
+    @Column(name = "password", nullable = false, length = 200)
     private String accountPassword;
 
     @Email
-    @Column(name="gmail", nullable = false, length = 50)
+    @Column(name = "email", nullable = false, length = 50)
     private String gmail;
 
-    @Column(name="verificationCode", nullable = true, length = 6)
+    @Column(name = "verification_code", nullable = true, length = 6)
     private String verificationCode;
 
-    @Column(name="registerDate", nullable = true)
+    @Column(name = "register_date", nullable = true)
     private Date registerDate;
 
     @ManyToOne
-    @JoinColumn(name="roleID", nullable = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role roleID;
 
 }

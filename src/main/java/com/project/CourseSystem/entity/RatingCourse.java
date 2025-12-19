@@ -9,25 +9,25 @@ import lombok.*;
 @AllArgsConstructor
 @Entity
 @Data
-@Table(name="ratingCourse")
+@Table(name = "ratings")
 public class RatingCourse {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="ratingID", nullable = false)
+    @Column(name = "rating_id", nullable = false)
     private Integer ratingID;
 
-    @Column(name="rating",nullable = false)
+    @Column(name = "stars_rated", nullable = false)
     private Integer rating;
 
-    @Column(name="comment", length = 1000,nullable = false)
+    @Column(name = "comment", length = 1000, nullable = false)
     private String comment;
 
     @ManyToOne
-    @JoinColumn(name="courseID", nullable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course courseID;
 
     @ManyToOne
-    @JoinColumn(name="userID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserInfo userID;
 }

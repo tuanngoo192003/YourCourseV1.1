@@ -9,14 +9,14 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="role")
+@Table(name = "roles")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="roleID", nullable = false)
+    @Column(name = "role_id", nullable = false)
     private Integer roleID;
 
-    @Column(name="roleName", nullable = false, length = 15)
+    @Column(name = "name", nullable = false, length = 15)
     private String roleName;
 }

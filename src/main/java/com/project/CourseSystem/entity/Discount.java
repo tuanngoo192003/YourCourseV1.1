@@ -11,27 +11,27 @@ import java.sql.Date;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="discount")
+@Table(name = "discount")
 public class Discount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="discountID", nullable = false)
+    @Column(name = "discount_id", nullable = false)
     private Integer discountID;
 
-    @Column(name="discountStart", nullable = false)
+    @Column(name = "start_date", nullable = false)
     private Date discountStart;
 
-    @Column(name="discountEnd", nullable = false)
+    @Column(name = "end_date", nullable = false)
     private Date discountEnd;
 
-    @Column(name="percentage", nullable = false)
+    @Column(name = "percentage", nullable = false)
     private int percentage;
 
-    @Column(name="content", nullable = true, length = 255)
+    @Column(name = "content", nullable = true, length = 255)
     private String discountContent;
 
     @OneToOne
-    @JoinColumn(name = "courseID", nullable = false)
+    @JoinColumn(name = "course_id", nullable = false)
     private Course courseID;
 }
