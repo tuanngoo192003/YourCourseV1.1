@@ -1,33 +1,38 @@
 package com.project.CourseSystem.service.impl;
 
 import com.project.CourseSystem.dto.DiscountDTO;
+import com.project.CourseSystem.entity.Course;
 import com.project.CourseSystem.entity.Discount;
+import com.project.CourseSystem.repository.CourseRepository;
 import com.project.CourseSystem.repository.DiscountRepository;
 import com.project.CourseSystem.service.DiscountService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class DiscountServiceImpl implements DiscountService {
 
-    final private DiscountRepository discountRepository;
+    private final DiscountRepository discountRepository;
 
-    public DiscountServiceImpl(DiscountRepository discountRepository) {
-        this.discountRepository = discountRepository;
+    private final CourseRepository courseRepository;
+
+    @Override
+    public DiscountDTO getDiscountByCourseId(Integer courseID) {
+        return discountRepository.getDiscountByCourseId(courseID);
     }
 
     @Override
-    public Discount getDiscountByCourseId(Integer courseID) {
-        Discount discount = discountRepository.getDiscountByCourseId(courseID);
-        return discount;
-    }
-
-    @Override
-    public List<Discount> getAllDiscounts() {
-        List<Discount> discounts = discountRepository.findAll();
-        return discounts;
+    public List<DiscountDTO> getAllDiscounts() {
+        return discountRepository.findAllDiscount();
     }
 
     @Override
@@ -37,20 +42,35 @@ public class DiscountServiceImpl implements DiscountService {
 
     @Override
     public void addDiscount(DiscountDTO discountDTO) {
+        Course course = courseRepository.findById(discountDTO.getCourseID()).get();
+        if (Objects.isNull(course)) {
+            // TODO: error handling
+
+            return;
+        }
+
         Discount discount = new Discount();
-        discount.setCourseID(discountDTO.getCourseID());
+        discount.setCourseID(course);
         discount.setDiscountEnd(discountDTO.getDiscountEnd());
         discount.setDiscountStart(discountDTO.getDiscountStart());
         discount.setPercentage(discountDTO.getPercentage());
+
         discountRepository.save(discount);
     }
 
     @Override
     public void deleteExpiredDiscounts() {
         LocalDate today = LocalDate.now();
-        List<Discount> expiredDiscounts = discountRepository.findAllByDiscountEnd(today);
+        List<DiscountDTO> expiredDiscounts = discountRepository.findAllExpiredDiscount(today.toString());
         if (!expiredDiscounts.isEmpty()) {
-            discountRepository.deleteAll(expiredDiscounts);
+            expiredDiscounts.forEach(expiredDiscount -> {
+                Discount discount = discountRepository.findById(expiredDiscount.getDiscountID()).get();
+                if (Objects.isNull(discount)) {
+
+                }
+                discountRepository.delete(discount);
+            });
+
         }
     }
 }

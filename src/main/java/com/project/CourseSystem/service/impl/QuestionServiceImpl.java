@@ -5,40 +5,26 @@ import com.project.CourseSystem.dto.QuestionDTO;
 import com.project.CourseSystem.entity.Question;
 import com.project.CourseSystem.repository.QuestionRepository;
 import com.project.CourseSystem.service.QuestionService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
-    final private QuestionConverter questionConverter;
-    final private QuestionRepository questionRepository;
-
-    public QuestionServiceImpl(QuestionRepository questionRepository, QuestionConverter questionConverter) {
-        this.questionRepository = questionRepository;
-        this.questionConverter = questionConverter;
-    }
+    private final QuestionRepository questionRepository;
 
     @Override
     public List<QuestionDTO> getAllByQuizID(Integer quizID) {
-        List<Question> questions = questionRepository.getAllByQuizID(quizID);
-        List<QuestionDTO> questionDTOS = new ArrayList<>();
-        if (questions != null) {
-            for (Question question : questions) {
-                QuestionDTO questionDTO = new QuestionDTO();
-                questionDTO = questionConverter.convertEntityToDto(question);
-                questionDTOS.add(questionDTO);
-            }
-            return questionDTOS;
-        } else {
-            return questionDTOS;
-        }
+        return questionRepository.getAllByQuizID(quizID);
     }
 
     @Override
-    public Question getQuestionByContentAndQuizId(String content, Integer quizId) {
+    public QuestionDTO getQuestionByContentAndQuizId(String content, Integer quizId) {
         return questionRepository.getQuestionByQuestionIdAndQuizId(content, quizId);
     }
 

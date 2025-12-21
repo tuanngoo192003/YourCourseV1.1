@@ -15,5 +15,5 @@ public interface QuizService {
 
     void deleteQuiz(Quiz quiz);
 
-    List<Quiz> getAllByCourseID(Integer courseID);
+    List<QuizDTO> getAllByCourseID(Integer courseID);
 }

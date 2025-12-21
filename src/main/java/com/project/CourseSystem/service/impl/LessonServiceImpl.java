@@ -24,21 +24,17 @@ public class LessonServiceImpl implements LessonService {
 
     @Override
     public List<LessonDTO> getAllByCourseID(int courseID) {
-        List<Lesson> lessonList = lessonRepository.findAllByCourseID(courseID);
-        List<LessonDTO> lessonDTOList = new ArrayList<>();
-        for (Lesson lesson : lessonList) {
-            lessonDTOList.add(lessonConverter.convertEntityToDto(lesson));
-        }
-        return lessonDTOList;
+        return lessonRepository.findAllByCourseID(courseID);
     }
 
     @Override
     public Lesson saveLesson(Lesson lesson) {
-       return lessonRepository.save(lesson);
+        return lessonRepository.save(lesson);
     }
 
     @Override
-    public Lesson getLessonByLessonID(Integer lessonID) {
+    public LessonDTO getLessonByLessonID(Integer lessonID) {
+
         return lessonRepository.findByLessonID(lessonID);
     }
 

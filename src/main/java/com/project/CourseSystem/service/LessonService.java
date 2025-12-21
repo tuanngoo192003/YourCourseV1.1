@@ -11,7 +11,7 @@ public interface LessonService {
 
     Lesson saveLesson(Lesson lesson);
 
-    Lesson getLessonByLessonID(Integer lessonID);
+    LessonDTO getLessonByLessonID(Integer lessonID);
 
     void deteteLesson(Lesson lesson);
 }

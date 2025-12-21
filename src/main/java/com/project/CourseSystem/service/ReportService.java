@@ -1,5 +1,6 @@
 package com.project.CourseSystem.service;
 
+import com.project.CourseSystem.dto.ReportDTO;
 import com.project.CourseSystem.entity.Report;
 
 import java.util.List;
@@ -10,9 +11,9 @@ public interface ReportService {
 
     void saveReport(Report report);
 
-    List<Report> getAllReportByUserID(Integer userID);
+    List<ReportDTO> getAllReportByUserID(Integer userID);
 
-    List<Report> getAllByQuizID(Integer quizID);
+    List<ReportDTO> getAllByQuizID(Integer quizID);
 
     void deleteReport(Integer reportID);
 }

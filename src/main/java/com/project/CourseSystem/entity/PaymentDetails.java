@@ -19,9 +19,9 @@ public class PaymentDetails {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "payment_id", nullable = false)
-    private Payment paymentID;
+    private Payment payment;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "course_id", nullable = false)
-    private Course courseID;
+    private Course course;
 }

@@ -39,12 +39,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(UserInfo userInfo) {
-        UserInfoDTO userInfoDTO = new UserInfoDTO();
-        userInfoDTO = userInfoConverter.convertEntityToDTO(userInfo);
-        userInfoRepository.updateUserInfo(userInfoDTO.getAboutMe(), userInfoDTO.getAvatar(),
-                userInfoDTO.getDob().toString(), userInfoDTO.getLocation(), userInfoDTO.getPhoneNums(),
-                userInfoDTO.getUserName(), userInfoDTO.getAccountID().getAccountID().toString(),
-                userInfoDTO.getUserID());
+        userInfoRepository.updateUserInfo(userInfo.getAboutMe(), userInfo.getAvatar(),
+                userInfo.getDob().toString(), userInfo.getLocation(), userInfo.getPhoneNums(),
+                userInfo.getUserName(), userInfo.getAccountID().toString(),
+                userInfo.getUserID());
     }
 
     @Override

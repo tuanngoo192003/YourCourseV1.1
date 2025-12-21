@@ -1,5 +1,6 @@
 package com.project.CourseSystem.service.impl;
 
+import com.project.CourseSystem.dto.ReportDTO;
 import com.project.CourseSystem.entity.Report;
 import com.project.CourseSystem.repository.ReportRepository;
 import com.project.CourseSystem.service.ReportService;
@@ -27,12 +28,12 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public List<Report> getAllReportByUserID(Integer userID) {
+    public List<ReportDTO> getAllReportByUserID(Integer userID) {
         return reportRepository.findAllByUserID(userID);
     }
 
     @Override
-    public List<Report> getAllByQuizID(Integer quizID) {
+    public List<ReportDTO> getAllByQuizID(Integer quizID) {
         return reportRepository.findAllByQuizID(quizID);
     }
 

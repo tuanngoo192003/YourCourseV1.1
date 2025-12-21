@@ -1,28 +1,29 @@
 package com.project.CourseSystem.service.impl;
 
+import com.project.CourseSystem.converter.PaymentDetailsConverter;
+import com.project.CourseSystem.dto.PaymentDetailsDTO;
 import com.project.CourseSystem.entity.PaymentDetails;
 import com.project.CourseSystem.repository.PaymentDetailsRepository;
 import com.project.CourseSystem.service.PaymentDetailsService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service
+@RequiredArgsConstructor
 public class PaymentDetailsServiceImpl implements PaymentDetailsService {
 
     final private PaymentDetailsRepository paymentDetailsRepository;
 
-    PaymentDetailsServiceImpl(PaymentDetailsRepository paymentDetailsRepository) {
-        this.paymentDetailsRepository = paymentDetailsRepository;
-    }
+    private final PaymentDetailsConverter paymentDetailsConverter;
 
     @Override
-    public List<PaymentDetails> getAllPaymentDetailsByPaymentID(Integer paymentID) {
-        List<PaymentDetails> paymentDetailsList = paymentDetailsRepository.findAllByPaymentID(paymentID);
-
-        return paymentDetailsList;
+    public List<PaymentDetailsDTO> getAllPaymentDetailsByPaymentID(Integer paymentID) {
+        return paymentDetailsRepository.findAllByPaymentID(paymentID);
     }
 
     @Override
@@ -36,17 +37,17 @@ public class PaymentDetailsServiceImpl implements PaymentDetailsService {
     }
 
     @Override
-    public List<PaymentDetails> getAllPaymentDetails() {
-        List<PaymentDetails> paymentDetailsList = new ArrayList<>();
-        paymentDetailsRepository.findAll().forEach(paymentDetailsList::add);
+    public List<PaymentDetailsDTO> getAllPaymentDetails() {
+        List<PaymentDetailsDTO> paymentDetailsList = new ArrayList<>();
+        paymentDetailsRepository.findAll().forEach(paymentDetails -> {
+            paymentDetailsList.add(paymentDetailsConverter.convertEntityToDTO(paymentDetails));
+        });
 
         return paymentDetailsList;
     }
 
     @Override
-    public List<PaymentDetails> getAllByCourseID(Integer courseID) {
-        List<PaymentDetails> paymentDetailsList = paymentDetailsRepository.findAllByCourseID(courseID);
-
-        return paymentDetailsList;
+    public List<PaymentDetailsDTO> getAllByCourseID(Integer courseID) {
+        return paymentDetailsRepository.findAllByCourseID(courseID);
     }
 }

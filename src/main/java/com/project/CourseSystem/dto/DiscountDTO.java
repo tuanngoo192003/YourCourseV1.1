@@ -22,5 +22,5 @@ public class DiscountDTO {
 
     private String discountContent;
 
-    private String course;
+    private Integer courseID;
 }

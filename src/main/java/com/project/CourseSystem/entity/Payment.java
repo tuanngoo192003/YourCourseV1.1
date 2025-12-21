@@ -42,5 +42,5 @@ public class Payment {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private UserInfo userID;
+    private UserInfo user;
 }

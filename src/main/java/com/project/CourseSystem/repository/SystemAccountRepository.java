@@ -36,20 +36,6 @@ public interface SystemAccountRepository extends JpaRepository<SystemAccount, In
                 sa.verification_code as verificationCode,
                 sa.register_date as registerDate,
                 sa.role_id as roleID
-            FROM
-                system_account
-                WHERE account_id = :accountID
-            """, nativeQuery = true)
-    SystemAccountDTO findById(@Param("accountID") int id);
-
-    @Query(value = """
-            SELECT
-                sa.account_id as accountID,
-                sa.account_name as accountName,
-                sa.email as email,
-                sa.verification_code as verificationCode,
-                sa.register_date as registerDate,
-                sa.role_id as roleID
                 FROM
                     system_account
                     WHERE email = :email
@@ -94,6 +80,19 @@ public interface SystemAccountRepository extends JpaRepository<SystemAccount, In
                 (account_name = :accountName)
             """, nativeQuery = true)
     void updateAccountGmail(@Param("email") String email, @Param("accountName") String accountName);
+
+    @Query(value = """
+            SELECT
+                sa.account_id as accountID,
+                sa.account_name as accountName,
+                sa.email as email,
+                sa.verification_code as verificationCode,
+                sa.register_date as registerDate,
+                sa.role_id as roleID
+            FROM
+                system_account
+            """, nativeQuery = true)
+    List<SystemAccountDTO> findAllAccount();
 
     @Query(value = """
             SELECT

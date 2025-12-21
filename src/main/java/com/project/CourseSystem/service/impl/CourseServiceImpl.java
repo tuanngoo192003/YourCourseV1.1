@@ -1,7 +1,6 @@
 package com.project.CourseSystem.service.impl;
 
 import com.project.CourseSystem.converter.CourseConverter;
-import com.project.CourseSystem.converter.CourseDetailsConverter;
 import com.project.CourseSystem.dto.CourseDTO;
 import com.project.CourseSystem.dto.CourseDetailsDTO;
 import com.project.CourseSystem.entity.Course;
@@ -29,18 +28,16 @@ public class CourseServiceImpl implements CourseService {
 
     final private CourseDetailsRepository courseDetailsRepository;
 
-    final private CourseDetailsConverter courseDetailsConverter;
-
     final private ReportRepository reportRepository;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, CourseConverter courseConverter,
-            CourseDetailsRepository courseDetailsRepository, CourseDetailsConverter courseDetailsConverter,
+    public CourseServiceImpl(CourseRepository courseRepository,
+            CourseConverter courseConverter,
+            CourseDetailsRepository courseDetailsRepository,
             ReportRepository reportRepository) {
         this.courseRepository = courseRepository;
         this.courseConverter = courseConverter;
         this.courseDetailsRepository = courseDetailsRepository;
-        this.courseDetailsConverter = courseDetailsConverter;
         this.reportRepository = reportRepository;
     }
 
@@ -58,18 +55,12 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseDTO> getAllCoursesByCategoryID(int categoryID) {
-        List<CourseDTO> courseList = new ArrayList<>();
-        courseRepository.getAllByCategoryID(categoryID)
-                .forEach(course -> courseList.add(courseConverter.convertEntityToDTO(course)));
-        return courseList;
+        return courseRepository.getAllByCategoryID(categoryID);
     }
 
     @Override
     public List<CourseDTO> getAllCoursesByCourseNameContaining(String courseName) {
-        List<CourseDTO> courseList = new ArrayList<>();
-        courseRepository.getAllByCourseNameContaining(courseName)
-                .forEach(course -> courseList.add(courseConverter.convertEntityToDTO(course)));
-        return courseList;
+        return courseRepository.getAllByCourseNameContaining(courseName);
     }
 
     @Override
@@ -113,7 +104,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public Course findFirstCourseByCategoryID(Integer categoryID) {
+    public CourseDTO findFirstCourseByCategoryID(Integer categoryID) {
         return courseRepository.findFirstCourseByCategory(categoryID);
     }
 

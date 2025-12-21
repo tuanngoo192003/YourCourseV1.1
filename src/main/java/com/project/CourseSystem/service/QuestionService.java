@@ -9,7 +9,7 @@ public interface QuestionService {
 
     public List<QuestionDTO> getAllByQuizID(Integer quizID);
 
-    public Question getQuestionByContentAndQuizId(String content, Integer quizId);
+    public QuestionDTO getQuestionByContentAndQuizId(String content, Integer quizId);
 
     public Question getQuestionById(Integer questionId);
 

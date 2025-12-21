@@ -18,14 +18,60 @@ public class SystemAccountDTO {
 
     private String accountName;
 
-    private String accountPassword;
-
     @Email
-    private String gmail;
+    private String email;
 
     private String verificationCode;
 
     private Date registerDate;
 
     private Integer roleID;
+
+    @Setter
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Component
+    public static class UpdateSystemAccountDTO {
+        private Integer accountID;
+
+        private String accountName;
+
+        private String oldPassword;
+
+        private String newPassword;
+
+        @Email
+        private String email;
+
+        private String verificationCode;
+
+        private Date registerDate;
+
+        private Integer roleID;
+    }
+
+    @Setter
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Component
+    public static class CreateSystemAccountDTO {
+        private Integer accountID;
+
+        private String accountName;
+
+        private String password;
+
+        @Email
+        private String email;
+
+        private String verificationCode;
+
+        private Date registerDate;
+
+        private Integer roleID;
+    }
 }

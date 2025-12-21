@@ -1,5 +1,6 @@
 package com.project.CourseSystem.service;
 
+import com.project.CourseSystem.dto.PaymentDTO;
 import com.project.CourseSystem.entity.Payment;
 
 import java.util.List;
@@ -10,15 +11,15 @@ public interface PaymentService {
 
     Payment addPayment(Payment payment);
 
-    List<Payment> getAllPayment();
+    List<PaymentDTO> getAllPayment();
 
-    List<Payment> getPaymentByMonth(int endMonth, int startMonth);
+    List<PaymentDTO> getPaymentByMonth(int endMonth, int startMonth);
 
-    List<Payment> findPaymentByUserID(Integer userID);
+    List<PaymentDTO> findPaymentByUserID(Integer userID);
 
-    Payment getPaymentByID(int paymentID);
+    PaymentDTO getPaymentByID(int paymentID);
 
-    void updatePayment(Payment payment);
+    void updatePayment(Integer paymentID, String paymentStatus);
 
-    List<Payment> getAllConfirmedPayment();
+    List<PaymentDTO> getAllConfirmedPayment();
 }

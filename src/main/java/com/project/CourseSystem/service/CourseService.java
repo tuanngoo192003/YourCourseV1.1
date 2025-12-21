@@ -20,7 +20,8 @@ public interface CourseService {
 
     Page<Course> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
 
-    Page<Course> findPaginatedByAttribute(int pageNo, int pageSize, String sortField, String sortDirection, String attribute, String value);
+    Page<Course> findPaginatedByAttribute(int pageNo, int pageSize, String sortField, String sortDirection,
+            String attribute, String value);
 
     CourseDetailsDTO getCourseDetailsByID(int id);
 
@@ -32,7 +33,7 @@ public interface CourseService {
 
     void addReport(Report report);
 
-    Course findFirstCourseByCategoryID(Integer categoryID);
+    CourseDTO findFirstCourseByCategoryID(Integer categoryID);
 
     void deleteCourseDetails(Integer courseID);
 

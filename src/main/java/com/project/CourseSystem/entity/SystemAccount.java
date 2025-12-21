@@ -28,7 +28,7 @@ public class SystemAccount {
 
     @Email
     @Column(name = "email", nullable = false, length = 50)
-    private String gmail;
+    private String email;
 
     @Column(name = "verification_code", nullable = true, length = 6)
     private String verificationCode;
@@ -38,6 +38,6 @@ public class SystemAccount {
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
-    private Role roleID;
+    private Role role;
 
 }

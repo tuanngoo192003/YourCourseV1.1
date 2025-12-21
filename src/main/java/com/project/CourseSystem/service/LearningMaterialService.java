@@ -1,14 +1,14 @@
 package com.project.CourseSystem.service;
 
-import com.project.CourseSystem.entity.LearningMaterial;
+import com.project.CourseSystem.dto.LearningMaterialDTO;
 
 import java.util.List;
 
 public interface LearningMaterialService {
 
-    List<LearningMaterial> getLearningMaterialByLessonID(Integer lessonID);
+    List<LearningMaterialDTO> getLearningMaterialByLessonID(Integer lessonID);
 
-    void saveLearningMaterial(LearningMaterial learningMaterial);
+    void saveLearningMaterial(LearningMaterialDTO learningMaterial);
 
     void deleteLearningMaterial(Integer learningMaterialID);
 }

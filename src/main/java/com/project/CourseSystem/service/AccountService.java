@@ -2,19 +2,16 @@ package com.project.CourseSystem.service;
 
 import com.project.CourseSystem.dto.SystemAccountDTO;
 import com.project.CourseSystem.entity.SystemAccount;
-import com.project.CourseSystem.entity.UserInfo;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 public interface AccountService {
-    public SystemAccountDTO findUser(String account_name, String account_password);
+    public SystemAccountDTO findUser(String accountName);
 
-    public SystemAccountDTO findUserByAccountName(String account_name);
+    public void saveUser(SystemAccountDTO.CreateSystemAccountDTO system_accountDTO);
 
-    public void saveUser(SystemAccountDTO system_accountDTO);
-
-    public void updateUser(SystemAccountDTO system_accountDTO);
+    public void updateUser(SystemAccountDTO.UpdateSystemAccountDTO system_accountDTO);
 
     boolean isGmailExist(String gmail);
 
@@ -22,19 +19,15 @@ public interface AccountService {
 
     public String generateVerificationCode();
 
-    public SystemAccount findByGmail(String gmail);
+    public SystemAccountDTO findByGmail(String gmail);
 
-    SystemAccount findByVerificationCode(String verificationCode);
+    SystemAccountDTO findByVerificationCode(String verificationCode);
 
-    void updateGmail(String gmail, String accountName);
+    List<SystemAccountDTO> getAllAccount();
 
-    void updateVerifyCode(String verificationCode, String accountName);
+    List<SystemAccountDTO> getRecentRegisterAccount(int numberOfWeek);
 
-    List<SystemAccount> getAllAccount();
+    Page<SystemAccountDTO> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
 
-    List<SystemAccount> getRecentRegisterAccount(int numberOfWeek);
-
-    Page<SystemAccount> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection);
-
-    SystemAccount findAccountByID(Integer accountID);
+    SystemAccountDTO findAccountByID(Integer accountID);
 }

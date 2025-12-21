@@ -1,150 +1,155 @@
 package com.project.CourseSystem.service.impl;
 
-import com.project.CourseSystem.converter.System_AccountConverter;
+import com.project.CourseSystem.converter.SystemAccountConverter;
 import com.project.CourseSystem.dto.SystemAccountDTO;
+import com.project.CourseSystem.entity.Role;
 import com.project.CourseSystem.entity.SystemAccount;
-import com.project.CourseSystem.repository.SystemAccountCRUDRepository;
+import com.project.CourseSystem.repository.RoleRepository;
 import com.project.CourseSystem.repository.SystemAccountRepository;
 import com.project.CourseSystem.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    final private SystemAccountCRUDRepository system_accountCRUDRepository;
-    final private System_AccountConverter system_accountConverter;
-    final private SystemAccountRepository system_accountRespository;
+    private final SystemAccountRepository systemAccountRespository;
+    private final RoleRepository roleRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final SystemAccountConverter systemAccountConverter;
 
     @Autowired
-    public AccountServiceImpl(SystemAccountRepository system_accountRespository,
-            System_AccountConverter system_accountConverter,
-            SystemAccountCRUDRepository system_accountCRUDRepository) {
-        this.system_accountRespository = system_accountRespository;
-        this.system_accountConverter = system_accountConverter;
-        this.system_accountCRUDRepository = system_accountCRUDRepository;
-
+    public AccountServiceImpl(SystemAccountRepository systemAccountRespository,
+            RoleRepository roleRepository,
+            BCryptPasswordEncoder passwordEncoder,
+            SystemAccountConverter systemAccountConverter) {
+        this.systemAccountRespository = systemAccountRespository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.systemAccountConverter = systemAccountConverter;
     }
 
     @Override
-    public SystemAccountDTO findUser(String account_name, String account_password) {
-        SystemAccountDTO system_accountDTO = new SystemAccountDTO();
-        SystemAccount system_accountEntity = system_accountRespository.findByAccountName(account_name);
-        if (system_accountEntity == null) {
-            return system_accountDTO;
-        } else {
-            system_accountDTO.setAccountID(system_accountEntity.getAccountID());
-            system_accountDTO.setAccountName(system_accountEntity.getAccountName());
-            system_accountDTO.setAccountPassword(system_accountEntity.getAccountPassword());
-            system_accountDTO.setGmail(system_accountEntity.getGmail());
-            system_accountDTO.setRoleID(system_accountEntity.getRoleID());
-            return system_accountDTO;
+    public SystemAccountDTO findUser(String accountName) {
+        return systemAccountRespository.findByAccountName(accountName);
+    }
+
+    @Override
+    public void saveUser(SystemAccountDTO.CreateSystemAccountDTO systemAccountDTO) {
+        String encodePassword = passwordEncoder.encode(systemAccountDTO.getPassword());
+
+        SystemAccount systemAccountEntity = new SystemAccount();
+        systemAccountEntity.setAccountName(systemAccountDTO.getAccountName());
+        systemAccountEntity.setAccountPassword(encodePassword);
+        systemAccountEntity.setEmail(systemAccountDTO.getEmail());
+        systemAccountEntity.setVerificationCode("");
+        systemAccountEntity.setRegisterDate(systemAccountDTO.getRegisterDate());
+
+        Role role = roleRepository.findById(systemAccountDTO.getRoleID()).get();
+        systemAccountEntity.setRole(role);
+
+        systemAccountRespository.save(systemAccountEntity);
+    }
+
+    @Override
+    public void updateUser(SystemAccountDTO.UpdateSystemAccountDTO systemAccountDTO) {
+        SystemAccount systemAccountEntity = systemAccountRespository.findById(systemAccountDTO.getAccountID()).get();
+        if (systemAccountDTO.getOldPassword() != "" && systemAccountEntity.getAccountPassword() != null) {
+            if (!passwordEncoder.matches(systemAccountDTO.getOldPassword(), systemAccountEntity.getAccountPassword())) {
+                // throw new Exception("old password not correct!");
+
+                // TODO: error handling
+
+                return;
+            }
+
+            String encodeNewPassword = passwordEncoder.encode(systemAccountDTO.getNewPassword());
+            systemAccountEntity.setAccountPassword(encodeNewPassword);
         }
-    }
-
-    @Override
-    public SystemAccountDTO findUserByAccountName(String account_name) {
-        SystemAccount systemAccount = system_accountRespository.findByAccount_name(account_name);
-        if (systemAccount == null) {
-            SystemAccountDTO systemAccountDTO = new SystemAccountDTO();
-            return systemAccountDTO;
-        } else {
-            SystemAccountDTO systemAccountDTO = system_accountConverter.convertEntityToDTO(systemAccount);
-            return systemAccountDTO;
+        if (systemAccountDTO.getEmail() != "") {
+            systemAccountEntity.setEmail(systemAccountDTO.getEmail());
         }
-    }
+        if (systemAccountDTO.getVerificationCode() != "") {
+            systemAccountEntity.setVerificationCode(systemAccountDTO.getVerificationCode());
+        }
 
-    @Override
-    public void saveUser(SystemAccountDTO system_accountDTO) {
-        SystemAccount system_accountEntity = new SystemAccount();
-        system_accountEntity.setAccountName(system_accountDTO.getAccountName());
-        system_accountEntity.setAccountPassword(system_accountDTO.getAccountPassword());
-        system_accountEntity.setGmail(system_accountDTO.getGmail());
-        system_accountEntity.setVerificationCode("");
-        system_accountEntity.setRoleID(system_accountDTO.getRoleID());
-        system_accountEntity.setRegisterDate(system_accountDTO.getRegisterDate());
-        system_accountRespository.save(system_accountEntity);
-    }
-
-    @Override
-    public void updateUser(SystemAccountDTO system_accountDTO) {
-        int id = system_accountDTO.getAccountID();
-        String newPassword = system_accountDTO.getAccountPassword();
-        SystemAccount system_accountEntity = system_accountRespository.findById(id).get();
-        system_accountEntity.setAccountPassword(newPassword);
-        system_accountDTO = system_accountConverter.convertEntityToDTO(system_accountEntity);
-        system_accountDTO.setAccountPassword(newPassword);
-        system_accountCRUDRepository.save(system_accountEntity);
+        systemAccountRespository.save(systemAccountEntity);
     }
 
     @Override
     public boolean isGmailExist(String gmail) {
-        SystemAccount system_accountEntity = system_accountRespository.findByGmail(gmail);
-        if (system_accountEntity == null) {
-            return false;
+        SystemAccountDTO systemAccountDTO = systemAccountRespository.findByGmail(gmail);
+
+        return !Objects.isNull(systemAccountDTO);
+    }
+
+    @Override
+    public SystemAccountDTO findByGmail(String gmail) {
+        SystemAccountDTO systemAccountDTO = systemAccountRespository.findByGmail(gmail);
+        if (Objects.isNull(systemAccountDTO)) {
+
+            return null;
         }
-        return true;
-    }
 
-    public SystemAccount findByGmail(String gmail) {
-        return system_accountRespository.findByGmail(gmail);
+        return systemAccountDTO;
     }
 
     @Override
-    public SystemAccount findByVerificationCode(String verificationCode) {
-        return system_accountRespository.findByVerificationCode(verificationCode);
+    public SystemAccountDTO findByVerificationCode(String verificationCode) {
+        SystemAccountDTO systemAccountDTO = systemAccountRespository.findByVerificationCode(verificationCode);
+        if (Objects.isNull(systemAccountDTO)) {
+
+            return null;
+        }
+
+        return systemAccountDTO;
     }
 
     @Override
-    public void updateGmail(String gmail, String accountName) {
-        SystemAccount system_accountEntity = system_accountRespository.findByAccount_name(accountName);
-        system_accountEntity.setGmail(gmail);
-        system_accountRespository.save(system_accountEntity);
+    public List<SystemAccountDTO> getAllAccount() {
+        return systemAccountRespository.findAllAccount();
     }
 
     @Override
-    public void updateVerifyCode(String verificationCode, String accountName) {
-        SystemAccount system_accountEntity = system_accountRespository.findByAccount_name(accountName);
-        system_accountEntity.setVerificationCode(verificationCode);
-        system_accountRespository.save(system_accountEntity);
+    public List<SystemAccountDTO> getRecentRegisterAccount(int numberOfWeek) {
+        return systemAccountRespository.findRecentRegisterAccount(numberOfWeek);
     }
 
     @Override
-    public List<SystemAccount> getAllAccount() {
-        List<SystemAccount> systemAccountList = system_accountRespository.findAll();
-        return systemAccountList;
+    public Page<SystemAccountDTO> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
+        // Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ?
+        // Sort.by(sortField).ascending()
+        // : Sort.by(sortField).descending();
+        // return system_accountRespository.findAll(PageRequest.of(pageNo - 1, pageSize,
+        // sort));
+
+        return null;
     }
 
     @Override
-    public List<SystemAccount> getRecentRegisterAccount(int numberOfWeek) {
-        List<SystemAccount> systemAccountList = system_accountRespository.findRecentRegisterAccount(numberOfWeek);
-        return systemAccountList;
-    }
+    public SystemAccountDTO findAccountByID(Integer accountID) {
+        SystemAccount systemAccountEntity = systemAccountRespository.findById(accountID).get();
+        if (Objects.isNull(systemAccountEntity)) {
 
-    @Override
-    public Page<SystemAccount> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
-        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending()
-                : Sort.by(sortField).descending();
-        return system_accountRespository.findAll(PageRequest.of(pageNo - 1, pageSize, sort));
-    }
+            return null;
+        }
 
-    @Override
-    public SystemAccount findAccountByID(Integer accountID) {
-        SystemAccount systemAccount = system_accountRespository.findById(accountID).get();
-        return systemAccount;
+        return systemAccountConverter.convertEntityToDTO(systemAccountEntity);
     }
 
     public boolean isUsernameExist(String account_name) {
-        SystemAccount system_accountEntity = system_accountRespository.findByAccount_name(account_name);
-        if (system_accountEntity == null) {
+        SystemAccountDTO systemAccountDTO = systemAccountRespository.findByAccountName(account_name);
+        if (Objects.isNull(systemAccountDTO)) {
+
             return false;
         }
+
         return true;
     }
 

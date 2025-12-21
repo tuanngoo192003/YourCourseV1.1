@@ -1,20 +1,21 @@
 package com.project.CourseSystem.service.impl;
 
+import com.project.CourseSystem.dto.RatingCourseDTO;
 import com.project.CourseSystem.entity.RatingCourse;
 import com.project.CourseSystem.repository.RatingCourseRepository;
 import com.project.CourseSystem.service.RatingCourseService;
+
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class RatingCourseServiceImpl implements RatingCourseService {
 
     final private RatingCourseRepository ratingCourseRepository;
-
-    public RatingCourseServiceImpl(RatingCourseRepository ratingCourseRepository) {
-        this.ratingCourseRepository = ratingCourseRepository;
-    }
 
     @Override
     public void addRatingCourse(RatingCourse ratingCourse) {
@@ -22,9 +23,8 @@ public class RatingCourseServiceImpl implements RatingCourseService {
     }
 
     @Override
-    public RatingCourse getRatingCourseByCourseIdAndUserId(Integer courseId, Integer userId) {
-        RatingCourse ratingCourse = ratingCourseRepository.getRatingCourseByCourseIdAndUserId(courseId, userId);
-        return ratingCourse;
+    public RatingCourseDTO getRatingCourseByCourseIdAndUserId(Integer courseId, Integer userId) {
+        return ratingCourseRepository.getRatingCourseByCourseIdAndUserId(courseId, userId);
     }
 
     @Override

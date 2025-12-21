@@ -17,5 +17,5 @@ public class LearningMaterialDTO {
 
     private String learningMaterialLink;
 
-    private String lesson;
+    private Integer lessonID;
 }
