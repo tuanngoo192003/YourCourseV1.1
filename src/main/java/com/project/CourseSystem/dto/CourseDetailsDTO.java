@@ -11,7 +11,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class CourseDetailsDTO {
-    
+
     private Integer courseDetailsID;
 
     private String courseDetailsContent;
@@ -24,5 +24,5 @@ public class CourseDetailsDTO {
 
     private Date updatedDate;
 
-    private Course courseID;
+    private Integer courseID;
 }

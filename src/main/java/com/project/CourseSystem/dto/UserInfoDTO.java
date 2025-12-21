@@ -1,10 +1,10 @@
 package com.project.CourseSystem.dto;
 
-import com.project.CourseSystem.entity.SystemAccount;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -12,7 +12,7 @@ import java.sql.Date;
 @Builder
 @Component
 public class UserInfoDTO {
-    
+
     private Integer userID;
 
     private String userName;
@@ -29,6 +29,6 @@ public class UserInfoDTO {
 
     private String avatar;
 
-    private SystemAccount accountID;
+    private Integer accountID;
 
 }
