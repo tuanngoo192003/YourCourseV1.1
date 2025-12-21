@@ -29,14 +29,14 @@ public class CourseServiceImpl implements CourseService {
 
     final private CourseDetailsRepository courseDetailsRepository;
 
-    final private CourseDetailsConverter  courseDetailsConverter;
+    final private CourseDetailsConverter courseDetailsConverter;
 
     final private ReportRepository reportRepository;
 
     @Autowired
     public CourseServiceImpl(CourseRepository courseRepository, CourseConverter courseConverter,
-                             CourseDetailsRepository courseDetailsRepository, CourseDetailsConverter courseDetailsConverter,
-                             ReportRepository reportRepository) {
+            CourseDetailsRepository courseDetailsRepository, CourseDetailsConverter courseDetailsConverter,
+            ReportRepository reportRepository) {
         this.courseRepository = courseRepository;
         this.courseConverter = courseConverter;
         this.courseDetailsRepository = courseDetailsRepository;
@@ -46,8 +46,7 @@ public class CourseServiceImpl implements CourseService {
 
     public List<CourseDTO> getAllCourses() {
         List<CourseDTO> courseList = new ArrayList<>();
-        courseRepository.findAll().forEach(course ->
-                courseList.add(courseConverter.convertEntityToDTO(course)));
+        courseRepository.findAll().forEach(course -> courseList.add(courseConverter.convertEntityToDTO(course)));
         return courseList;
     }
 
@@ -60,35 +59,36 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public List<CourseDTO> getAllCoursesByCategoryID(int categoryID) {
         List<CourseDTO> courseList = new ArrayList<>();
-        courseRepository.getAllByCategoryID(categoryID).forEach(course ->
-                courseList.add(courseConverter.convertEntityToDTO(course)));
+        courseRepository.getAllByCategoryID(categoryID)
+                .forEach(course -> courseList.add(courseConverter.convertEntityToDTO(course)));
         return courseList;
     }
 
     @Override
     public List<CourseDTO> getAllCoursesByCourseNameContaining(String courseName) {
         List<CourseDTO> courseList = new ArrayList<>();
-        courseRepository.getAllByCourseNameContaining(courseName).forEach(course ->
-                courseList.add(courseConverter.convertEntityToDTO(course)));
+        courseRepository.getAllByCourseNameContaining(courseName)
+                .forEach(course -> courseList.add(courseConverter.convertEntityToDTO(course)));
         return courseList;
     }
 
     @Override
     public Page<Course> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
-        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
-                Sort.by(sortField).descending();
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending()
+                : Sort.by(sortField).descending();
         return courseRepository.findAll(PageRequest.of(pageNo - 1, pageSize, sort));
     }
 
     @Override
-    public Page<Course> findPaginatedByAttribute(int pageNo, int pageSize, String sortField, String sortDirection, String attribute, String value) {
-        return courseRepository.findAllByAttribute(attribute, value, PageRequest.of(pageNo - 1, pageSize, Sort.by(sortField).ascending()));
+    public Page<Course> findPaginatedByAttribute(int pageNo, int pageSize, String sortField, String sortDirection,
+            String attribute, String value) {
+        return courseRepository.findAllByAttribute(attribute, value,
+                PageRequest.of(pageNo - 1, pageSize, Sort.by(sortField).ascending()));
     }
-
 
     @Override
     public CourseDetailsDTO getCourseDetailsByID(int id) {
-        CourseDetailsDTO courseDetailsDTO = courseDetailsConverter.convertEntityToDTO(courseDetailsRepository.findCourseDetailsByCourseID(id));
+        CourseDetailsDTO courseDetailsDTO = courseDetailsRepository.findCourseDetailsByCourseID(id);
         return courseDetailsDTO;
     }
 
@@ -126,6 +126,5 @@ public class CourseServiceImpl implements CourseService {
     public void deleteCourse(Integer courseID) {
         courseRepository.deleteById(courseID);
     }
-
 
 }

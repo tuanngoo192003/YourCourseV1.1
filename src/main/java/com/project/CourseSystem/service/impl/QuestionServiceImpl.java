@@ -16,7 +16,7 @@ public class QuestionServiceImpl implements QuestionService {
     final private QuestionConverter questionConverter;
     final private QuestionRepository questionRepository;
 
-    public QuestionServiceImpl(QuestionRepository questionRepository, QuestionConverter questionConverter){
+    public QuestionServiceImpl(QuestionRepository questionRepository, QuestionConverter questionConverter) {
         this.questionRepository = questionRepository;
         this.questionConverter = questionConverter;
     }
@@ -25,15 +25,14 @@ public class QuestionServiceImpl implements QuestionService {
     public List<QuestionDTO> getAllByQuizID(Integer quizID) {
         List<Question> questions = questionRepository.getAllByQuizID(quizID);
         List<QuestionDTO> questionDTOS = new ArrayList<>();
-        if(questions!=null){
-            for(Question question : questions){
+        if (questions != null) {
+            for (Question question : questions) {
                 QuestionDTO questionDTO = new QuestionDTO();
                 questionDTO = questionConverter.convertEntityToDto(question);
                 questionDTOS.add(questionDTO);
             }
             return questionDTOS;
-        }
-        else{
+        } else {
             return questionDTOS;
         }
     }
@@ -45,7 +44,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question getQuestionById(Integer questionId) {
-        return questionRepository.getQuestionByQuestionId(questionId);
+        return questionRepository.findById(questionId).get();
     }
 
     @Override

@@ -1,7 +1,5 @@
 package com.project.CourseSystem.dto;
 
-import com.project.CourseSystem.entity.Course;
-import com.project.CourseSystem.entity.UserInfo;
 import lombok.*;
 
 @Setter
@@ -17,7 +15,7 @@ public class RatingCourseDTO {
 
     private String comment;
 
-    private Course courseID;
+    private Integer courseID;
 
-    private UserInfo userID;
+    private Integer userID;
 }

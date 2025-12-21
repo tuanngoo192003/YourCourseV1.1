@@ -1,6 +1,5 @@
 package com.project.CourseSystem.dto;
 
-import com.project.CourseSystem.entity.Quiz;
 import lombok.*;
 
 @Setter
@@ -14,5 +13,5 @@ public class QuestionDTO {
 
     private String content;
 
-    private Quiz quizID;
+    private Integer quizID;
 }

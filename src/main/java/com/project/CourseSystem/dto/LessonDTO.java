@@ -17,8 +17,8 @@ public class LessonDTO {
 
     private String lessonDes;
 
-    private Course courseID;
+    private Course course;
 
-    private Quiz quizID;
+    private Quiz quiz;
 
 }

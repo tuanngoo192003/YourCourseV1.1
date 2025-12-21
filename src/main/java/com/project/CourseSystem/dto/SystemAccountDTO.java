@@ -1,6 +1,5 @@
 package com.project.CourseSystem.dto;
 
-import com.project.CourseSystem.entity.Role;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.stereotype.Component;
@@ -27,14 +26,6 @@ public class SystemAccountDTO {
     private String verificationCode;
 
     private Date registerDate;
-    
-    private Role roleID;
 
-    public String getVerificationCode() {
-        return verificationCode;
-    }
-
-    public void setVerificationCode(String verificationCode) {
-        this.verificationCode = verificationCode;
-    }
+    private Integer roleID;
 }

@@ -12,13 +12,13 @@ public class ReportServiceImpl implements ReportService {
 
     final private ReportRepository reportRepository;
 
-    ReportServiceImpl(ReportRepository reportRepository){
+    ReportServiceImpl(ReportRepository reportRepository) {
         this.reportRepository = reportRepository;
     }
 
     @Override
     public Report getReportByReportID(Integer reportID) {
-        return reportRepository.findByReportID(reportID);
+        return reportRepository.findById(reportID).get();
     }
 
     @Override

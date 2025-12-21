@@ -11,7 +11,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class DiscountDTO {
-    
+
     private Integer discountID;
 
     private Date discountStart;
@@ -22,5 +22,5 @@ public class DiscountDTO {
 
     private String discountContent;
 
-    private Course courseID;
+    private String course;
 }

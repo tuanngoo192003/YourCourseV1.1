@@ -46,7 +46,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Payment getPaymentByID(int paymentID) {
-        Payment payment = paymentRepository.getPaymentByID(paymentID);
+        Payment payment = paymentRepository.findById(paymentID).get();
         return payment;
     }
 

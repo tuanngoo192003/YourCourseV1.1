@@ -13,7 +13,7 @@ public class PaymentDetailsDTO {
 
     private Integer paymentDetailsID;
 
-    private Payment paymentID;
+    private Payment payment;
 
-    private Course courseID;
+    private Course course;
 }

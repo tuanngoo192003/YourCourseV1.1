@@ -17,7 +17,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     final private AnswerConverter answerConverter;
 
-    public AnswerServiceImpl(AnswerRepository answerRepository, AnswerConverter answerConverter){
+    public AnswerServiceImpl(AnswerRepository answerRepository, AnswerConverter answerConverter) {
 
         this.answerRepository = answerRepository;
         this.answerConverter = answerConverter;
@@ -25,22 +25,21 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public Answer getById(Integer id) {
-        return answerRepository.getAnswerByID(id);
+        return answerRepository.findById(id).get();
     }
 
     @Override
     public List<AnswerDTO> getAllByQuestionId(Integer questionId) {
         List<Answer> answerList = answerRepository.getAnswerByQuestionID(questionId);
         List<AnswerDTO> answerDTOList = new ArrayList<>();
-        if(answerList!= null){
-            for(Answer answer : answerList){
+        if (answerList != null) {
+            for (Answer answer : answerList) {
                 AnswerDTO answerDTO = new AnswerDTO();
                 answerDTO = answerConverter.convertEntityToDto(answer);
                 answerDTOList.add(answerDTO);
             }
             return answerDTOList;
-        }
-        else {
+        } else {
             return answerDTOList;
         }
     }
@@ -69,6 +68,5 @@ public class AnswerServiceImpl implements AnswerService {
     public void updateAnswer(Answer answer) {
         answerRepository.updateAnswer(answer.getContent(), answer.getIsCorrect(), answer.getAnswerID());
     }
-
 
 }

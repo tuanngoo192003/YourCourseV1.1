@@ -23,8 +23,9 @@ public class AccountServiceImpl implements AccountService {
     final private SystemAccountRepository system_accountRespository;
 
     @Autowired
-    public AccountServiceImpl(SystemAccountRepository system_accountRespository, System_AccountConverter system_accountConverter,
-                              SystemAccountCRUDRepository system_accountCRUDRepository){
+    public AccountServiceImpl(SystemAccountRepository system_accountRespository,
+            System_AccountConverter system_accountConverter,
+            SystemAccountCRUDRepository system_accountCRUDRepository) {
         this.system_accountRespository = system_accountRespository;
         this.system_accountConverter = system_accountConverter;
         this.system_accountCRUDRepository = system_accountCRUDRepository;
@@ -35,10 +36,9 @@ public class AccountServiceImpl implements AccountService {
     public SystemAccountDTO findUser(String account_name, String account_password) {
         SystemAccountDTO system_accountDTO = new SystemAccountDTO();
         SystemAccount system_accountEntity = system_accountRespository.findByAccount_name(account_name);
-        if(system_accountEntity == null){
+        if (system_accountEntity == null) {
             return system_accountDTO;
-        }
-        else{
+        } else {
             system_accountDTO.setAccountID(system_accountEntity.getAccountID());
             system_accountDTO.setAccountName(system_accountEntity.getAccountName());
             system_accountDTO.setAccountPassword(system_accountEntity.getAccountPassword());
@@ -51,11 +51,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public SystemAccountDTO findUserByAccountName(String account_name) {
         SystemAccount systemAccount = system_accountRespository.findByAccount_name(account_name);
-        if(systemAccount == null){
+        if (systemAccount == null) {
             SystemAccountDTO systemAccountDTO = new SystemAccountDTO();
             return systemAccountDTO;
-        }
-        else{
+        } else {
             SystemAccountDTO systemAccountDTO = system_accountConverter.convertEntityToDTO(systemAccount);
             return systemAccountDTO;
         }
@@ -77,7 +76,7 @@ public class AccountServiceImpl implements AccountService {
     public void updateUser(SystemAccountDTO system_accountDTO) {
         int id = system_accountDTO.getAccountID();
         String newPassword = system_accountDTO.getAccountPassword();
-        SystemAccount system_accountEntity = system_accountRespository.findById(id);
+        SystemAccount system_accountEntity = system_accountRespository.findById(id).get();
         system_accountEntity.setAccountPassword(newPassword);
         system_accountDTO = system_accountConverter.convertEntityToDTO(system_accountEntity);
         system_accountDTO.setAccountPassword(newPassword);
@@ -87,7 +86,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public boolean isGmailExist(String gmail) {
         SystemAccount system_accountEntity = system_accountRespository.findByGmail(gmail);
-        if(system_accountEntity == null){
+        if (system_accountEntity == null) {
             return false;
         }
         return true;
@@ -130,20 +129,20 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Page<SystemAccount> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
-        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
-                Sort.by(sortField).descending();
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending()
+                : Sort.by(sortField).descending();
         return system_accountRespository.findAll(PageRequest.of(pageNo - 1, pageSize, sort));
     }
 
     @Override
     public SystemAccount findAccountByID(Integer accountID) {
-        SystemAccount systemAccount = system_accountRespository.findByAccountId(accountID);
+        SystemAccount systemAccount = system_accountRespository.findById(accountID).get();
         return systemAccount;
     }
 
-    public boolean isUsernameExist(String account_name){
+    public boolean isUsernameExist(String account_name) {
         SystemAccount system_accountEntity = system_accountRespository.findByAccount_name(account_name);
-        if(system_accountEntity == null){
+        if (system_accountEntity == null) {
             return false;
         }
         return true;
@@ -153,13 +152,12 @@ public class AccountServiceImpl implements AccountService {
     public String generateVerificationCode() {
         String randomString = UUID.randomUUID().toString();
         StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i < 5; i++){
-            if(randomString.charAt(i) != '-'){
+        for (int i = 0; i < 5; i++) {
+            if (randomString.charAt(i) != '-') {
                 stringBuilder.append(randomString.charAt(i));
             }
         }
         return stringBuilder.toString();
     }
-
 
 }

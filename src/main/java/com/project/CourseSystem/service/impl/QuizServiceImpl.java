@@ -19,7 +19,8 @@ public class QuizServiceImpl implements QuizService {
 
     final private QuizConverter quizConverter;
 
-    public QuizServiceImpl(QuizRepository quizRepository, LessonRepository lessonRepository, QuizConverter quizConverter) {
+    public QuizServiceImpl(QuizRepository quizRepository, LessonRepository lessonRepository,
+            QuizConverter quizConverter) {
         this.lessonRepository = lessonRepository;
         this.quizRepository = quizRepository;
         this.quizConverter = quizConverter;
@@ -28,20 +29,19 @@ public class QuizServiceImpl implements QuizService {
     @Override
     public QuizDTO getAllByLessonID(int lessonID) {
         Integer quizID = lessonRepository.getQuizIDByLessonID(lessonID);
-        if(quizID != null){
+        if (quizID != null) {
             int id = quizID.intValue();
-            Quiz quiz = quizRepository.findByID(id);
+            Quiz quiz = quizRepository.findById(quizID).get();
             QuizDTO quizDTO = quizConverter.convertEntityToDto(quiz);
             return quizDTO;
-        }
-        else{
+        } else {
             return null;
         }
     }
 
     @Override
     public Quiz getQuizById(int quizID) {
-        return quizRepository.findByID(quizID);
+        return quizRepository.findById(quizID).get();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.project.CourseSystem.dto;
 
 import com.project.CourseSystem.entity.Course;
-import com.project.CourseSystem.entity.Payment;
 import com.project.CourseSystem.entity.SystemAccount;
 import lombok.*;
 
@@ -22,5 +21,5 @@ public class EnrolledDTO {
 
     private SystemAccount accountID;
 
-    private Payment paymentID;
+    private String payment;
 }

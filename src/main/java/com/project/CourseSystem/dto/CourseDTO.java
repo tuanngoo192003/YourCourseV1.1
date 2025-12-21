@@ -11,7 +11,7 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class CourseDTO {
-    
+
     private Integer courseID;
 
     private String courseName;
@@ -28,6 +28,6 @@ public class CourseDTO {
 
     private Float price;
 
-    private Category categoryID;
+    private String category;
 
 }

@@ -1,7 +1,5 @@
 package com.project.CourseSystem.dto;
 
-import com.project.CourseSystem.entity.Course;
-import com.project.CourseSystem.entity.UserInfo;
 import lombok.*;
 
 import java.sql.Date;
@@ -29,7 +27,7 @@ public class PaymentDTO {
 
     private Integer paymentAmount;
 
-    private UserInfo userID;
+    private Integer userID;
 
-    private Course courseID;
+    private Integer courseID;
 }

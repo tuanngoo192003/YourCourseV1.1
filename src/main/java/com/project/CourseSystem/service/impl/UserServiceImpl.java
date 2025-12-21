@@ -21,14 +21,14 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     public UserServiceImpl(UserInfoRepository userInfoRepository,
-                           UserInfoConverter userInfoConverter){
+            UserInfoConverter userInfoConverter) {
         this.userInfoRepository = userInfoRepository;
         this.userInfoConverter = userInfoConverter;
     }
 
     @Override
     public UserInfo findUser(int accountID) {
-        UserInfo userInfo = userInfoRepository.findByID(accountID);
+        UserInfo userInfo = userInfoRepository.findById(accountID).get();
         return userInfo;
     }
 
@@ -43,7 +43,8 @@ public class UserServiceImpl implements UserService {
         userInfoDTO = userInfoConverter.convertEntityToDTO(userInfo);
         userInfoRepository.updateUserInfo(userInfoDTO.getAboutMe(), userInfoDTO.getAvatar(),
                 userInfoDTO.getDob().toString(), userInfoDTO.getLocation(), userInfoDTO.getPhoneNums(),
-                userInfoDTO.getUserName(), userInfoDTO.getAccountID().getAccountID().toString(), userInfoDTO.getUserID());
+                userInfoDTO.getUserName(), userInfoDTO.getAccountID().getAccountID().toString(),
+                userInfoDTO.getUserID());
     }
 
     @Override
@@ -64,15 +65,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Page<UserInfo> findPaginated(int pageNo, int pageSize, String sortField, String sortDirection) {
-        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending() :
-                Sort.by(sortField).descending();
+        Sort sort = sortDirection.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortField).ascending()
+                : Sort.by(sortField).descending();
         return userInfoRepository.findAll(PageRequest.of(pageNo - 1, pageSize, sort));
     }
 
     @Override
     public UserInfo findByUserID(Integer userID) {
-        return userInfoRepository.findByUserID(userID);
+        return userInfoRepository.findById(userID).get();
     }
-
 
 }

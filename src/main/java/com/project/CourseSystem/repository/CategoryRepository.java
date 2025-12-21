@@ -3,17 +3,18 @@ package com.project.CourseSystem.repository;
 import com.project.CourseSystem.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
+@Repository
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
-    @Query(value = "SELECT * FROM category", nativeQuery = true)
-    List<Category> getAllCategories();
-
-    @Query(value = "SELECT * FROM category WHERE categoryid = ?1", nativeQuery = true)
-    Category getCategoryByID(Integer categoryID);
-
-    @Query(value = "SELECT * FROM category WHERE category_name = ?1", nativeQuery = true)
-    Category getCategoryByName(String categoryName);
+    @Query(value = """
+               SELECT
+                   c.category_id as categoryID,
+                   c.category_name as categoryName
+               FROM category c
+               WHERE category_name = :categoryName
+            """, nativeQuery = true)
+    Category getCategoryByName(@Param("categoryName") String categoryName);
 }

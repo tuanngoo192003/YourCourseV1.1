@@ -1,7 +1,5 @@
 package com.project.CourseSystem.dto;
 
-import com.project.CourseSystem.entity.Quiz;
-import com.project.CourseSystem.entity.UserInfo;
 import lombok.*;
 
 import java.sql.Date;
@@ -22,7 +20,7 @@ public class ReportDTO {
 
     private Time timeSpent;
 
-    private UserInfo userID;
+    private Integer userID;
 
-    private Quiz quizID;
+    private Integer quizID;
 }

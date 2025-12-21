@@ -23,7 +23,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<CategoryDTO> getAllCategories() {
-        List<Category> category = categoryRepository.getAllCategories();
+        List<Category> category = categoryRepository.findAll();
         List<CategoryDTO> categoryDTO = new ArrayList<>();
         for (Category c : category) {
             CategoryDTO categoryDTO1 = new CategoryDTO();
@@ -37,7 +37,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDTO getCategoryByID(Integer categoryID) {
         CategoryDTO categoryDTO = new CategoryDTO();
-        Category category = categoryRepository.getCategoryByID(categoryID);
+        Category category = categoryRepository.findById(categoryID).get();
         categoryDTO = categoryConverter.convertEntityToDTO(category);
         return categoryDTO;
     }

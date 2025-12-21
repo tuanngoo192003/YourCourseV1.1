@@ -1,6 +1,5 @@
 package com.project.CourseSystem.dto;
 
-import com.project.CourseSystem.entity.Lesson;
 import lombok.*;
 
 @Setter
@@ -18,5 +17,5 @@ public class LearningMaterialDTO {
 
     private String learningMaterialLink;
 
-    private Lesson lessonID;
+    private String lesson;
 }
