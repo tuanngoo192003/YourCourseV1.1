@@ -26,7 +26,7 @@ public interface SystemAccountRepository extends JpaRepository<SystemAccount, In
             WHERE
                 account_name = :accountName
             """, nativeQuery = true)
-    SystemAccountDTO findByAccount_name(@Param("accountName") String account_name);
+    SystemAccountDTO findByAccountName(@Param("accountName") String account_name);
 
     @Query(value = """
             SELECT

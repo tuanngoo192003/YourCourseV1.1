@@ -35,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public SystemAccountDTO findUser(String account_name, String account_password) {
         SystemAccountDTO system_accountDTO = new SystemAccountDTO();
-        SystemAccount system_accountEntity = system_accountRespository.findByAccount_name(account_name);
+        SystemAccount system_accountEntity = system_accountRespository.findByAccountName(account_name);
         if (system_accountEntity == null) {
             return system_accountDTO;
         } else {
